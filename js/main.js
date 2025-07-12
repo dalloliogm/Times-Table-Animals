@@ -316,9 +316,12 @@ class GameController {
         answerInput.value = '';
         answerInput.focus();
         
-        // Generate next problem
-        this.mathEngine.generateProblem();
-        this.updateProblemUI();
+        // Let the habitat handle the next problem generation
+        if (this.currentHabitat && this.currentHabitat.onContinueButtonClicked) {
+            this.currentHabitat.onContinueButtonClicked();
+        } else {
+            console.log('GameController: Continue button clicked, but habitat does not handle it');
+        }
     }
 
     updateProblemUI() {

@@ -11,6 +11,7 @@ class BunnyMeadow {
         this.currentProblem = null;
         this.problemsSolved = 0;
         this.totalProblems = 10;
+        this.nextProblemTimer = null;
         
         // Habitat elements
         this.bunnies = [];
@@ -607,8 +608,8 @@ class BunnyMeadow {
         if (this.problemsSolved >= this.totalProblems) {
             this.completeHabitat();
         } else {
-            // Schedule next problem
-            setTimeout(() => {
+            // Schedule next problem, but allow Continue button to override
+            this.nextProblemTimer = setTimeout(() => {
                 this.startNextProblem();
             }, 3000);
         }
@@ -747,6 +748,19 @@ class BunnyMeadow {
         // This would be handled by the main game controller
         // For now, just log the completion
         console.log('Bunny Meadow completed! Returning to habitat selection...');
+    }
+
+    onContinueButtonClicked() {
+        // Clear any pending timer
+        if (this.nextProblemTimer) {
+            clearTimeout(this.nextProblemTimer);
+            this.nextProblemTimer = null;
+        }
+        
+        // Start next problem immediately
+        if (this.problemsSolved < this.totalProblems) {
+            this.startNextProblem();
+        }
     }
 
     update(deltaTime) {
