@@ -94,10 +94,10 @@ class MathEngine {
 
     generateAdditionProblem() {
         const contexts = [
-            'Each bunny needs {a} carrots. How many carrots do {b} bunnies need?',
             'There are {a} carrots in one basket and {b} carrots in another. How many carrots total?',
             'If {a} bunnies hop into the meadow and {b} more join them, how many bunnies are there?',
-            'The caretaker gives {a} lettuce leaves to one group and {b} to another. How many leaves total?'
+            'The caretaker gives {a} lettuce leaves to one group and {b} to another. How many leaves total?',
+            'The sanctuary has {a} baby bunnies and {b} adult bunnies. How many bunnies in total?'
         ];
         
         const range = Math.min(10 + this.difficultyLevel * 5, 50);

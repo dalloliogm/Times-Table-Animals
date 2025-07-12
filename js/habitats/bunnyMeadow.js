@@ -429,10 +429,27 @@ class BunnyMeadow {
         }
         if (feedback) feedback.classList.add('hidden');
         
+        // Update progress indicator
+        this.updateProgressIndicator();
+        
         // Show problem UI
         const mathProblem = document.getElementById('mathProblem');
         if (mathProblem) {
             mathProblem.classList.remove('hidden');
+        }
+    }
+    
+    updateProgressIndicator() {
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        
+        if (progressFill) {
+            const percentage = (this.problemsSolved / this.totalProblems) * 100;
+            progressFill.style.width = `${percentage}%`;
+        }
+        
+        if (progressText) {
+            progressText.textContent = `Problem ${this.problemsSolved + 1} of ${this.totalProblems}`;
         }
     }
 
