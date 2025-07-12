@@ -400,6 +400,12 @@ class BunnyMeadow {
     }
 
     startNextProblem() {
+        // Clear any existing timeout to prevent double problem generation
+        if (this.nextProblemTimer) {
+            clearTimeout(this.nextProblemTimer);
+            this.nextProblemTimer = null;
+        }
+        
         // Generate new problem
         this.currentProblem = this.mathEngine.generateProblem();
         this.problemStartTime = Date.now();
