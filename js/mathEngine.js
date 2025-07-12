@@ -95,9 +95,228 @@ class MathEngine {
                 problem = this.generateAdditionProblem();
         }
 
+        // Add multiple choice options
+        const distractors = this.generateDistractors(problem);
+        const allOptions = [problem.answer, ...distractors].slice(0, 4);
+        
+        // Shuffle options
+        problem.options = this.shuffleArray(allOptions);
+        problem.correctOptionIndex = problem.options.indexOf(problem.answer);
+        
         this.currentProblem = problem;
         this.problemHistory.push(problem);
         return problem;
+    }
+
+    generateDistractors(problem) {
+        const correctAnswer = problem.answer;
+        let distractors = [];
+        
+        switch (problem.type) {
+            case 'addition':
+                distractors = this.generateAdditionDistractors(problem, correctAnswer);
+                break;
+            case 'subtraction':
+                distractors = this.generateSubtractionDistractors(problem, correctAnswer);
+                break;
+            case 'multiplication':
+                distractors = this.generateMultiplicationDistractors(problem, correctAnswer);
+                break;
+            case 'doubles':
+            case 'doubles_word_problems':
+                distractors = this.generateDoublesDistractors(problem, correctAnswer);
+                break;
+            case 'division':
+            case 'simple_division':
+                distractors = this.generateDivisionDistractors(problem, correctAnswer);
+                break;
+            case 'fractions':
+                distractors = this.generateFractionDistractors(problem, correctAnswer);
+                break;
+            case 'equations':
+                distractors = this.generateEquationDistractors(problem, correctAnswer);
+                break;
+            case 'exponentials':
+                distractors = this.generateExponentialDistractors(problem, correctAnswer);
+                break;
+            default:
+                distractors = this.generateGenericDistractors(correctAnswer);
+        }
+        
+        // Ensure we have exactly 3 unique distractors
+        const uniqueDistractors = [...new Set(distractors)].filter(d => d !== correctAnswer && d > 0);
+        
+        // If we don't have enough unique distractors, add some generic ones
+        while (uniqueDistractors.length < 3) {
+            const genericDistractor = this.generateGenericDistractor(correctAnswer, uniqueDistractors);
+            if (!uniqueDistractors.includes(genericDistractor)) {
+                uniqueDistractors.push(genericDistractor);
+            }
+        }
+        
+        return uniqueDistractors.slice(0, 3);
+    }
+
+    generateAdditionDistractors(problem, correctAnswer) {
+        const numbers = problem.operation.match(/\d+/g);
+        const a = parseInt(numbers[0]);
+        const b = parseInt(numbers[1]);
+        
+        return [
+            Math.abs(a - b), // Common mistake: subtraction instead of addition
+            correctAnswer + 1, // Off by one error
+            correctAnswer - 1, // Off by one error
+            a * b, // Multiplication instead of addition
+            Math.max(a, b), // Forgot to add the other number
+            a + b + 10, // Decimal place error
+            Math.floor(correctAnswer / 2) // Half the correct answer
+        ].filter(distractor => distractor !== correctAnswer && distractor > 0);
+    }
+
+    generateSubtractionDistractors(problem, correctAnswer) {
+        const numbers = problem.operation.match(/\d+/g);
+        const a = parseInt(numbers[0]);
+        const b = parseInt(numbers[1]);
+        
+        return [
+            a + b, // Addition instead of subtraction
+            correctAnswer + 1, // Off by one error
+            correctAnswer - 1, // Off by one error
+            b - a, // Subtracted in wrong order
+            a, // Forgot to subtract
+            b, // Just the subtrahend
+            Math.abs(b - a) // Absolute value confusion
+        ].filter(distractor => distractor !== correctAnswer && distractor > 0);
+    }
+
+    generateMultiplicationDistractors(problem, correctAnswer) {
+        const numbers = problem.operation.match(/\d+/g);
+        const a = parseInt(numbers[0]);
+        const b = parseInt(numbers[1]);
+        
+        return [
+            a + b, // Addition instead of multiplication
+            correctAnswer + a, // Added one factor instead of multiplying
+            correctAnswer - a, // Common calculation error
+            a * (b + 1), // Off by one in one factor
+            a * (b - 1), // Off by one in one factor
+            (a + 1) * b, // Off by one in the other factor
+            correctAnswer * 2, // Double the correct answer
+            Math.floor(correctAnswer / 2) // Half the correct answer
+        ].filter(distractor => distractor !== correctAnswer && distractor > 0);
+    }
+
+    generateDoublesDistractors(problem, correctAnswer) {
+        const baseNumber = problem.baseNumber || Math.floor(correctAnswer / 2);
+        
+        return [
+            baseNumber, // Forgot to double
+            baseNumber + 2, // Added 2 instead of doubling
+            correctAnswer + 1, // Off by one
+            correctAnswer - 1, // Off by one
+            baseNumber * 3, // Tripled instead of doubled
+            correctAnswer + baseNumber, // Added the base number again
+            baseNumber + 1 // Base number plus one
+        ].filter(distractor => distractor !== correctAnswer && distractor > 0);
+    }
+
+    generateDivisionDistractors(problem, correctAnswer) {
+        const numbers = problem.operation.match(/\d+/g);
+        const dividend = parseInt(numbers[0]);
+        const divisor = parseInt(numbers[1]);
+        
+        return [
+            dividend - divisor, // Subtraction instead of division
+            correctAnswer + 1, // Off by one error
+            correctAnswer - 1, // Off by one error
+            dividend, // Forgot to divide
+            divisor, // Just the divisor
+            Math.floor(dividend / 2), // Divided by 2 instead of divisor
+            correctAnswer * 2 // Double the correct answer
+        ].filter(distractor => distractor !== correctAnswer && distractor > 0);
+    }
+
+    generateFractionDistractors(problem, correctAnswer) {
+        return [
+            correctAnswer + 1, // Off by one
+            correctAnswer - 1, // Off by one
+            Math.floor(correctAnswer * 2), // Double
+            Math.ceil(correctAnswer / 2), // Half
+            Math.floor(correctAnswer), // Integer part only
+            Math.ceil(correctAnswer), // Rounded up
+            correctAnswer + 0.5 // Common fraction error
+        ].filter(distractor => distractor !== correctAnswer && distractor > 0);
+    }
+
+    generateEquationDistractors(problem, correctAnswer) {
+        const numbers = problem.operation.match(/\d+/g);
+        const a = parseInt(numbers[0]);
+        const b = parseInt(numbers[1]);
+        
+        return [
+            a + b, // Addition instead of division
+            b - a, // Subtraction
+            a, // Just the coefficient
+            b, // Just the constant
+            correctAnswer + 1, // Off by one
+            correctAnswer - 1, // Off by one
+            Math.floor(correctAnswer * 2) // Double
+        ].filter(distractor => distractor !== correctAnswer && distractor > 0);
+    }
+
+    generateExponentialDistractors(problem, correctAnswer) {
+        const numbers = problem.operation.match(/\d+/g);
+        const base = parseInt(numbers[0]);
+        
+        return [
+            base + base, // Addition instead of multiplication
+            base * 3, // Tripled instead of squared
+            base + 2, // Added 2 instead of squaring
+            correctAnswer + base, // Added base to correct answer
+            correctAnswer - base, // Subtracted base from correct answer
+            base, // Just the base
+            correctAnswer + 1, // Off by one
+            correctAnswer - 1 // Off by one
+        ].filter(distractor => distractor !== correctAnswer && distractor > 0);
+    }
+
+    generateGenericDistractors(correctAnswer) {
+        return [
+            correctAnswer + 1,
+            correctAnswer - 1,
+            correctAnswer + 2,
+            correctAnswer - 2,
+            Math.floor(correctAnswer * 1.5),
+            Math.floor(correctAnswer / 2),
+            correctAnswer + 10,
+            correctAnswer - 10
+        ].filter(distractor => distractor !== correctAnswer && distractor > 0);
+    }
+
+    generateGenericDistractor(correctAnswer, existingDistractors) {
+        const variations = [
+            correctAnswer + Math.floor(Math.random() * 5) + 1,
+            correctAnswer - Math.floor(Math.random() * 5) - 1,
+            Math.floor(correctAnswer * (1 + Math.random() * 0.5)),
+            Math.floor(correctAnswer * (0.5 + Math.random() * 0.5))
+        ];
+        
+        for (const variation of variations) {
+            if (variation > 0 && variation !== correctAnswer && !existingDistractors.includes(variation)) {
+                return variation;
+            }
+        }
+        
+        return Math.max(1, correctAnswer + Math.floor(Math.random() * 10) - 5);
+    }
+
+    shuffleArray(array) {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
     }
 
     generateAdditionProblem() {

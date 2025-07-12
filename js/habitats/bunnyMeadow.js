@@ -420,16 +420,14 @@ class BunnyMeadow {
         // Update DOM elements
         const problemTitle = document.getElementById('problemTitle');
         const problemText = document.getElementById('problemText');
-        const answerInput = document.getElementById('answerInput');
         const feedback = document.getElementById('feedback');
         
         if (problemTitle) problemTitle.textContent = this.currentProblem.title;
         if (problemText) problemText.textContent = this.currentProblem.text;
-        if (answerInput) {
-            answerInput.value = '';
-            answerInput.focus();
-        }
         if (feedback) feedback.classList.add('hidden');
+        
+        // Update answer options with generated choices
+        this.updateAnswerOptions();
         
         // Update progress indicator
         this.updateProgressIndicator();
@@ -439,6 +437,23 @@ class BunnyMeadow {
         if (mathProblem) {
             mathProblem.classList.remove('hidden');
         }
+    }
+
+    updateAnswerOptions() {
+        if (!this.currentProblem || !this.currentProblem.options) return;
+        
+        this.currentProblem.options.forEach((option, index) => {
+            const optionButton = document.getElementById(`option${index + 1}`);
+            if (optionButton) {
+                const optionText = optionButton.querySelector('.option-text');
+                if (optionText) {
+                    optionText.textContent = option;
+                }
+                
+                // Reset visual state
+                optionButton.classList.remove('selected', 'correct', 'incorrect');
+            }
+        });
     }
     
     updateProgressIndicator() {

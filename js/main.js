@@ -120,16 +120,19 @@ class GameController {
             });
         }
 
-        // Math Problem Events
-        document.getElementById('submitAnswer').addEventListener('click', () => {
-            console.log('GameController: Submit button clicked');
-            this.submitAnswer();
-        });
+        // Math Problem Events - Multiple Choice Options
+        for (let i = 1; i <= 4; i++) {
+            document.getElementById(`option${i}`).addEventListener('click', () => {
+                console.log(`GameController: Option ${i} clicked`);
+                this.selectAnswer(i);
+            });
+        }
 
-        document.getElementById('answerInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                console.log('GameController: Enter key pressed');
-                this.submitAnswer();
+        // Keyboard support for keys 1-4
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= '1' && e.key <= '4') {
+                console.log(`GameController: Key ${e.key} pressed`);
+                this.selectAnswer(parseInt(e.key));
             }
         });
 
@@ -265,7 +268,44 @@ class GameController {
         this.showSettings();
     }
 
-    submitAnswer() {
+    selectAnswer(optionNumber) {
+        // Prevent selection during submission
+        if (this.isSubmittingAnswer) {
+            console.log('GameController: Answer submission already in progress, ignoring selection');
+            return;
+        }
+        
+        // Visual feedback
+        this.highlightSelectedOption(optionNumber);
+        
+        // Get the selected answer value
+        const currentProblem = this.mathEngine.getCurrentProblem();
+        if (!currentProblem || !currentProblem.options) {
+            console.error('GameController: No current problem or options available');
+            return;
+        }
+        
+        const selectedAnswer = currentProblem.options[optionNumber - 1];
+        console.log(`GameController: Selected option ${optionNumber} with value ${selectedAnswer}`);
+        
+        // Submit the answer
+        this.submitSelectedAnswer(selectedAnswer);
+    }
+
+    highlightSelectedOption(optionNumber) {
+        // Remove previous selections
+        document.querySelectorAll('.answer-option').forEach(option => {
+            option.classList.remove('selected');
+        });
+        
+        // Highlight selected option
+        const selectedOption = document.getElementById(`option${optionNumber}`);
+        if (selectedOption) {
+            selectedOption.classList.add('selected');
+        }
+    }
+
+    submitSelectedAnswer(selectedAnswer) {
         // Prevent double submission race condition
         if (this.isSubmittingAnswer) {
             console.log('GameController: Answer submission already in progress, ignoring duplicate call');
@@ -274,27 +314,22 @@ class GameController {
         
         this.isSubmittingAnswer = true;
         console.log('GameController: Setting isSubmittingAnswer to true');
-        
-        const answerInput = document.getElementById('answerInput');
-        const answer = parseInt(answerInput.value);
-        
-        if (isNaN(answer)) {
-            this.showFeedback('Please enter a number!', false);
-            this.isSubmittingAnswer = false; // Reset flag on early return
-            console.log('GameController: Reset isSubmittingAnswer to false (invalid answer)');
-            return;
-        }
-        
-        console.log(`GameController: Submitting answer ${answer}`);
+        console.log(`GameController: Submitting selected answer ${selectedAnswer}`);
         
         // Let the habitat handle the answer checking
         if (this.currentHabitat && this.currentHabitat.checkAnswer) {
-            const isCorrect = this.currentHabitat.checkAnswer(answer);
+            const isCorrect = this.currentHabitat.checkAnswer(selectedAnswer);
             this.showFeedback(isCorrect ? 'Correct! Well done!' : 'Not quite right, try again!', isCorrect);
+            
+            // Visual feedback on options
+            this.showAnswerFeedback(selectedAnswer, isCorrect);
         } else {
             // Fallback to mathEngine for habitats that don't have checkAnswer
-            const isCorrect = this.mathEngine.checkAnswer(answer);
+            const isCorrect = this.mathEngine.checkAnswer(selectedAnswer);
             this.showFeedback(isCorrect ? 'Correct! Well done!' : 'Not quite right, try again!', isCorrect);
+            
+            // Visual feedback on options
+            this.showAnswerFeedback(selectedAnswer, isCorrect);
             
             if (isCorrect) {
                 this.audioManager.playSFX('correct');
@@ -309,6 +344,23 @@ class GameController {
             this.isSubmittingAnswer = false;
             console.log('GameController: Reset isSubmittingAnswer to false (after timeout)');
         }, 100);
+    }
+
+    showAnswerFeedback(selectedAnswer, isCorrect) {
+        const currentProblem = this.mathEngine.getCurrentProblem();
+        if (!currentProblem || !currentProblem.options) return;
+        
+        const correctAnswer = currentProblem.answer;
+        
+        document.querySelectorAll('.answer-option').forEach((option, index) => {
+            const optionValue = currentProblem.options[index];
+            
+            if (optionValue === correctAnswer) {
+                option.classList.add('correct');
+            } else if (optionValue === selectedAnswer && !isCorrect) {
+                option.classList.add('incorrect');
+            }
+        });
     }
 
     showFeedback(message, isCorrect) {
@@ -330,11 +382,13 @@ class GameController {
 
     nextProblem() {
         const feedback = document.getElementById('feedback');
-        const answerInput = document.getElementById('answerInput');
         
         feedback.classList.add('hidden');
-        answerInput.value = '';
-        answerInput.focus();
+        
+        // Reset all answer options
+        document.querySelectorAll('.answer-option').forEach(option => {
+            option.classList.remove('selected', 'correct', 'incorrect');
+        });
         
         // Let the habitat handle the next problem generation
         if (this.currentHabitat && this.currentHabitat.onContinueButtonClicked) {
@@ -349,8 +403,29 @@ class GameController {
         document.getElementById('problemTitle').textContent = problem.title;
         document.getElementById('problemText').textContent = problem.text;
         
+        // Update answer options
+        this.updateAnswerOptions();
+        
         // Update visual representation
         this.updateProblemVisual(problem);
+    }
+
+    updateAnswerOptions() {
+        const currentProblem = this.mathEngine.getCurrentProblem();
+        if (!currentProblem || !currentProblem.options) return;
+        
+        currentProblem.options.forEach((option, index) => {
+            const optionButton = document.getElementById(`option${index + 1}`);
+            if (optionButton) {
+                const optionText = optionButton.querySelector('.option-text');
+                if (optionText) {
+                    optionText.textContent = option;
+                }
+                
+                // Reset visual state
+                optionButton.classList.remove('selected', 'correct', 'incorrect');
+            }
+        });
     }
 
     updateProblemVisual(problem) {
