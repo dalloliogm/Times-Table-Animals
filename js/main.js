@@ -128,11 +128,13 @@ class GameController {
             });
         }
 
-        // Keyboard support for keys 1-4
+        // Keyboard support for keys q-w-e-r
         document.addEventListener('keydown', (e) => {
-            if (e.key >= '1' && e.key <= '4') {
-                console.log(`GameController: Key ${e.key} pressed`);
-                this.selectAnswer(parseInt(e.key));
+            const keyMap = { 'q': 1, 'w': 2, 'e': 3, 'r': 4 };
+            const key = e.key.toLowerCase();
+            if (keyMap[key]) {
+                console.log(`GameController: Key ${key} pressed`);
+                this.selectAnswer(keyMap[key]);
             }
         });
 

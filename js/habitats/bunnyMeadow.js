@@ -414,6 +414,11 @@ class BunnyMeadow {
         if (this.audioManager) {
             this.audioManager.playSFX('problem-appear');
         }
+        
+        // Ensure GameController has the same problem reference
+        if (this.gameController && this.gameController.mathEngine) {
+            this.gameController.mathEngine.currentProblem = this.currentProblem;
+        }
     }
 
     updateProblemDisplay() {
@@ -428,6 +433,11 @@ class BunnyMeadow {
         
         // Update answer options with generated choices
         this.updateAnswerOptions();
+        
+        // Also update the GameController's answer options
+        if (this.gameController && this.gameController.updateAnswerOptions) {
+            this.gameController.updateAnswerOptions();
+        }
         
         // Update progress indicator
         this.updateProgressIndicator();
