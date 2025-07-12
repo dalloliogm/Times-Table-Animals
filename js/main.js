@@ -213,7 +213,7 @@ class GameController {
         // Initialize habitat
         switch(habitatName) {
             case 'bunnyMeadow':
-                this.currentHabitat = new BunnyMeadow(this.gameEngine, this.mathEngine);
+                this.currentHabitat = new BunnyMeadow(this.gameEngine, this.mathEngine, this);
                 break;
             case 'penguinPairsArctic':
                 this.currentHabitat = new PenguinPairsArctic(this.gameEngine, this.mathEngine);
@@ -271,14 +271,23 @@ class GameController {
             return;
         }
         
-        const isCorrect = this.mathEngine.checkAnswer(answer);
-        this.showFeedback(isCorrect ? 'Correct! Well done!' : 'Not quite right, try again!', isCorrect);
+        console.log(`GameController: Submitting answer ${answer}`);
         
-        if (isCorrect) {
-            this.audioManager.playSFX('correct');
-            this.updateProgress();
+        // Let the habitat handle the answer checking
+        if (this.currentHabitat && this.currentHabitat.checkAnswer) {
+            const isCorrect = this.currentHabitat.checkAnswer(answer);
+            this.showFeedback(isCorrect ? 'Correct! Well done!' : 'Not quite right, try again!', isCorrect);
         } else {
-            this.audioManager.playSFX('incorrect');
+            // Fallback to mathEngine for habitats that don't have checkAnswer
+            const isCorrect = this.mathEngine.checkAnswer(answer);
+            this.showFeedback(isCorrect ? 'Correct! Well done!' : 'Not quite right, try again!', isCorrect);
+            
+            if (isCorrect) {
+                this.audioManager.playSFX('correct');
+                this.updateProgress();
+            } else {
+                this.audioManager.playSFX('incorrect');
+            }
         }
     }
 

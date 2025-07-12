@@ -2,9 +2,10 @@
 // First habitat focusing on addition and subtraction
 
 class BunnyMeadow {
-    constructor(gameEngine, mathEngine) {
+    constructor(gameEngine, mathEngine, gameController = null) {
         this.gameEngine = gameEngine;
         this.mathEngine = mathEngine;
+        this.gameController = gameController;
         this.audioManager = null;
         this.isActive = false;
         this.currentProblem = null;
@@ -562,12 +563,23 @@ class BunnyMeadow {
     }
 
     checkAnswer(userAnswer) {
+        console.log(`BunnyMeadow: Checking answer ${userAnswer} against ${this.currentProblem.answer}`);
         const isCorrect = this.mathEngine.checkAnswer(userAnswer);
         
         if (isCorrect) {
             this.onCorrectAnswer();
+            
+            // Also update the GameController's progress
+            if (this.gameController) {
+                this.gameController.audioManager.playSFX('correct');
+                this.gameController.updateProgress();
+            }
         } else {
             this.onIncorrectAnswer();
+            
+            if (this.gameController) {
+                this.gameController.audioManager.playSFX('incorrect');
+            }
         }
         
         return isCorrect;
@@ -575,11 +587,15 @@ class BunnyMeadow {
 
     onCorrectAnswer() {
         this.problemsSolved++;
+        console.log(`Bunny Meadow: Problem solved! Progress: ${this.problemsSolved}/${this.totalProblems}`);
         
         if (this.audioManager) {
             this.audioManager.playSFX('correct');
             this.audioManager.playVoice('celebration');
         }
+        
+        // Update progress indicator immediately
+        this.updateProgressIndicator();
         
         // Celebration animation
         this.startCelebration();
