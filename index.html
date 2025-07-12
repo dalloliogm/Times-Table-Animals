@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Times Table Animals - Welcome Albert Animals</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <div id="gameContainer">
+        <!-- Loading Screen -->
+        <div id="loadingScreen" class="screen active">
+            <div class="loading-content">
+                <h1>Times Table Animals</h1>
+                <h2>Welcome Albert Animals</h2>
+                <div class="loading-spinner"></div>
+                <p>Loading your animal adventure...</p>
+            </div>
+        </div>
+
+        <!-- Main Menu -->
+        <div id="mainMenu" class="screen">
+            <div class="menu-content">
+                <h1>Times Table Animals</h1>
+                <h2>Welcome Albert Animals</h2>
+                <div class="menu-buttons">
+                    <button id="startGameBtn" class="menu-btn primary">Start Adventure</button>
+                    <button id="settingsBtn" class="menu-btn secondary">Settings</button>
+                    <button id="achievementsBtn" class="menu-btn secondary">Achievements</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Menu -->
+        <div id="settingsMenu" class="screen">
+            <div class="settings-content">
+                <h2>Settings</h2>
+                <div class="settings-options">
+                    <div class="setting-item">
+                        <label>Background Music</label>
+                        <input type="checkbox" id="musicToggle" checked>
+                        <span class="toggle-slider"></span>
+                    </div>
+                    <div class="setting-item">
+                        <label>Sound Effects</label>
+                        <input type="checkbox" id="sfxToggle" checked>
+                        <span class="toggle-slider"></span>
+                    </div>
+                    <div class="setting-item">
+                        <label>Voice Narration</label>
+                        <input type="checkbox" id="voiceToggle" checked>
+                        <span class="toggle-slider"></span>
+                    </div>
+                    <div class="setting-item">
+                        <label>Master Volume</label>
+                        <input type="range" id="volumeSlider" min="0" max="100" value="75">
+                    </div>
+                </div>
+                <button id="backToMenuBtn" class="menu-btn primary">Back to Menu</button>
+            </div>
+        </div>
+
+        <!-- Game Canvas -->
+        <div id="gameScreen" class="screen">
+            <canvas id="gameCanvas" width="1200" height="800"></canvas>
+            
+            <!-- Game UI Overlay -->
+            <div id="gameUI">
+                <div id="topBar">
+                    <div id="playerInfo">
+                        <span id="playerName">Junior Caretaker</span>
+                        <div id="badgeCount">🏆 0</div>
+                    </div>
+                    <div id="currentHabitat">Bunny Meadow</div>
+                    <div id="gameControls">
+                        <button id="pauseBtn">⏸️</button>
+                        <button id="settingsGameBtn">⚙️</button>
+                    </div>
+                </div>
+                
+                <!-- Math Problem UI -->
+                <div id="mathProblem" class="hidden">
+                    <div class="problem-container">
+                        <h3 id="problemTitle">Help the Bunnies!</h3>
+                        <p id="problemText">Each bunny needs 3 carrots. How many carrots do 4 bunnies need?</p>
+                        <div id="problemVisual">
+                            <!-- Visual representation will be added here -->
+                        </div>
+                        <div id="answerSection">
+                            <input type="number" id="answerInput" placeholder="Enter your answer">
+                            <button id="submitAnswer">Submit</button>
+                        </div>
+                        <div id="feedback" class="hidden">
+                            <span id="feedbackText"></span>
+                            <button id="nextProblem">Continue</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Habitat Selection -->
+        <div id="habitatSelect" class="screen">
+            <div class="habitat-content">
+                <h2>Choose Your Habitat</h2>
+                <div class="habitat-grid">
+                    <div class="habitat-card unlocked" data-habitat="bunnyMeadow">
+                        <div class="habitat-image">🐰</div>
+                        <h3>Bunny Meadow</h3>
+                        <p>Addition & Subtraction</p>
+                        <div class="habitat-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="habitat-card locked" data-habitat="penguinArctic">
+                        <div class="habitat-image">🐧</div>
+                        <h3>Penguin Arctic</h3>
+                        <p>Multiplication</p>
+                        <div class="lock-overlay">🔒</div>
+                    </div>
+                    
+                    <div class="habitat-card locked" data-habitat="elephantSavanna">
+                        <div class="habitat-image">🐘</div>
+                        <h3>Elephant Savanna</h3>
+                        <p>Division</p>
+                        <div class="lock-overlay">🔒</div>
+                    </div>
+                    
+                    <div class="habitat-card locked" data-habitat="monkeyJungle">
+                        <div class="habitat-image">🐵</div>
+                        <h3>Monkey Jungle</h3>
+                        <p>Fractions</p>
+                        <div class="lock-overlay">🔒</div>
+                    </div>
+                </div>
+                <button id="backToHabitats" class="menu-btn secondary">Back</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/audioManager.js"></script>
+    <script src="js/mathEngine.js"></script>
+    <script src="js/gameEngine.js"></script>
+    <script src="js/sceneManager.js"></script>
+    <script src="js/habitats/bunnyMeadow.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

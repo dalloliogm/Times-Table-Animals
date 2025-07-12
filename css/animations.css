@@ -1,0 +1,414 @@
+/* Animal Animations */
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes wiggle {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(5deg);
+    }
+    75% {
+        transform: rotate(-5deg);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes celebration {
+    0%, 100% {
+        transform: scale(1) rotate(0deg);
+    }
+    25% {
+        transform: scale(1.2) rotate(5deg);
+    }
+    50% {
+        transform: scale(1.1) rotate(-5deg);
+    }
+    75% {
+        transform: scale(1.15) rotate(3deg);
+    }
+}
+
+@keyframes sparkle {
+    0%, 100% {
+        opacity: 0;
+        transform: scale(0);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-5px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(5px);
+    }
+}
+
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+    }
+}
+
+/* UI Element Animations */
+@keyframes buttonPress {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0.95);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes correctAnswer {
+    0% {
+        background-color: rgba(152, 251, 152, 0.8);
+        transform: scale(1);
+    }
+    50% {
+        background-color: rgba(50, 205, 50, 0.9);
+        transform: scale(1.02);
+    }
+    100% {
+        background-color: rgba(152, 251, 152, 0.8);
+        transform: scale(1);
+    }
+}
+
+@keyframes incorrectAnswer {
+    0% {
+        background-color: rgba(255, 182, 193, 0.8);
+        transform: translateX(0);
+    }
+    25% {
+        background-color: rgba(255, 99, 132, 0.9);
+        transform: translateX(-5px);
+    }
+    75% {
+        background-color: rgba(255, 99, 132, 0.9);
+        transform: translateX(5px);
+    }
+    100% {
+        background-color: rgba(255, 182, 193, 0.8);
+        transform: translateX(0);
+    }
+}
+
+@keyframes progressFill {
+    from {
+        width: 0%;
+    }
+    to {
+        width: var(--progress-width);
+    }
+}
+
+@keyframes badgeEarned {
+    0% {
+        transform: scale(0) rotate(0deg);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2) rotate(180deg);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1) rotate(360deg);
+        opacity: 1;
+    }
+}
+
+@keyframes starfall {
+    0% {
+        transform: translateY(-100px) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+@keyframes heartbeat {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* Animal-Specific Animations */
+.bunny-hop {
+    animation: bounce 0.6s ease-in-out infinite;
+}
+
+.penguin-waddle {
+    animation: wiggle 1s ease-in-out infinite;
+}
+
+.elephant-trumpet {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.monkey-swing {
+    animation: float 1.5s ease-in-out infinite;
+}
+
+/* Interactive Element Animations */
+.habitat-card:hover .habitat-image {
+    animation: bounce 0.5s ease-in-out;
+}
+
+.menu-btn:active {
+    animation: buttonPress 0.1s ease-in-out;
+}
+
+.correct-feedback {
+    animation: correctAnswer 0.8s ease-in-out;
+}
+
+.incorrect-feedback {
+    animation: incorrectAnswer 0.5s ease-in-out;
+}
+
+.badge-animation {
+    animation: badgeEarned 1s ease-in-out;
+}
+
+.celebration-stars {
+    animation: starfall 2s ease-in-out infinite;
+}
+
+.progress-animate {
+    animation: progressFill 1s ease-in-out;
+}
+
+/* Screen Transitions */
+.screen-transition-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.screen-transition-out {
+    animation: slideOut 0.3s ease-in-out;
+}
+
+.slide-in-left {
+    animation: slideIn 0.5s ease-in-out;
+}
+
+/* Math Problem Visual Animations */
+.math-visual-item {
+    animation: fadeIn 0.3s ease-in-out;
+    animation-fill-mode: both;
+}
+
+.math-visual-item:nth-child(1) { animation-delay: 0.1s; }
+.math-visual-item:nth-child(2) { animation-delay: 0.2s; }
+.math-visual-item:nth-child(3) { animation-delay: 0.3s; }
+.math-visual-item:nth-child(4) { animation-delay: 0.4s; }
+.math-visual-item:nth-child(5) { animation-delay: 0.5s; }
+.math-visual-item:nth-child(6) { animation-delay: 0.6s; }
+.math-visual-item:nth-child(7) { animation-delay: 0.7s; }
+.math-visual-item:nth-child(8) { animation-delay: 0.8s; }
+.math-visual-item:nth-child(9) { animation-delay: 0.9s; }
+.math-visual-item:nth-child(10) { animation-delay: 1.0s; }
+
+/* Loading Animation Enhancements */
+.loading-content h1 {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.loading-content h2 {
+    animation: fadeIn 1s ease-in-out 0.5s both;
+}
+
+.loading-content p {
+    animation: fadeIn 1s ease-in-out 1s both;
+}
+
+/* Hover Effects */
+.habitat-card.unlocked:hover {
+    animation: glow 0.5s ease-in-out;
+}
+
+.menu-btn:hover {
+    animation: pulse 0.3s ease-in-out;
+}
+
+/* Success and Error States */
+.success-state {
+    animation: celebration 1s ease-in-out;
+}
+
+.error-state {
+    animation: shake 0.5s ease-in-out;
+}
+
+/* Particle Effects */
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #FFD700;
+    border-radius: 50%;
+    animation: sparkle 1s ease-in-out infinite;
+}
+
+.particle:nth-child(odd) {
+    animation-delay: 0.5s;
+}
+
+.particle:nth-child(even) {
+    animation-delay: 0.25s;
+}
+
+/* Animal Entrance Animations */
+.animal-enter {
+    animation: slideIn 0.8s ease-out;
+}
+
+.animal-exit {
+    animation: slideOut 0.5s ease-in;
+}
+
+/* UI Feedback Animations */
+.ui-success {
+    animation: celebration 0.8s ease-in-out;
+}
+
+.ui-error {
+    animation: shake 0.6s ease-in-out;
+}
+
+.ui-hint {
+    animation: pulse 1s ease-in-out 3;
+}
+
+/* Responsive Animation Controls */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Animation Utility Classes */
+.animate-bounce {
+    animation: bounce 0.6s ease-in-out;
+}
+
+.animate-wiggle {
+    animation: wiggle 0.8s ease-in-out;
+}
+
+.animate-pulse {
+    animation: pulse 1s ease-in-out;
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.animate-celebration {
+    animation: celebration 1s ease-in-out;
+}
+
+.animate-glow {
+    animation: glow 1s ease-in-out infinite;
+}
+
+.animate-float {
+    animation: float 2s ease-in-out infinite;
+}
+
+.animate-heartbeat {
+    animation: heartbeat 1s ease-in-out infinite;
+}
+
+/* Paused state for animations */
+.animations-paused * {
+    animation-play-state: paused !important;
+}
