@@ -4,6 +4,7 @@
 class GameController {
     constructor() {
         this.currentScreen = 'loadingScreen';
+        this.isSubmittingAnswer = false; // Flag to prevent double submission
         this.gameState = {
             playerName: 'Junior Caretaker',
             badgeCount: 0,
@@ -121,11 +122,13 @@ class GameController {
 
         // Math Problem Events
         document.getElementById('submitAnswer').addEventListener('click', () => {
+            console.log('GameController: Submit button clicked');
             this.submitAnswer();
         });
 
         document.getElementById('answerInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
+                console.log('GameController: Enter key pressed');
                 this.submitAnswer();
             }
         });
@@ -263,11 +266,22 @@ class GameController {
     }
 
     submitAnswer() {
+        // Prevent double submission race condition
+        if (this.isSubmittingAnswer) {
+            console.log('GameController: Answer submission already in progress, ignoring duplicate call');
+            return;
+        }
+        
+        this.isSubmittingAnswer = true;
+        console.log('GameController: Setting isSubmittingAnswer to true');
+        
         const answerInput = document.getElementById('answerInput');
         const answer = parseInt(answerInput.value);
         
         if (isNaN(answer)) {
             this.showFeedback('Please enter a number!', false);
+            this.isSubmittingAnswer = false; // Reset flag on early return
+            console.log('GameController: Reset isSubmittingAnswer to false (invalid answer)');
             return;
         }
         
@@ -289,6 +303,12 @@ class GameController {
                 this.audioManager.playSFX('incorrect');
             }
         }
+        
+        // Reset flag after processing, with a small delay to prevent rapid re-submission
+        setTimeout(() => {
+            this.isSubmittingAnswer = false;
+            console.log('GameController: Reset isSubmittingAnswer to false (after timeout)');
+        }, 100);
     }
 
     showFeedback(message, isCorrect) {
