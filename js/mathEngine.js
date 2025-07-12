@@ -9,6 +9,7 @@ class MathEngine {
         this.currentHabitat = 'bunnyMeadow';
         this.problemTypes = {
             bunnyMeadow: ['addition', 'subtraction'],
+            penguinPairsArctic: ['doubles', 'doubles_word_problems'],
             penguinArctic: ['multiplication', 'simple_division'],
             elephantSavanna: ['division', 'multiplication'],
             monkeyJungle: ['fractions', 'mixed_operations'],
@@ -30,16 +31,17 @@ class MathEngine {
     getHabitatDifficulty(habitat) {
         const difficultyMap = {
             bunnyMeadow: 1,
-            penguinArctic: 2,
-            elephantSavanna: 3,
-            monkeyJungle: 4,
-            lionPride: 5,
-            dolphinCove: 6,
-            bearForest: 7,
-            giraffePlains: 8,
-            owlObservatory: 9,
-            dragonSanctuary: 10,
-            rainbowReserve: 11
+            penguinPairsArctic: 2,
+            penguinArctic: 3,
+            elephantSavanna: 4,
+            monkeyJungle: 5,
+            lionPride: 6,
+            dolphinCove: 7,
+            bearForest: 8,
+            giraffePlains: 9,
+            owlObservatory: 10,
+            dragonSanctuary: 11,
+            rainbowReserve: 12
         };
         return difficultyMap[habitat] || 1;
     }
@@ -55,6 +57,12 @@ class MathEngine {
                 break;
             case 'subtraction':
                 problem = this.generateSubtractionProblem();
+                break;
+            case 'doubles':
+                problem = this.generateDoublesProblem();
+                break;
+            case 'doubles_word_problems':
+                problem = this.generateDoublesWordProblem();
                 break;
             case 'multiplication':
                 problem = this.generateMultiplicationProblem();
@@ -176,6 +184,81 @@ class MathEngine {
             explanation: `${a} × ${b} = ${answer}`,
             habitat: this.currentHabitat,
             difficulty: this.difficultyLevel
+        };
+    }
+
+    generateDoublesProblem() {
+        const contexts = [
+            'Each penguin needs a partner for the ice parade. If there are {n} penguins, how many penguins total?',
+            'The penguins slide down the ice slide in pairs. How many penguins in {n} pairs?',
+            'Each penguin catches {n} fish. How many fish do 2 penguins catch?',
+            'There are {n} penguin pairs playing together. How many penguins are playing?',
+            'Each ice block can hold 2 penguins. How many penguins can {n} blocks hold?'
+        ];
+        
+        // Generate doubles from 1×2 to 12×2
+        const number = Math.floor(Math.random() * 12) + 1;
+        const answer = number * 2;
+        
+        const context = contexts[Math.floor(Math.random() * contexts.length)];
+        const text = context.replace('{n}', number);
+        
+        return {
+            type: 'doubles',
+            title: 'Penguin Pairs!',
+            text: text,
+            answer: answer,
+            visual: this.generateDoublesVisual(number),
+            operation: `${number} × 2 = ?`,
+            explanation: `${number} × 2 = ${answer}`,
+            habitat: this.currentHabitat,
+            difficulty: this.difficultyLevel,
+            baseNumber: number
+        };
+    }
+
+    generateDoublesWordProblem() {
+        const wordProblems = [
+            {
+                text: 'At the penguin nursery, there are {n} baby penguins. Each baby penguin has exactly 2 flippers. How many flippers are there in total?',
+                operation: '{n} × 2 = ?'
+            },
+            {
+                text: 'The penguin chef is making fish soup. Each bowl needs 2 fish. How many fish are needed for {n} bowls?',
+                operation: '{n} × 2 = ?'
+            },
+            {
+                text: 'For the ice skating show, penguins perform in pairs. If there are {n} pairs, how many penguins are performing?',
+                operation: '{n} × 2 = ?'
+            },
+            {
+                text: 'Each penguin family has 2 parents. How many parent penguins are there in {n} families?',
+                operation: '{n} × 2 = ?'
+            },
+            {
+                text: 'The penguins collect ice cubes for their igloo. Each trip, they bring back 2 ice cubes. How many ice cubes after {n} trips?',
+                operation: '{n} × 2 = ?'
+            }
+        ];
+        
+        const number = Math.floor(Math.random() * 12) + 1;
+        const answer = number * 2;
+        
+        const problem = wordProblems[Math.floor(Math.random() * wordProblems.length)];
+        const text = problem.text.replace('{n}', number);
+        const operation = problem.operation.replace('{n}', number);
+        
+        return {
+            type: 'doubles_word_problems',
+            title: 'Penguin Story Problem!',
+            text: text,
+            answer: answer,
+            visual: this.generateDoublesVisual(number),
+            operation: operation,
+            explanation: `${operation.replace('?', answer)}`,
+            habitat: this.currentHabitat,
+            difficulty: this.difficultyLevel,
+            baseNumber: number
         };
     }
 
@@ -463,6 +546,15 @@ class MathEngine {
         return ['🧮', operation, '✏️'];
     }
 
+    generateDoublesVisual(number) {
+        const visual = [];
+        for (let i = 0; i < number; i++) {
+            // Create pairs of penguins
+            visual.push('🐧🐧');
+        }
+        return visual;
+    }
+
     checkAnswer(userAnswer) {
         if (!this.currentProblem) {
             return false;
@@ -491,6 +583,8 @@ class MathEngine {
         const hints = {
             addition: "Try counting all the items together!",
             subtraction: "Count how many are left after taking some away!",
+            doubles: "Think about pairs! Count by twos or double the number!",
+            doubles_word_problems: "Look for the word 'pairs' or 'each has 2'. Double the number!",
             multiplication: "Count the groups and multiply!",
             division: "Try sharing equally among the groups!",
             fractions: "Think about parts of a whole!",

@@ -10,6 +10,7 @@ class GameController {
             currentHabitat: null,
             habitatProgress: {
                 bunnyMeadow: { completed: 0, total: 10, unlocked: true },
+                penguinPairsArctic: { completed: 0, total: 12, unlocked: false },
                 penguinArctic: { completed: 0, total: 12, unlocked: false },
                 elephantSavanna: { completed: 0, total: 10, unlocked: false },
                 monkeyJungle: { completed: 0, total: 15, unlocked: false },
@@ -110,6 +111,14 @@ class GameController {
             this.showHabitatSelection();
         });
 
+        // Home Button Event
+        const homeBtn = document.getElementById('homeBtn');
+        if (homeBtn) {
+            homeBtn.addEventListener('click', () => {
+                this.showHabitatSelection();
+            });
+        }
+
         // Math Problem Events
         document.getElementById('submitAnswer').addEventListener('click', () => {
             this.submitAnswer();
@@ -206,6 +215,9 @@ class GameController {
             case 'bunnyMeadow':
                 this.currentHabitat = new BunnyMeadow(this.gameEngine, this.mathEngine);
                 break;
+            case 'penguinPairsArctic':
+                this.currentHabitat = new PenguinPairsArctic(this.gameEngine, this.mathEngine);
+                break;
             // TODO: Add other habitats
             default:
                 console.log(`Habitat ${habitatName} not yet implemented`);
@@ -222,6 +234,7 @@ class GameController {
         // Update habitat name display
         const habitatNames = {
             bunnyMeadow: 'Bunny Meadow',
+            penguinPairsArctic: 'Penguin Pairs Arctic',
             penguinArctic: 'Penguin Arctic',
             elephantSavanna: 'Elephant Savanna',
             monkeyJungle: 'Monkey Jungle',
@@ -351,7 +364,7 @@ class GameController {
 
     unlockNextHabitat(currentHabitat) {
         const habitatOrder = [
-            'bunnyMeadow', 'penguinArctic', 'elephantSavanna', 'monkeyJungle',
+            'bunnyMeadow', 'penguinPairsArctic', 'penguinArctic', 'elephantSavanna', 'monkeyJungle',
             'lionPride', 'dolphinCove', 'bearForest', 'giraffePlains',
             'owlObservatory', 'dragonSanctuary', 'rainbowReserve'
         ];
