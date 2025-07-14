@@ -601,10 +601,9 @@ class BunnyMeadow {
         if (isCorrect) {
             this.onCorrectAnswer();
             
-            // Also update the GameController's progress
+            // GameController handles progress updates and audio
             if (this.gameController) {
                 this.gameController.audioManager.playSFX('correct');
-                this.gameController.updateProgress();
             }
         } else {
             this.onIncorrectAnswer();
@@ -637,7 +636,10 @@ class BunnyMeadow {
         
         // Check if habitat is complete
         if (this.problemsSolved >= this.totalProblems) {
-            this.completeHabitat();
+            // Let GameController handle completion
+            if (this.gameController) {
+                this.gameController.completeLevel();
+            }
         } else {
             // Schedule next problem, but allow Continue button to override
             this.nextProblemTimer = setTimeout(() => {
