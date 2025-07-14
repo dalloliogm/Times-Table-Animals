@@ -633,3 +633,38 @@ input[type="range"]::-webkit-slider-thumb {
         gap: 1rem;
     }
 }
+
+/* Settings Actions Layout */
+.settings-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* Danger Button Styling */
+.menu-btn.danger {
+    background: linear-gradient(135deg, #E74C3C, #C0392B);
+    color: white;
+    border: 2px solid #C0392B;
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+}
+
+.menu-btn.danger:hover {
+    background: linear-gradient(135deg, #C0392B, #A93226);
+    border-color: #A93226;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+}
+
+.menu-btn.danger:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(231, 76, 60, 0.3);
+}
+
+@media (max-width: 768px) {
+    .settings-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

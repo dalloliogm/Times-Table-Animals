@@ -6,6 +6,7 @@
     <title>Times Table Animals - Welcome to Albert Animals!</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/timer.css">
 </head>
 <body>
     <div id="gameContainer">
@@ -57,7 +58,10 @@
                         <input type="range" id="volumeSlider" min="0" max="100" value="75">
                     </div>
                 </div>
-                <button id="backToMenuBtn" class="menu-btn primary">Back to Menu</button>
+                <div class="settings-actions">
+                    <button id="resetProgressBtn" class="menu-btn danger">Reset Progress</button>
+                    <button id="backToMenuBtn" class="menu-btn primary">Back to Menu</button>
+                </div>
             </div>
         </div>
 
@@ -73,6 +77,16 @@
                         <div id="badgeCount">🏆 0</div>
                     </div>
                     <div id="currentHabitat">Bunny Meadow</div>
+                    <div class="timer-container hidden" id="timerContainer">
+                        <div class="timer-display">
+                            <span id="timerIcon">⏰</span>
+                            <span id="timerText">4:00</span>
+                        </div>
+                        <div class="timer-bar-container">
+                            <div class="timer-bar-background"></div>
+                            <div class="timer-bar safe" id="timerBar"></div>
+                        </div>
+                    </div>
                     <div id="gameControls">
                         <button id="homeBtn">🏠</button>
                         <button id="pauseBtn">⏸️</button>
@@ -117,6 +131,30 @@
                         <div id="feedback" class="hidden">
                             <span id="feedbackText"></span>
                             <button id="nextProblem">Continue</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Timer Warning Popup -->
+                <div class="timer-warning-popup" id="timerWarningPopup">
+                    <div class="warning-content">
+                        <span class="warning-icon">⚠️</span>
+                        <span id="warningMessage">1 minute remaining!</span>
+                    </div>
+                </div>
+                
+                <!-- Catastrophic Event Overlay -->
+                <div class="catastrophic-overlay hidden" id="catastrophicOverlay">
+                    <div class="catastrophic-content">
+                        <div class="catastrophic-icon" id="catastrophicIcon">🌋</div>
+                        <h1 class="catastrophic-title" id="catastrophicTitle">VOLCANO ERUPTS!</h1>
+                        <p class="catastrophic-message" id="catastrophicMessage">
+                            Time ran out! The volcano erupted and scared away all the animals!
+                            Don't worry - you can try again!
+                        </p>
+                        <div class="catastrophic-buttons">
+                            <button class="catastrophic-btn primary" id="retryLevelBtn">Try Again</button>
+                            <button class="catastrophic-btn secondary" id="backToHabitatsBtn">Choose Different Habitat</button>
                         </div>
                     </div>
                 </div>
@@ -176,6 +214,7 @@
     <script src="js/audioManager.js"></script>
     <script src="js/mathEngine.js"></script>
     <script src="js/gameEngine.js"></script>
+    <script src="js/timerManager.js"></script>
     <script src="js/sceneManager.js"></script>
     <script src="js/habitats/bunnyMeadow.js"></script>
     <script src="js/habitats/penguinPairsArctic.js"></script>

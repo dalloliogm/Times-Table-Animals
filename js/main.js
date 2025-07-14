@@ -44,7 +44,14 @@ class GameController {
         this.audioManager = new AudioManager(this.gameState.settings);
         this.mathEngine = new MathEngine();
         this.gameEngine = new GameEngine();
+        this.timerManager = new TimerManager(this, this.audioManager);
         this.sceneManager = new SceneManager();
+        
+        // Set up timer callbacks
+        this.setupTimerCallbacks();
+        
+        // Start timer update loop
+        this.startTimerUpdateLoop();
         
         // Start loading sequence
         this.showLoadingScreen();
@@ -98,6 +105,11 @@ class GameController {
             this.saveGameState();
         });
 
+        // Reset Progress Button
+        document.getElementById('resetProgressBtn').addEventListener('click', () => {
+            this.resetProgress();
+        });
+
         // Game UI Events
         document.getElementById('pauseBtn').addEventListener('click', () => {
             this.pauseGame();
@@ -140,6 +152,15 @@ class GameController {
 
         document.getElementById('nextProblem').addEventListener('click', () => {
             this.nextProblem();
+        });
+
+        // Timer Events
+        document.getElementById('retryLevelBtn').addEventListener('click', () => {
+            this.retryLevel();
+        });
+
+        document.getElementById('backToHabitatsBtn').addEventListener('click', () => {
+            this.exitToHabitats();
         });
 
         // Habitat Card Events
@@ -231,6 +252,9 @@ class GameController {
                 console.log(`Habitat ${habitatName} not yet implemented`);
         }
         
+        // Start timer for the level
+        this.timerManager.startTimer(habitatName);
+        
         this.audioManager.playBackgroundMusic(habitatName);
         this.gameEngine.startGame();
     }
@@ -262,6 +286,7 @@ class GameController {
     pauseGame() {
         this.gameEngine.pauseGame();
         this.audioManager.pauseAll();
+        this.timerManager.pauseTimer();
         // TODO: Show pause menu
     }
 
@@ -460,6 +485,9 @@ class GameController {
     }
 
     completeHabitat(habitat) {
+        // Stop timer first
+        this.timerManager.stopTimer();
+        
         // Award badge
         this.gameState.badgeCount++;
         this.audioManager.playSFX('badge-earned');
@@ -520,6 +548,258 @@ class GameController {
         } catch (error) {
             console.warn('Could not load game state:', error);
         }
+    }
+
+    setupTimerCallbacks() {
+        // Set up timer event callbacks
+        this.timerManager.onTimeWarning = (timeRemaining) => {
+            this.audioManager.playSFX('timer-warning');
+            console.log(`Timer warning: ${timeRemaining} seconds remaining`);
+        };
+
+        this.timerManager.onTimeUp = (habitat) => {
+            this.handleTimeUp(habitat);
+        };
+
+        this.timerManager.onTimerUpdate = (timeRemaining, percentage) => {
+            // Timer UI is automatically updated by TimerManager
+            // Can add additional logic here if needed
+        };
+    }
+
+    handleTimeUp(habitat) {
+        // Stop the game
+        this.gameEngine.pauseGame();
+        this.audioManager.pauseAll();
+        this.audioManager.playSFX('catastrophic-event');
+        
+        // Show catastrophic overlay
+        this.timerManager.showCatastrophicOverlay();
+    }
+
+    retryLevel() {
+        // Reset and restart the current level
+        const currentHabitat = this.gameState.currentHabitat;
+        
+        // Hide catastrophic overlay
+        this.timerManager.hideCatastrophicOverlay();
+        
+        // Reset habitat progress for this attempt
+        if (this.currentHabitat && this.currentHabitat.resetLevel) {
+            this.currentHabitat.resetLevel();
+        }
+        
+        // Restart timer
+        this.timerManager.startTimer(currentHabitat);
+        
+        // Resume game
+        this.gameEngine.resumeGame();
+        this.audioManager.playBackgroundMusic(currentHabitat);
+    }
+
+    exitToHabitats() {
+        // Stop timer
+        this.timerManager.stopTimer();
+        
+        // Hide catastrophic overlay
+        this.timerManager.hideCatastrophicOverlay();
+        
+        // Return to habitat selection
+        this.showHabitatSelection();
+    }
+
+    completeLevel() {
+        // Stop timer when level is completed successfully
+        this.timerManager.stopTimer();
+        
+        // Continue with normal completion flow
+        const habitat = this.gameState.currentHabitat;
+        this.completeHabitat(habitat);
+    }
+
+    startTimerUpdateLoop() {
+        // Update timer every 100ms
+        setInterval(() => {
+            if (this.timerManager) {
+                this.timerManager.update();
+            }
+        }, 100);
+    }
+
+    restartCurrentHabitat() {
+        // Method called by TimerManager when user clicks "Try Again"
+        const habitatName = this.gameState.currentHabitat;
+        if (habitatName) {
+            this.enterHabitat(habitatName);
+        }
+    }
+
+    resetProgress() {
+        // Show custom confirmation dialog
+        this.showConfirmationDialog(
+            'Reset Progress',
+            'Are you sure you want to reset all progress? This cannot be undone.',
+            () => {
+                // Reset all habitat progress
+                for (const habitat in this.gameState.habitatProgress) {
+                    this.gameState.habitatProgress[habitat].completed = 0;
+                    // Keep only bunnyMeadow unlocked
+                    if (habitat !== 'bunnyMeadow') {
+                        this.gameState.habitatProgress[habitat].unlocked = false;
+                    }
+                }
+                
+                // Reset badge count
+                this.gameState.badgeCount = 0;
+                
+                // Save the reset state
+                this.saveGameState();
+                
+                // Update UI
+                this.updateHabitatCards();
+                this.updateGameUI();
+                
+                // Show temporary success message
+                this.showTemporaryMessage('Progress has been reset! All habitats except Bunny Meadow are now locked.');
+            }
+        );
+    }
+
+    showConfirmationDialog(title, message, onConfirm) {
+        // Create modal overlay
+        const overlay = document.createElement('div');
+        overlay.className = 'modal-overlay';
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        `;
+        
+        // Create modal content
+        const modal = document.createElement('div');
+        modal.className = 'confirmation-modal';
+        modal.style.cssText = `
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            text-align: center;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        `;
+        
+        modal.innerHTML = `
+            <h3 style="margin: 0 0 16px 0; color: #333; font-size: 20px;">${title}</h3>
+            <p style="margin: 0 0 24px 0; color: #666; font-size: 16px; line-height: 1.4;">${message}</p>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button class="modal-btn cancel" style="
+                    background: #f44336;
+                    color: white;
+                    border: none;
+                    padding: 12px 24px;
+                    border-radius: 6px;
+                    font-size: 16px;
+                    cursor: pointer;
+                    transition: background 0.2s ease;
+                ">Cancel</button>
+                <button class="modal-btn confirm" style="
+                    background: #4CAF50;
+                    color: white;
+                    border: none;
+                    padding: 12px 24px;
+                    border-radius: 6px;
+                    font-size: 16px;
+                    cursor: pointer;
+                    transition: background 0.2s ease;
+                ">Reset Progress</button>
+            </div>
+        `;
+        
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+        
+        // Animate in
+        setTimeout(() => {
+            overlay.style.opacity = '1';
+            modal.style.transform = 'scale(1)';
+        }, 10);
+        
+        // Handle buttons
+        const cancelBtn = modal.querySelector('.cancel');
+        const confirmBtn = modal.querySelector('.confirm');
+        
+        const closeModal = () => {
+            overlay.style.opacity = '0';
+            modal.style.transform = 'scale(0.8)';
+            setTimeout(() => {
+                if (overlay.parentNode) {
+                    overlay.parentNode.removeChild(overlay);
+                }
+            }, 300);
+        };
+        
+        cancelBtn.addEventListener('click', closeModal);
+        confirmBtn.addEventListener('click', () => {
+            closeModal();
+            onConfirm();
+        });
+        
+        // Close on overlay click
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                closeModal();
+            }
+        });
+    }
+
+    showTemporaryMessage(message) {
+        // Create temporary message element
+        const messageEl = document.createElement('div');
+        messageEl.className = 'temporary-message';
+        messageEl.textContent = message;
+        messageEl.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #4CAF50;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        `;
+        
+        document.body.appendChild(messageEl);
+        
+        // Animate in
+        setTimeout(() => {
+            messageEl.style.opacity = '1';
+        }, 10);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            messageEl.style.opacity = '0';
+            setTimeout(() => {
+                if (messageEl.parentNode) {
+                    messageEl.parentNode.removeChild(messageEl);
+                }
+            }, 300);
+        }, 3000);
     }
 }
 
