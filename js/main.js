@@ -206,6 +206,9 @@ class GameController {
     }
 
     showHabitatSelection() {
+        // Cleanup any current habitat
+        this.cleanupCurrentHabitat();
+        
         this.switchScreen('habitatSelect');
         this.updateHabitatCards();
         this.audioManager.playBackgroundMusic('habitat-selection');
@@ -235,6 +238,9 @@ class GameController {
     }
 
     enterHabitat(habitatName) {
+        // Cleanup previous habitat first
+        this.cleanupCurrentHabitat();
+        
         this.gameState.currentHabitat = habitatName;
         this.switchScreen('gameScreen');
         this.updateGameUI();
@@ -495,6 +501,9 @@ class GameController {
         // Unlock next habitat
         this.unlockNextHabitat(habitat);
         
+        // Save progress
+        this.saveGameState();
+        
         // Show completion celebration
         this.showHabitatCompletion(habitat);
     }
@@ -514,8 +523,134 @@ class GameController {
     }
 
     showHabitatCompletion(habitat) {
-        // TODO: Implement completion celebration animation
-        console.log(`Habitat ${habitat} completed!`);
+        // Hide math problem UI
+        const mathProblem = document.getElementById('mathProblem');
+        if (mathProblem) {
+            mathProblem.classList.add('hidden');
+        }
+        
+        // Get habitat display name
+        const habitatNames = {
+            bunnyMeadow: 'Bunny Meadow',
+            penguinPairsArctic: 'Penguin Pairs Arctic',
+            penguinArctic: 'Penguin Arctic',
+            elephantSavanna: 'Elephant Savanna',
+            monkeyJungle: 'Monkey Jungle',
+            lionPride: 'Lion Pride Lands',
+            dolphinCove: 'Dolphin Cove',
+            bearForest: 'Bear Forest',
+            giraffePlains: 'Giraffe Plains',
+            owlObservatory: 'Owl Observatory',
+            dragonSanctuary: 'Dragon Sanctuary',
+            rainbowReserve: 'Rainbow Reserve'
+        };
+        
+        const habitatName = habitatNames[habitat] || 'Unknown Habitat';
+        
+        // Create completion overlay
+        const completionOverlay = document.createElement('div');
+        completionOverlay.id = 'completionOverlay';
+        completionOverlay.className = 'completion-overlay';
+        completionOverlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        `;
+        
+        // Create completion content
+        const completionContent = document.createElement('div');
+        completionContent.className = 'completion-content';
+        completionContent.style.cssText = `
+            text-align: center;
+            color: white;
+            transform: scale(0.8);
+            transition: transform 0.5s ease;
+        `;
+        
+        // Check if next habitat was unlocked
+        const nextHabitat = this.getNextHabitat(habitat);
+        const nextHabitatName = nextHabitat ? habitatNames[nextHabitat] : null;
+        
+        completionContent.innerHTML = `
+            <div style="font-size: 48px; margin-bottom: 20px; color: #FFD700;">🎉</div>
+            <h1 style="font-size: 36px; margin-bottom: 10px; color: #FFD700;">Mission Complete!</h1>
+            <h2 style="font-size: 24px; margin-bottom: 20px; color: #4ECDC4;">${habitatName}</h2>
+            <div style="font-size: 20px; margin-bottom: 30px;">
+                <div style="margin-bottom: 10px;">🏆 Badge Earned! Total: ${this.gameState.badgeCount}</div>
+                ${nextHabitatName ? `<div style="color: #90EE90;">🔓 ${nextHabitatName} Unlocked!</div>` : ''}
+            </div>
+            <button id="continueToHabitats" style="
+                background: #4ECDC4;
+                color: white;
+                border: none;
+                padding: 15px 30px;
+                font-size: 18px;
+                border-radius: 25px;
+                cursor: pointer;
+                transition: background 0.3s ease;
+                font-family: inherit;
+            ">Continue to Habitats</button>
+        `;
+        
+        completionOverlay.appendChild(completionContent);
+        document.body.appendChild(completionOverlay);
+        
+        // Animate in
+        setTimeout(() => {
+            completionOverlay.style.opacity = '1';
+            completionContent.style.transform = 'scale(1)';
+        }, 100);
+        
+        // Handle continue button
+        const continueBtn = document.getElementById('continueToHabitats');
+        continueBtn.addEventListener('click', () => {
+            this.hideCompletionOverlay();
+            this.cleanupCurrentHabitat();
+            this.showHabitatSelection();
+        });
+        
+        // Auto-continue after 5 seconds
+        setTimeout(() => {
+            if (document.getElementById('completionOverlay')) {
+                continueBtn.click();
+            }
+        }, 5000);
+    }
+
+    getNextHabitat(currentHabitat) {
+        const habitatOrder = [
+            'bunnyMeadow', 'penguinPairsArctic', 'penguinArctic', 'elephantSavanna', 'monkeyJungle',
+            'lionPride', 'dolphinCove', 'bearForest', 'giraffePlains',
+            'owlObservatory', 'dragonSanctuary', 'rainbowReserve'
+        ];
+        
+        const currentIndex = habitatOrder.indexOf(currentHabitat);
+        if (currentIndex >= 0 && currentIndex < habitatOrder.length - 1) {
+            return habitatOrder[currentIndex + 1];
+        }
+        return null;
+    }
+
+    hideCompletionOverlay() {
+        const overlay = document.getElementById('completionOverlay');
+        if (overlay) {
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                if (overlay.parentNode) {
+                    overlay.parentNode.removeChild(overlay);
+                }
+            }, 500);
+        }
     }
 
     switchScreen(screenName) {
@@ -632,6 +767,49 @@ class GameController {
         if (habitatName) {
             this.enterHabitat(habitatName);
         }
+    }
+
+    cleanupCurrentHabitat() {
+        // Stop any timers
+        if (this.timerManager) {
+            this.timerManager.stopTimer();
+        }
+        
+        // Hide math problem UI
+        const mathProblem = document.getElementById('mathProblem');
+        if (mathProblem) {
+            mathProblem.classList.add('hidden');
+        }
+        
+        // Hide feedback
+        const feedback = document.getElementById('feedback');
+        if (feedback) {
+            feedback.classList.add('hidden');
+        }
+        
+        // Clear answer option states
+        document.querySelectorAll('.answer-option').forEach(option => {
+            option.classList.remove('selected', 'correct', 'incorrect');
+        });
+        
+        // Call habitat's cleanup if it exists
+        if (this.currentHabitat && this.currentHabitat.cleanup) {
+            this.currentHabitat.cleanup();
+        }
+        
+        // Clear game engine state
+        if (this.gameEngine) {
+            this.gameEngine.clearSprites();
+            this.gameEngine.clearParticles();
+            this.gameEngine.clearAnimations();
+            this.gameEngine.pauseGame();
+        }
+        
+        // Clear current habitat reference
+        this.currentHabitat = null;
+        this.gameState.currentHabitat = null;
+        
+        console.log('Current habitat cleaned up');
     }
 
     resetProgress() {
