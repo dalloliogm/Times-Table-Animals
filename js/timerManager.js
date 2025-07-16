@@ -9,7 +9,7 @@ class TimerManager {
         // Timer configuration
         this.config = {
             levelDuration: 240000, // 4 minutes in milliseconds
-            warningThresholds: [235000, 180000, 160000, 45000, 30000, 20000, 10000, 5000], // More frequent warnings
+            warningThresholds: [238000, 234000, 230000, 225000, 200000, 180000, 160000, 140000, 120000, 100000, 80000, 60000, 45000, 30000, 20000, 10000, 5000],
             urgencyThreshold: 60000, // When to start urgency effects (1 minute)
             criticalThreshold: 30000, // When to start critical effects (30 seconds)
             emergencyThreshold: 10000, // When to start emergency effects (10 seconds)
@@ -269,7 +269,7 @@ class TimerManager {
         };
 
         const warningData = warningMessages[threshold] || {
-            text: 'Danger! A Volcano is going to erupt!',
+            text: 'Danger! A Volcano is going to erupt!<br>The only way to save the animals is to solve maths problems!',
             icon: '⚠️',
             class: 'warning-default'
         };
