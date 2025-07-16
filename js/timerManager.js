@@ -6,13 +6,13 @@ class TimerManager {
         this.gameController = gameController;
         this.audioManager = audioManager;
         
-        // Timer configuration
+        // Timer configuration - TEMPORARILY SHORTENED FOR TESTING
         this.config = {
-            levelDuration: 240000, // 4 minutes in milliseconds
-            warningThresholds: [238000, 234000, 230000, 225000, 200000, 180000, 160000, 140000, 120000, 100000, 80000, 60000, 45000, 30000, 20000, 10000, 5000],
-            urgencyThreshold: 60000, // When to start urgency effects (1 minute)
-            criticalThreshold: 30000, // When to start critical effects (30 seconds)
-            emergencyThreshold: 10000, // When to start emergency effects (10 seconds)
+            levelDuration: 15000, // 15 seconds for testing
+            warningThresholds: [12000, 10000, 8000, 6000, 4000, 2000], // Warning every 2 seconds
+            urgencyThreshold: 12000, // When to start urgency effects
+            criticalThreshold: 8000, // When to start critical effects
+            emergencyThreshold: 4000, // When to start emergency effects
             shakeIntensity: {
                 mild: 2,
                 moderate: 4,
@@ -269,7 +269,7 @@ class TimerManager {
         };
 
         const warningData = warningMessages[threshold] || {
-            text: 'Danger! A Volcano is going to erupt!<br>The only way to save the animals is to solve maths problems!',
+            text: 'Time running out!',
             icon: '⚠️',
             class: 'warning-default'
         };

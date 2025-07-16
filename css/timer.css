@@ -141,15 +141,25 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(0.8);
-    z-index: 1500;
+    z-index: 9999;
     opacity: 0;
     transition: all 0.3s ease;
     pointer-events: none;
+    /* Mobile-specific fixes */
+    -webkit-transform: translate(-50%, -50%) scale(0.8);
+    -moz-transform: translate(-50%, -50%) scale(0.8);
+    -ms-transform: translate(-50%, -50%) scale(0.8);
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 .timer-warning-popup.show {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
+    -webkit-transform: translate(-50%, -50%) scale(1);
+    -moz-transform: translate(-50%, -50%) scale(1);
+    -ms-transform: translate(-50%, -50%) scale(1);
 }
 
 /* Enhanced warning popup styles based on urgency */
@@ -410,6 +420,44 @@
         height: 10px;
     }
     
+    /* Mobile-specific timer warning popup fixes */
+    .timer-warning-popup {
+        /* Use viewport units for better mobile positioning */
+        top: 50vh;
+        left: 50vw;
+        /* Add mobile-specific positioning constraints */
+        max-width: 90vw;
+        max-height: 90vh;
+        /* Ensure proper layering on mobile */
+        z-index: 99999;
+        /* Force hardware acceleration */
+        transform: translate3d(-50%, -50%, 0) scale(0.8);
+        -webkit-transform: translate3d(-50%, -50%, 0) scale(0.8);
+    }
+    
+    .timer-warning-popup.show {
+        transform: translate3d(-50%, -50%, 0) scale(1);
+        -webkit-transform: translate3d(-50%, -50%, 0) scale(1);
+    }
+    
+    .warning-content {
+        padding: 15px 20px;
+        font-size: 16px;
+        max-width: 80vw;
+        /* Ensure content doesn't overflow on small screens */
+        word-wrap: break-word;
+        /* Add mobile-specific border radius */
+        border-radius: 15px;
+        /* Enhanced shadow for better visibility */
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    
+    .warning-icon {
+        font-size: 20px;
+        /* Ensure emoji renders properly on mobile */
+        line-height: 1;
+    }
+    
     .catastrophic-content {
         padding: 30px 20px;
         margin: 20px;
@@ -421,5 +469,44 @@
     
     .catastrophic-buttons {
         flex-direction: column;
+    }
+}
+
+/* Additional mobile-specific fixes for very small screens */
+@media (max-width: 480px) {
+    .timer-warning-popup {
+        /* Even more conservative sizing for small phones */
+        max-width: 95vw;
+        top: 40vh;
+    }
+    
+    .warning-content {
+        padding: 12px 15px;
+        font-size: 14px;
+        gap: 10px;
+    }
+    
+    .warning-icon {
+        font-size: 18px;
+    }
+}
+
+/* Specific fixes for iOS Safari */
+@supports (-webkit-touch-callout: none) {
+    .timer-warning-popup {
+        /* iOS Safari specific positioning */
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.8);
+        -webkit-transform: translate(-50%, -50%) scale(0.8);
+        /* Force layer creation for smooth animation */
+        -webkit-transform-style: preserve-3d;
+        transform-style: preserve-3d;
+    }
+    
+    .timer-warning-popup.show {
+        transform: translate(-50%, -50%) scale(1);
+        -webkit-transform: translate(-50%, -50%) scale(1);
     }
 }
