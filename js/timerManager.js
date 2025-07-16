@@ -8,11 +8,11 @@ class TimerManager {
         
         // Timer configuration - TEMPORARILY SHORTENED FOR TESTING
         this.config = {
-            levelDuration: 15000, // 15 seconds for testing
-            warningThresholds: [12000, 10000, 8000, 6000, 4000, 2000], // Warning every 2 seconds
-            urgencyThreshold: 12000, // When to start urgency effects
-            criticalThreshold: 8000, // When to start critical effects
-            emergencyThreshold: 4000, // When to start emergency effects
+            levelDuration: 240_000, 
+            warningThresholds: [235_000, 230_000, 225_000, 220_000, 200_000, 180_000, 160_000, 140_000, 100_000, 80_000, 60_000, 40_000, 20_000], // Warning every 2 seconds
+            urgencyThreshold: 120_000, // When to start urgency effects
+            criticalThreshold: 80_000, // When to start critical effects
+            emergencyThreshold: 40_000, // When to start emergency effects
             shakeIntensity: {
                 mild: 2,
                 moderate: 4,
@@ -269,7 +269,7 @@ class TimerManager {
         };
 
         const warningData = warningMessages[threshold] || {
-            text: 'Time running out!',
+            text: 'A Volcano is erupting!<br>The only way to save the animals is to solve maths problems!',
             icon: '⚠️',
             class: 'warning-default'
         };
