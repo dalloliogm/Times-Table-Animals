@@ -82,7 +82,18 @@ class AudioManager {
             'bear-growl': this.createAudioTrack('bear-growl-sfx'),
             'giraffe-munch': this.createAudioTrack('giraffe-munch-sfx'),
             'owl-hoot': this.createAudioTrack('owl-hoot-sfx'),
-            'dragon-breath': this.createAudioTrack('dragon-breath-sfx')
+            'dragon-breath': this.createAudioTrack('dragon-breath-sfx'),
+            // Enhanced timer warning sounds
+            'timer-warning': this.createAudioTrack('timer-warning-sfx'),
+            'timer-warning-urgent': this.createAudioTrack('timer-warning-urgent-sfx'),
+            'timer-warning-critical': this.createAudioTrack('timer-warning-critical-sfx'),
+            'timer-warning-emergency': this.createAudioTrack('timer-warning-emergency-sfx'),
+            'volcano-rumble': this.createAudioTrack('volcano-rumble-sfx'),
+            'earthquake': this.createAudioTrack('earthquake-sfx'),
+            'catastrophic-event': this.createAudioTrack('catastrophic-event-sfx'),
+            'volcanic-explosion': this.createAudioTrack('volcanic-explosion-sfx'),
+            'ground-shake': this.createAudioTrack('ground-shake-sfx'),
+            'danger-siren': this.createAudioTrack('danger-siren-sfx')
         };
 
         // Voice narration
@@ -266,12 +277,39 @@ class AudioManager {
             'correct': { type: 'sine', frequency: 523.25, duration: 0.3 },
             'incorrect': { type: 'sawtooth', frequency: 146.83, duration: 0.5 },
             'badge-earned': { type: 'sine', frequency: 783.99, duration: 0.8 },
-            'button-click': { type: 'square', frequency: 1000, duration: 0.1 }
+            'button-click': { type: 'square', frequency: 1000, duration: 0.1 },
+            // Enhanced timer warning sounds
+            'timer-warning': { type: 'sine', frequency: 440, duration: 0.3 },
+            'timer-warning-urgent': { type: 'square', frequency: 523.25, duration: 0.5 },
+            'timer-warning-critical': { type: 'sawtooth', frequency: 659.25, duration: 0.7 },
+            'timer-warning-emergency': { type: 'square', frequency: 880, duration: 1.0 }
         };
         
         const pattern = sfxPatterns[soundName];
         if (pattern) {
             this.playTone(pattern.type, pattern.frequency, pattern.duration);
+        }
+        
+        // Handle complex sound effects
+        switch (soundName) {
+            case 'volcano-rumble':
+                this.playVolcanoRumble();
+                break;
+            case 'earthquake':
+                this.playEarthquake();
+                break;
+            case 'catastrophic-event':
+                this.playCatastrophicEvent();
+                break;
+            case 'volcanic-explosion':
+                this.playVolcanicExplosion();
+                break;
+            case 'ground-shake':
+                this.playGroundShake();
+                break;
+            case 'danger-siren':
+                this.playDangerSiren();
+                break;
         }
     }
 
@@ -357,6 +395,182 @@ class AudioManager {
                 });
             }
         }
+    }
+
+    // Enhanced dramatic sound effects for timer warnings
+    playVolcanoRumble() {
+        if (!this.audioContext) return;
+        
+        // Create low-frequency rumbling sound
+        const duration = 2.0;
+        const oscillator = this.audioContext.createOscillator();
+        const gainNode = this.audioContext.createGain();
+        const filter = this.audioContext.createBiquadFilter();
+        
+        oscillator.connect(filter);
+        filter.connect(gainNode);
+        gainNode.connect(this.sfxGain);
+        
+        // Low frequency rumble with slight randomization
+        oscillator.type = 'sawtooth';
+        oscillator.frequency.setValueAtTime(60, this.audioContext.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(40, this.audioContext.currentTime + duration);
+        
+        // Low-pass filter for muffled effect
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(200, this.audioContext.currentTime);
+        
+        // Fade in and out
+        gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.3, this.audioContext.currentTime + 0.1);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+        
+        oscillator.start();
+        oscillator.stop(this.audioContext.currentTime + duration);
+    }
+    
+    playEarthquake() {
+        if (!this.audioContext) return;
+        
+        // Create earthquake rumble with multiple oscillators
+        const duration = 3.0;
+        const frequencies = [25, 35, 45, 55];
+        
+        frequencies.forEach((freq, index) => {
+            const oscillator = this.audioContext.createOscillator();
+            const gainNode = this.audioContext.createGain();
+            const filter = this.audioContext.createBiquadFilter();
+            
+            oscillator.connect(filter);
+            filter.connect(gainNode);
+            gainNode.connect(this.sfxGain);
+            
+            oscillator.type = 'triangle';
+            oscillator.frequency.setValueAtTime(freq, this.audioContext.currentTime);
+            
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(150, this.audioContext.currentTime);
+            
+            // Stagger the start times and vary intensities
+            const startTime = this.audioContext.currentTime + (index * 0.1);
+            const intensity = 0.2 - (index * 0.03);
+            
+            gainNode.gain.setValueAtTime(0, startTime);
+            gainNode.gain.exponentialRampToValueAtTime(intensity, startTime + 0.2);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+            
+            oscillator.start(startTime);
+            oscillator.stop(startTime + duration);
+        });
+    }
+    
+    playCatastrophicEvent() {
+        if (!this.audioContext) return;
+        
+        // Dramatic explosion sound
+        const duration = 2.5;
+        const oscillator = this.audioContext.createOscillator();
+        const gainNode = this.audioContext.createGain();
+        const filter = this.audioContext.createBiquadFilter();
+        
+        oscillator.connect(filter);
+        filter.connect(gainNode);
+        gainNode.connect(this.sfxGain);
+        
+        oscillator.type = 'sawtooth';
+        oscillator.frequency.setValueAtTime(200, this.audioContext.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(50, this.audioContext.currentTime + duration);
+        
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(1000, this.audioContext.currentTime);
+        filter.frequency.exponentialRampToValueAtTime(100, this.audioContext.currentTime + duration);
+        
+        gainNode.gain.setValueAtTime(0.4, this.audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+        
+        oscillator.start();
+        oscillator.stop(this.audioContext.currentTime + duration);
+    }
+    
+    playVolcanicExplosion() {
+        if (!this.audioContext) return;
+        
+        // Multiple explosion layers
+        const explosionLayers = [
+            { freq: 100, duration: 1.0, gain: 0.3 },
+            { freq: 200, duration: 0.8, gain: 0.2 },
+            { freq: 400, duration: 0.5, gain: 0.1 }
+        ];
+        
+        explosionLayers.forEach((layer, index) => {
+            setTimeout(() => {
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(this.sfxGain);
+                
+                oscillator.type = 'sawtooth';
+                oscillator.frequency.setValueAtTime(layer.freq, this.audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(layer.freq * 0.3, this.audioContext.currentTime + layer.duration);
+                
+                gainNode.gain.setValueAtTime(layer.gain, this.audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + layer.duration);
+                
+                oscillator.start();
+                oscillator.stop(this.audioContext.currentTime + layer.duration);
+            }, index * 100);
+        });
+    }
+    
+    playGroundShake() {
+        if (!this.audioContext) return;
+        
+        // Quick rumble burst
+        const duration = 0.5;
+        const oscillator = this.audioContext.createOscillator();
+        const gainNode = this.audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(this.sfxGain);
+        
+        oscillator.type = 'sawtooth';
+        oscillator.frequency.setValueAtTime(80, this.audioContext.currentTime);
+        
+        gainNode.gain.setValueAtTime(0.2, this.audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+        
+        oscillator.start();
+        oscillator.stop(this.audioContext.currentTime + duration);
+    }
+    
+    playDangerSiren() {
+        if (!this.audioContext) return;
+        
+        // Alternating high-low siren
+        const duration = 2.0;
+        const oscillator = this.audioContext.createOscillator();
+        const gainNode = this.audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(this.sfxGain);
+        
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(800, this.audioContext.currentTime);
+        
+        // Create siren effect
+        for (let i = 0; i < 4; i++) {
+            const startTime = this.audioContext.currentTime + (i * 0.5);
+            oscillator.frequency.setValueAtTime(800, startTime);
+            oscillator.frequency.exponentialRampToValueAtTime(400, startTime + 0.25);
+            oscillator.frequency.exponentialRampToValueAtTime(800, startTime + 0.5);
+        }
+        
+        gainNode.gain.setValueAtTime(0.15, this.audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+        
+        oscillator.start();
+        oscillator.stop(this.audioContext.currentTime + duration);
     }
 
     // Clean up audio resources

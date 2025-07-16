@@ -9,8 +9,16 @@ class TimerManager {
         // Timer configuration
         this.config = {
             levelDuration: 240000, // 4 minutes in milliseconds
-            warningThresholds: [60000, 30000, 10000], // 1 min, 30 sec, 10 sec
-            urgencyThreshold: 60000 // When to start urgency effects (1 minute)
+            warningThresholds: [235000, 180000, 160000, 45000, 30000, 20000, 10000, 5000], // More frequent warnings
+            urgencyThreshold: 60000, // When to start urgency effects (1 minute)
+            criticalThreshold: 30000, // When to start critical effects (30 seconds)
+            emergencyThreshold: 10000, // When to start emergency effects (10 seconds)
+            shakeIntensity: {
+                mild: 2,
+                moderate: 4,
+                intense: 8,
+                extreme: 16
+            }
         };
         
         // Timer state
@@ -24,6 +32,16 @@ class TimerManager {
         this.timerBar = null;
         this.timerDisplay = null;
         this.catastrophicOverlay = null;
+        
+        // Enhanced effects state
+        this.effectsState = {
+            isShaking: false,
+            shakeInterval: null,
+            rumbleInterval: null,
+            flashInterval: null,
+            particleInterval: null,
+            currentIntensity: 0
+        };
         
         this.init();
     }
@@ -174,14 +192,30 @@ class TimerManager {
             this.timerBar.className = 'timer-bar critical';
         }
 
-        // Add pulsing effect when under 30 seconds
+        // Enhanced dramatic effects based on time remaining
         const timerContainer = document.getElementById('timerContainer');
         if (timerContainer) {
-            if (this.timeRemaining <= 30000) {
-                timerContainer.classList.add('pulsing');
+            if (this.timeRemaining <= this.config.emergencyThreshold) {
+                timerContainer.classList.add('pulsing', 'emergency');
+                this.startScreenShake('extreme');
+                this.startRedFlash();
+            } else if (this.timeRemaining <= this.config.criticalThreshold) {
+                timerContainer.classList.add('pulsing', 'critical');
+                this.startScreenShake('intense');
+                this.startWarningFlash();
+            } else if (this.timeRemaining <= this.config.urgencyThreshold) {
+                timerContainer.classList.add('pulsing', 'urgent');
+                this.startScreenShake('moderate');
             } else {
-                timerContainer.classList.remove('pulsing');
+                timerContainer.classList.remove('pulsing', 'emergency', 'critical', 'urgent');
+                this.stopScreenShake();
+                this.stopFlash();
             }
+        }
+        
+        // Add particle effects for critical moments
+        if (this.timeRemaining <= this.config.emergencyThreshold) {
+            this.createEmberParticles();
         }
     }
 
@@ -197,43 +231,76 @@ class TimerManager {
     showWarning(threshold) {
         console.log(`TimerManager: Showing warning for ${threshold}ms remaining`);
         
-        // Play warning sound
+        // Play enhanced warning sounds based on urgency
         if (this.audioManager) {
-            this.audioManager.playSFX('timer-warning');
+            if (threshold <= 5000) {
+                this.audioManager.playSFX('timer-warning-emergency');
+                this.audioManager.playSFX('danger-siren');
+            } else if (threshold <= 10000) {
+                this.audioManager.playSFX('timer-warning-critical');
+                this.audioManager.playSFX('volcano-rumble');
+            } else if (threshold <= 20000) {
+                this.audioManager.playSFX('timer-warning-urgent');
+                this.audioManager.playSFX('ground-shake');
+            } else if (threshold <= 30000) {
+                this.audioManager.playSFX('timer-warning');
+                this.audioManager.playSFX('earthquake');
+            } else {
+                this.audioManager.playSFX('timer-warning');
+            }
         }
 
         // Show visual warning
         this.createWarningEffect(threshold);
+        
+        // Add screen shake for more dramatic effect
+        this.triggerWarningShake(threshold);
     }
 
     createWarningEffect(threshold) {
-        const warningText = threshold === 60000 ? '1 minute left!' : 
-                          threshold === 30000 ? '30 seconds left!' : 
-                          '10 seconds left!';
+        // Enhanced volcanic-themed warning messages
+        const warningMessages = {
+            60000: { text: 'The volcano is rumbling! 1 minute left!', icon: '🌋', class: 'warning-mild' },
+            45000: { text: 'Smoke rising from the crater! 45 seconds!', icon: '💨', class: 'warning-moderate' },
+            30000: { text: 'Lava bubbling! 30 seconds left!', icon: '🔥', class: 'warning-urgent' },
+            20000: { text: 'Ground shaking! 20 seconds!', icon: '⚡', class: 'warning-critical' },
+            10000: { text: 'VOLCANO ABOUT TO ERUPT! 10 seconds!', icon: '🌋', class: 'warning-emergency' },
+            5000: { text: 'ERUPTION IMMINENT! 5 SECONDS!', icon: '💥', class: 'warning-panic' }
+        };
 
-        // Create warning popup
+        const warningData = warningMessages[threshold] || {
+            text: 'Danger! A Volcano is going to erupt!',
+            icon: '⚠️',
+            class: 'warning-default'
+        };
+
+        // Create enhanced warning popup
         const warning = document.createElement('div');
-        warning.className = 'timer-warning-popup';
+        warning.className = `timer-warning-popup ${warningData.class}`;
         warning.innerHTML = `
             <div class="warning-content">
-                <span class="warning-icon">⚠️</span>
-                <span class="warning-text">${warningText}</span>
+                <span class="warning-icon">${warningData.icon}</span>
+                <span class="warning-text">${warningData.text}</span>
             </div>
         `;
 
         document.body.appendChild(warning);
 
-        // Animate and remove
+        // Enhanced animation with scaling and rotation
         setTimeout(() => {
             warning.classList.add('show');
         }, 10);
 
+        // Keep emergency warnings visible longer
+        const displayTime = threshold <= 10000 ? 3000 : 2000;
         setTimeout(() => {
             warning.classList.remove('show');
             setTimeout(() => {
-                document.body.removeChild(warning);
+                if (document.body.contains(warning)) {
+                    document.body.removeChild(warning);
+                }
             }, 300);
-        }, 2000);
+        }, displayTime);
     }
 
     triggerCatastrophicEvent() {
@@ -241,18 +308,57 @@ class TimerManager {
         
         this.stopTimer();
         
-        // Play catastrophic sound
+        // Stop all ongoing effects
+        this.stopScreenShake();
+        this.stopFlash();
+        
+        // Play enhanced catastrophic sounds sequence
         if (this.audioManager) {
-            this.audioManager.playSFX('catastrophic-event');
+            this.audioManager.playSFX('volcanic-explosion');
+            setTimeout(() => this.audioManager.playSFX('catastrophic-event'), 500);
+            setTimeout(() => this.audioManager.playSFX('earthquake'), 1000);
         }
 
-        // Show catastrophic overlay
-        this.showCatastrophicOverlay();
+        // Dramatic screen shake before showing overlay
+        this.triggerCatastrophicShake();
+
+        // Show catastrophic overlay with delay for dramatic effect
+        setTimeout(() => {
+            this.showCatastrophicOverlay();
+        }, 1500);
 
         // Pause the game
         if (this.gameController && this.gameController.gameEngine) {
             this.gameController.gameEngine.pauseGame();
         }
+    }
+    
+    triggerCatastrophicShake() {
+        // Intense screen shake for catastrophic event
+        const gameContainer = document.getElementById('gameContainer');
+        if (!gameContainer) return;
+        
+        let shakeCount = 0;
+        const maxShakes = 30; // Longer shake sequence
+        let currentIntensity = 20; // Start with intense shake
+        
+        const shakeInterval = setInterval(() => {
+            if (shakeCount >= maxShakes) {
+                clearInterval(shakeInterval);
+                gameContainer.style.transform = 'translate(0px, 0px)';
+                return;
+            }
+            
+            // Gradually reduce intensity
+            currentIntensity = Math.max(2, currentIntensity - 0.5);
+            
+            const shakeX = (Math.random() - 0.5) * currentIntensity;
+            const shakeY = (Math.random() - 0.5) * currentIntensity;
+            const rotation = (Math.random() - 0.5) * 2; // Add slight rotation
+            
+            gameContainer.style.transform = `translate(${shakeX}px, ${shakeY}px) rotate(${rotation}deg)`;
+            shakeCount++;
+        }, 50);
     }
 
     updateCatastrophicTheme(habitat) {
@@ -369,12 +475,146 @@ class TimerManager {
         return this.isActive;
     }
 
+    // Enhanced visual effects methods
+    startScreenShake(intensity) {
+        if (this.effectsState.isShaking) return;
+        
+        this.effectsState.isShaking = true;
+        this.effectsState.currentIntensity = this.config.shakeIntensity[intensity] || 4;
+        
+        const gameContainer = document.getElementById('gameContainer');
+        if (!gameContainer) return;
+        
+        this.effectsState.shakeInterval = setInterval(() => {
+            const shakeX = (Math.random() - 0.5) * this.effectsState.currentIntensity;
+            const shakeY = (Math.random() - 0.5) * this.effectsState.currentIntensity;
+            gameContainer.style.transform = `translate(${shakeX}px, ${shakeY}px)`;
+        }, 50);
+    }
+    
+    stopScreenShake() {
+        if (!this.effectsState.isShaking) return;
+        
+        this.effectsState.isShaking = false;
+        clearInterval(this.effectsState.shakeInterval);
+        
+        const gameContainer = document.getElementById('gameContainer');
+        if (gameContainer) {
+            gameContainer.style.transform = 'translate(0px, 0px)';
+        }
+    }
+    
+    startRedFlash() {
+        if (this.effectsState.flashInterval) return;
+        
+        const gameScreen = document.getElementById('gameScreen');
+        if (!gameScreen) return;
+        
+        this.effectsState.flashInterval = setInterval(() => {
+            gameScreen.style.backgroundColor = 'rgba(255, 0, 0, 0.1)';
+            setTimeout(() => {
+                gameScreen.style.backgroundColor = '';
+            }, 100);
+        }, 300);
+    }
+    
+    startWarningFlash() {
+        if (this.effectsState.flashInterval) return;
+        
+        const gameScreen = document.getElementById('gameScreen');
+        if (!gameScreen) return;
+        
+        this.effectsState.flashInterval = setInterval(() => {
+            gameScreen.style.backgroundColor = 'rgba(255, 165, 0, 0.08)';
+            setTimeout(() => {
+                gameScreen.style.backgroundColor = '';
+            }, 150);
+        }, 500);
+    }
+    
+    stopFlash() {
+        if (this.effectsState.flashInterval) {
+            clearInterval(this.effectsState.flashInterval);
+            this.effectsState.flashInterval = null;
+        }
+        
+        const gameScreen = document.getElementById('gameScreen');
+        if (gameScreen) {
+            gameScreen.style.backgroundColor = '';
+        }
+    }
+    
+    createEmberParticles() {
+        // Create floating ember particles for dramatic effect
+        if (this.effectsState.particleInterval) return;
+        
+        this.effectsState.particleInterval = setInterval(() => {
+            const particle = document.createElement('div');
+            particle.className = 'ember-particle';
+            particle.style.cssText = `
+                position: fixed;
+                width: 4px;
+                height: 4px;
+                background: radial-gradient(circle, #ff6b35, #ff8c42);
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 1000;
+                left: ${Math.random() * window.innerWidth}px;
+                top: ${window.innerHeight + 10}px;
+                animation: emberFloat 3s linear forwards;
+                box-shadow: 0 0 6px #ff6b35;
+            `;
+            
+            document.body.appendChild(particle);
+            
+            setTimeout(() => {
+                if (document.body.contains(particle)) {
+                    document.body.removeChild(particle);
+                }
+            }, 3000);
+        }, 200);
+    }
+    
+    triggerWarningShake(threshold) {
+        // Trigger a quick shake effect for warnings
+        const gameContainer = document.getElementById('gameContainer');
+        if (!gameContainer) return;
+        
+        const shakeIntensity = threshold <= 5000 ? 12 :
+                              threshold <= 10000 ? 8 :
+                              threshold <= 20000 ? 6 : 4;
+        
+        let shakeCount = 0;
+        const maxShakes = 6;
+        
+        const shakeInterval = setInterval(() => {
+            if (shakeCount >= maxShakes) {
+                clearInterval(shakeInterval);
+                gameContainer.style.transform = 'translate(0px, 0px)';
+                return;
+            }
+            
+            const shakeX = (Math.random() - 0.5) * shakeIntensity;
+            const shakeY = (Math.random() - 0.5) * shakeIntensity;
+            gameContainer.style.transform = `translate(${shakeX}px, ${shakeY}px)`;
+            shakeCount++;
+        }, 50);
+    }
+
     // Reset timer for new level
     reset() {
         this.stopTimer();
         this.hideCatastrophicOverlay();
         this.warningsShown = [];
         this.currentHabitat = null;
+        
+        // Clean up all effects
+        this.stopScreenShake();
+        this.stopFlash();
+        if (this.effectsState.particleInterval) {
+            clearInterval(this.effectsState.particleInterval);
+            this.effectsState.particleInterval = null;
+        }
     }
 }
 
