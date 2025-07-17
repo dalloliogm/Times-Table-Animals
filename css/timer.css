@@ -17,14 +17,44 @@
     display: none;
 }
 
-/* Pulsing animation for urgency */
+/* Enhanced pulsing animations for different urgency levels */
 .timer-container.pulsing {
     animation: timerPulse 1s ease-in-out infinite;
+}
+
+.timer-container.pulsing.urgent {
+    animation: timerPulseUrgent 0.8s ease-in-out infinite;
+}
+
+.timer-container.pulsing.critical {
+    animation: timerPulseCritical 0.6s ease-in-out infinite;
+}
+
+.timer-container.pulsing.emergency {
+    animation: timerPulseEmergency 0.4s ease-in-out infinite;
 }
 
 @keyframes timerPulse {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.05); }
+}
+
+@keyframes timerPulseUrgent {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.08) rotate(1deg); }
+}
+
+@keyframes timerPulseCritical {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    25% { transform: scale(1.1) rotate(-1deg); }
+    75% { transform: scale(1.1) rotate(1deg); }
+}
+
+@keyframes timerPulseEmergency {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    25% { transform: scale(1.15) rotate(-2deg); }
+    50% { transform: scale(1.2) rotate(0deg); }
+    75% { transform: scale(1.15) rotate(2deg); }
 }
 
 /* Timer Display */
@@ -111,15 +141,60 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(0.8);
-    z-index: 1500;
+    z-index: 9999;
     opacity: 0;
     transition: all 0.3s ease;
     pointer-events: none;
+    /* Mobile-specific fixes */
+    -webkit-transform: translate(-50%, -50%) scale(0.8);
+    -moz-transform: translate(-50%, -50%) scale(0.8);
+    -ms-transform: translate(-50%, -50%) scale(0.8);
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 .timer-warning-popup.show {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
+    -webkit-transform: translate(-50%, -50%) scale(1);
+    -moz-transform: translate(-50%, -50%) scale(1);
+    -ms-transform: translate(-50%, -50%) scale(1);
+}
+
+/* Enhanced warning popup styles based on urgency */
+.timer-warning-popup.warning-mild .warning-content {
+    background: linear-gradient(135deg, #FF9500, #FFB84D);
+    animation: warningBounce 0.6s ease-out;
+}
+
+.timer-warning-popup.warning-moderate .warning-content {
+    background: linear-gradient(135deg, #FF7A00, #FF9500);
+    animation: warningBounce 0.5s ease-out, warningPulse 0.8s ease-in-out infinite;
+}
+
+.timer-warning-popup.warning-urgent .warning-content {
+    background: linear-gradient(135deg, #FF5722, #FF7A00);
+    animation: warningBounce 0.4s ease-out, warningShakeIntense 0.6s ease-in-out infinite;
+}
+
+.timer-warning-popup.warning-critical .warning-content {
+    background: linear-gradient(135deg, #F44336, #FF5722);
+    animation: warningBounce 0.3s ease-out, warningShakeIntense 0.4s ease-in-out infinite;
+    box-shadow: 0 0 20px rgba(244, 67, 54, 0.8);
+}
+
+.timer-warning-popup.warning-emergency .warning-content {
+    background: linear-gradient(135deg, #D32F2F, #F44336);
+    animation: warningBounce 0.2s ease-out, warningEmergencyShake 0.2s ease-in-out infinite;
+    box-shadow: 0 0 30px rgba(211, 47, 47, 0.9);
+}
+
+.timer-warning-popup.warning-panic .warning-content {
+    background: linear-gradient(135deg, #B71C1C, #D32F2F);
+    animation: warningBounce 0.1s ease-out, warningPanicShake 0.1s ease-in-out infinite;
+    box-shadow: 0 0 40px rgba(183, 28, 28, 1.0);
+    border: 2px solid #FF1744;
 }
 
 .warning-content {
@@ -153,6 +228,56 @@
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-2px); }
     75% { transform: translateX(2px); }
+}
+
+/* Enhanced warning animations */
+@keyframes warningPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes warningShakeIntense {
+    0%, 100% { transform: translateX(0) translateY(0); }
+    25% { transform: translateX(-3px) translateY(-1px); }
+    50% { transform: translateX(3px) translateY(1px); }
+    75% { transform: translateX(-2px) translateY(2px); }
+}
+
+@keyframes warningEmergencyShake {
+    0%, 100% { transform: translateX(0) translateY(0) rotate(0deg); }
+    20% { transform: translateX(-4px) translateY(-2px) rotate(-1deg); }
+    40% { transform: translateX(4px) translateY(2px) rotate(1deg); }
+    60% { transform: translateX(-3px) translateY(3px) rotate(-1deg); }
+    80% { transform: translateX(3px) translateY(-3px) rotate(1deg); }
+}
+
+@keyframes warningPanicShake {
+    0%, 100% { transform: translateX(0) translateY(0) rotate(0deg) scale(1); }
+    10% { transform: translateX(-5px) translateY(-3px) rotate(-2deg) scale(1.05); }
+    20% { transform: translateX(5px) translateY(3px) rotate(2deg) scale(0.95); }
+    30% { transform: translateX(-4px) translateY(4px) rotate(-2deg) scale(1.05); }
+    40% { transform: translateX(4px) translateY(-4px) rotate(2deg) scale(0.95); }
+    50% { transform: translateX(-3px) translateY(3px) rotate(-1deg) scale(1.05); }
+    60% { transform: translateX(3px) translateY(-3px) rotate(1deg) scale(0.95); }
+    70% { transform: translateX(-2px) translateY(2px) rotate(-1deg) scale(1.05); }
+    80% { transform: translateX(2px) translateY(-2px) rotate(1deg) scale(0.95); }
+    90% { transform: translateX(-1px) translateY(1px) rotate(-1deg) scale(1.05); }
+}
+
+/* Ember particle animation */
+@keyframes emberFloat {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    50% {
+        transform: translateY(-50vh) rotate(180deg);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+    }
 }
 
 /* Catastrophic Event Overlay */
@@ -295,6 +420,44 @@
         height: 10px;
     }
     
+    /* Mobile-specific timer warning popup fixes */
+    .timer-warning-popup {
+        /* Use viewport units for better mobile positioning */
+        top: 50vh;
+        left: 50vw;
+        /* Add mobile-specific positioning constraints */
+        max-width: 90vw;
+        max-height: 90vh;
+        /* Ensure proper layering on mobile */
+        z-index: 99999;
+        /* Force hardware acceleration */
+        transform: translate3d(-50%, -50%, 0) scale(0.8);
+        -webkit-transform: translate3d(-50%, -50%, 0) scale(0.8);
+    }
+    
+    .timer-warning-popup.show {
+        transform: translate3d(-50%, -50%, 0) scale(1);
+        -webkit-transform: translate3d(-50%, -50%, 0) scale(1);
+    }
+    
+    .warning-content {
+        padding: 15px 20px;
+        font-size: 16px;
+        max-width: 80vw;
+        /* Ensure content doesn't overflow on small screens */
+        word-wrap: break-word;
+        /* Add mobile-specific border radius */
+        border-radius: 15px;
+        /* Enhanced shadow for better visibility */
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    
+    .warning-icon {
+        font-size: 20px;
+        /* Ensure emoji renders properly on mobile */
+        line-height: 1;
+    }
+    
     .catastrophic-content {
         padding: 30px 20px;
         margin: 20px;
@@ -306,5 +469,44 @@
     
     .catastrophic-buttons {
         flex-direction: column;
+    }
+}
+
+/* Additional mobile-specific fixes for very small screens */
+@media (max-width: 480px) {
+    .timer-warning-popup {
+        /* Even more conservative sizing for small phones */
+        max-width: 95vw;
+        top: 40vh;
+    }
+    
+    .warning-content {
+        padding: 12px 15px;
+        font-size: 14px;
+        gap: 10px;
+    }
+    
+    .warning-icon {
+        font-size: 18px;
+    }
+}
+
+/* Specific fixes for iOS Safari */
+@supports (-webkit-touch-callout: none) {
+    .timer-warning-popup {
+        /* iOS Safari specific positioning */
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.8);
+        -webkit-transform: translate(-50%, -50%) scale(0.8);
+        /* Force layer creation for smooth animation */
+        -webkit-transform-style: preserve-3d;
+        transform-style: preserve-3d;
+    }
+    
+    .timer-warning-popup.show {
+        transform: translate(-50%, -50%) scale(1);
+        -webkit-transform: translate(-50%, -50%) scale(1);
     }
 }
