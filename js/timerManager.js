@@ -274,31 +274,36 @@ class TimerManager {
             class: 'warning-default'
         };
 
-        // Create enhanced warning popup
-        const warning = document.createElement('div');
+        // Use existing warning popup element for better mobile compatibility
+        const warning = document.getElementById('timerWarningPopup');
+        if (!warning) {
+            console.warn('Timer warning popup element not found');
+            return;
+        }
+
+        // Update content
+        const warningIcon = warning.querySelector('.warning-icon');
+        const warningMessage = document.getElementById('warningMessage');
+        
+        if (warningIcon) warningIcon.textContent = warningData.icon;
+        if (warningMessage) warningMessage.textContent = warningData.text;
+
+        // Reset all warning classes and add new one
         warning.className = `timer-warning-popup ${warningData.class}`;
-        warning.innerHTML = `
-            <div class="warning-content">
-                <span class="warning-icon">${warningData.icon}</span>
-                <span class="warning-text">${warningData.text}</span>
-            </div>
-        `;
-
-        document.body.appendChild(warning);
-
-        // Enhanced animation with scaling and rotation
-        setTimeout(() => {
-            warning.classList.add('show');
-        }, 10);
+        
+        // Force reflow to ensure proper positioning on mobile
+        warning.offsetHeight;
+        
+        // Show warning with mobile-friendly animation
+        warning.classList.add('show');
 
         // Keep emergency warnings visible longer
-        const displayTime = threshold <= 10000 ? 3000 : 2000;
+        const displayTime = threshold <= 4000 ? 3000 : 2000;
         setTimeout(() => {
             warning.classList.remove('show');
+            // Clean up classes after animation
             setTimeout(() => {
-                if (document.body.contains(warning)) {
-                    document.body.removeChild(warning);
-                }
+                warning.className = 'timer-warning-popup';
             }, 300);
         }, displayTime);
     }
