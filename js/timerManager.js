@@ -8,8 +8,8 @@ class TimerManager {
         
         // Timer configuration - TEMPORARILY SHORTENED FOR TESTING
         this.config = {
-            levelDuration: 240_000, 
-            warningThresholds: [235_000, 230_000, 225_000, 220_000, 200_000, 180_000, 160_000, 140_000, 100_000, 80_000, 60_000, 40_000, 20_000], // Warning every 2 seconds
+            levelDuration: 180_000, 
+            warningThresholds: [175_000, 165_000, 160_000, 140_000, 100_000, 80_000, 60_000, 40_000, 20_000], // Warning every 2 seconds
             urgencyThreshold: 120_000, // When to start urgency effects
             criticalThreshold: 80_000, // When to start critical effects
             emergencyThreshold: 40_000, // When to start emergency effects
@@ -63,7 +63,7 @@ class TimerManager {
         }
         
         if (this.timerDisplay) {
-            this.timerDisplay.textContent = '4:00';
+            this.timerDisplay.textContent = '3:00';
         }
     }
 
@@ -269,7 +269,7 @@ class TimerManager {
         };
 
         const warningData = warningMessages[threshold] || {
-            text: 'A Volcano is erupting!<br>The only way to save the animals is to solve maths problems!',
+            text: 'A Volcano is erupting! Solve maths problems to save the animals!',
             icon: '⚠️',
             class: 'warning-default'
         };
