@@ -75,7 +75,7 @@ class TimerManager {
         overlay.innerHTML = `
             <div class="catastrophic-content">
                 <div class="catastrophic-icon">
-                    <img src="assets/volcano.gif" alt="Volcano Eruption" class="volcano-image">
+                    <img src="assets/volcano.jpg" alt="Volcano Eruption" class="volcano-image">
                 </div>
                 <h1 class="catastrophic-title">VOLCANO ERUPTS!</h1>
                 <p class="catastrophic-message">The meadow is in danger! The animals need your help!</p>
@@ -262,11 +262,11 @@ class TimerManager {
     createWarningEffect(threshold) {
         // Enhanced volcanic-themed warning messages
         const warningMessages = {
-            60000: { text: 'The volcano is rumbling! 1 minute left!', icon: '<img src="assets/volcano.gif" alt="Volcano" class="warning-volcano-image">', class: 'warning-mild' },
+            60000: { text: 'The volcano is rumbling! 1 minute left!', icon: '<img src="assets/volcano.jpg" alt="Volcano" class="warning-volcano-image">', class: 'warning-mild' },
             45000: { text: 'Smoke rising from the crater! 45 seconds!', icon: '💨', class: 'warning-moderate' },
             30000: { text: 'Lava bubbling! 30 seconds left!', icon: '🔥', class: 'warning-urgent' },
             20000: { text: 'Ground shaking! 20 seconds!', icon: '⚡', class: 'warning-critical' },
-            10000: { text: 'VOLCANO ABOUT TO ERUPT! 10 seconds!', icon: '<img src="assets/volcano.gif" alt="Volcano" class="warning-volcano-image">', class: 'warning-emergency' },
+            10000: { text: 'VOLCANO ABOUT TO ERUPT! 10 seconds!', icon: '<img src="assets/volcano.jpg" alt="Volcano" class="warning-volcano-image">', class: 'warning-emergency' },
             5000: { text: 'ERUPTION IMMINENT! 5 SECONDS!', icon: '💥', class: 'warning-panic' }
         };
 
