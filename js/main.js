@@ -11,7 +11,7 @@ class GameController {
             currentHabitat: null,
             habitatProgress: {
                 bunnyMeadow: { completed: 0, total: 10, unlocked: true },
-                penguinPairsArctic: { completed: 0, total: 12, unlocked: false },
+                penguinPairsArctic: { completed: 0, total: 12, unlocked: true },
                 penguinArctic: { completed: 0, total: 12, unlocked: false },
                 elephantSavanna: { completed: 0, total: 10, unlocked: false },
                 monkeyJungle: { completed: 0, total: 15, unlocked: false },
@@ -251,7 +251,7 @@ class GameController {
                 this.currentHabitat = new BunnyMeadow(this.gameEngine, this.mathEngine, this);
                 break;
             case 'penguinPairsArctic':
-                this.currentHabitat = new PenguinPairsArctic(this.gameEngine, this.mathEngine);
+                this.currentHabitat = new PenguinPairsArctic(this.gameEngine, this.mathEngine, this);
                 break;
             // TODO: Add other habitats
             default:

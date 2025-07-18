@@ -2,9 +2,10 @@
 // Specialized habitat focusing on doubles (2x multiplication)
 
 class PenguinPairsArctic {
-    constructor(gameEngine, mathEngine) {
+    constructor(gameEngine, mathEngine, gameController = null) {
         this.gameEngine = gameEngine;
         this.mathEngine = mathEngine;
+        this.gameController = gameController;
         this.audioManager = null;
         this.isActive = false;
         this.currentProblem = null;
@@ -784,7 +785,10 @@ class PenguinPairsArctic {
         
         // Check if habitat is complete
         if (this.problemsSolved >= this.totalProblems) {
-            this.completeHabitat();
+            // Let GameController handle completion
+            if (this.gameController) {
+                this.gameController.completeLevel();
+            }
         } else {
             // Schedule next problem
             setTimeout(() => {
@@ -1001,6 +1005,13 @@ class PenguinPairsArctic {
     returnToHabitatSelection() {
         // This would be handled by the main game controller
         console.log('Penguin Pairs Arctic completed! Returning to habitat selection...');
+    }
+
+    onContinueButtonClicked() {
+        // Start next problem immediately
+        if (this.problemsSolved < this.totalProblems) {
+            this.startNextProblem();
+        }
     }
 
     update(deltaTime) {
