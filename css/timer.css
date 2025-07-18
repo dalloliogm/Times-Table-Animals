@@ -340,6 +340,23 @@
     50% { transform: scale(1.2); }
 }
 
+/* Volcano Image Styles */
+.volcano-image {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    animation: catastrophicIconPulse 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 10px rgba(255, 69, 0, 0.8));
+}
+
+.warning-volcano-image {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    vertical-align: middle;
+    filter: drop-shadow(0 0 5px rgba(255, 69, 0, 0.6));
+}
+
 .catastrophic-title {
     font-family: "Comic Sans MS", cursive;
     font-size: 36px;
