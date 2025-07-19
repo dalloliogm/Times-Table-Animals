@@ -377,7 +377,7 @@ class TimerManager {
     updateCatastrophicTheme(habitat) {
         const themes = {
             bunnyMeadow: {
-                icon: '<img src="assets/volcano.gif" alt="Volcano Eruption" class="volcano-image">',
+                icon: '<img src="assets/volcano.jpg" alt="Volcano Eruption" class="volcano-image">',
                 title: 'VOLCANO ERUPTS!',
                 message: 'The meadow is in danger! The bunnies need your help!'
             },
