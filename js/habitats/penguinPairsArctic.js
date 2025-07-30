@@ -814,12 +814,9 @@ class PenguinPairsArctic {
             if (this.gameController) {
                 this.gameController.completeLevel();
             }
-        } else {
-            // Schedule next problem
-            setTimeout(() => {
-                this.startNextProblem();
-            }, 3000);
         }
+        // Note: Next problem will be started when user clicks Continue button
+        // via onContinueButtonClicked() method
     }
 
     onIncorrectAnswer() {
