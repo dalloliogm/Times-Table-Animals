@@ -224,6 +224,12 @@ class GameController {
                 card.classList.remove('locked');
                 card.classList.add('unlocked');
                 
+                // Hide lock overlay for unlocked habitats
+                const lockOverlay = card.querySelector('.lock-overlay');
+                if (lockOverlay) {
+                    lockOverlay.style.display = 'none';
+                }
+                
                 // Update progress bar
                 const progressFill = card.querySelector('.progress-fill');
                 if (progressFill) {
@@ -233,6 +239,12 @@ class GameController {
             } else {
                 card.classList.remove('unlocked');
                 card.classList.add('locked');
+                
+                // Show lock overlay for locked habitats
+                const lockOverlay = card.querySelector('.lock-overlay');
+                if (lockOverlay) {
+                    lockOverlay.style.display = 'block';
+                }
             }
         });
     }
