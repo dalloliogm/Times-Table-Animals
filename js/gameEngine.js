@@ -551,6 +551,7 @@ class GameEngine {
             animationFrame: 0,
             animationSpeed: 0.1,
             velocity: { x: 0, y: 0 },
+            tintColor: null, // Color tinting support
             
             update: function(deltaTime) {
                 this.x += this.velocity.x * deltaTime / 1000;
@@ -562,7 +563,18 @@ class GameEngine {
                 if (this.visible && this.image) {
                     ctx.save();
                     ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
+                    
+                    // Draw the original sprite
                     ctx.drawImage(this.image, -this.width / 2, -this.height / 2, this.width, this.height);
+                    
+                    // Apply color tinting if specified
+                    if (this.tintColor) {
+                        ctx.globalCompositeOperation = 'source-atop';
+                        ctx.fillStyle = this.tintColor;
+                        ctx.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
+                        ctx.globalCompositeOperation = 'source-over'; // Reset to default
+                    }
+                    
                     ctx.restore();
                 }
             }

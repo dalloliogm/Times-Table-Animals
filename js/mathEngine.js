@@ -7,8 +7,10 @@ class MathEngine {
         this.problemHistory = [];
         this.difficultyLevel = 1;
         this.currentHabitat = 'bunnyMeadow';
+        this.selectedQuestionTemplate = null;
+        this.selectedQuestionType = null;
         this.problemTypes = {
-            bunnyMeadow: ['addition', 'subtraction'],
+            bunnyMeadow: ['addition'],
             penguinPairsArctic: ['doubles', 'doubles_word_problems'],
             penguinArctic: ['multiplication', 'simple_division'],
             elephantSavanna: ['division', 'multiplication'],
@@ -21,11 +23,72 @@ class MathEngine {
             dragonSanctuary: ['exponentials', 'advanced_equations'],
             rainbowReserve: ['all_concepts', 'challenge_problems']
         };
+        
+        // Question template pools for consistent questioning within levels
+        this.questionTemplates = {
+            addition: [
+                'There are {a} carrots in one basket and {b} carrots in another. How many carrots total?',
+                'If {a} bunnies hop into the meadow and {b} more join them, how many bunnies are there?',
+                'The caretaker gives {a} lettuce leaves to one group and {b} to another. How many leaves total?',
+                'The sanctuary has {a} baby bunnies and {b} adult bunnies. How many bunnies in total?',
+                'In the morning there were {a} carrots, and the caretaker brought {b} more. How many carrots now?',
+                'Albert saw {a} bunnies playing and {b} bunnies sleeping. How many bunnies did he see?'
+            ],
+            subtraction: [
+                'There were {a} carrots, but the bunnies ate {b} of them. How many carrots are left?',
+                'If {a} bunnies were in the meadow and {b} hopped away, how many bunnies remain?',
+                'The caretaker had {a} lettuce leaves and gave away {b}. How many are left?',
+                'From {a} bunny treats, {b} were eaten. How many treats remain?',
+                'Albert counted {a} flowers, but {b} wilted overnight. How many flowers are still blooming?',
+                'There were {a} bunnies in the burrow, then {b} went out to play. How many stayed inside?'
+            ],
+            doubles: [
+                'Each penguin needs a partner for the ice parade. If there are {n} penguins, how many penguins total?',
+                'The penguins slide down the ice slide in pairs. How many penguins in {n} pairs?',
+                'Each penguin catches {n} fish. How many fish do 2 penguins catch?',
+                'There are {n} penguin pairs playing together. How many penguins are playing?',
+                'Each ice block can hold 2 penguins. How many penguins can {n} blocks hold?',
+                'In the penguin parade, they march 2 by 2. How many penguins are in {n} rows?'
+            ],
+            doubles_word_problems: [
+                'At the penguin nursery, there are {n} baby penguins. Each baby penguin has exactly 2 flippers. How many flippers are there in total?',
+                'The penguin chef is making fish soup. Each bowl needs 2 fish. How many fish are needed for {n} bowls?',
+                'For the ice skating show, penguins perform in pairs. If there are {n} pairs, how many penguins are performing?',
+                'Each penguin family has 2 parents. How many parent penguins are there in {n} families?',
+                'The penguins collect ice cubes for their igloo. Each trip, they bring back 2 ice cubes. How many ice cubes after {n} trips?',
+                'Each sled needs 2 penguin pullers. How many penguins are needed to pull {n} sleds?'
+            ]
+        };
     }
 
     setHabitat(habitat) {
         this.currentHabitat = habitat;
         this.difficultyLevel = this.getHabitatDifficulty(habitat);
+        // Select question template for this level
+        this.selectLevelQuestionTemplate();
+    }
+
+    selectLevelQuestionTemplate() {
+        // Get problem types for current habitat
+        const problemTypes = this.problemTypes[this.currentHabitat];
+        
+        // Randomly select one problem type for the entire level
+        this.selectedQuestionType = problemTypes[Math.floor(Math.random() * problemTypes.length)];
+        
+        // Get available templates for the selected problem type
+        const availableTemplates = this.questionTemplates[this.selectedQuestionType];
+        if (availableTemplates) {
+            // Randomly select one template for the entire level
+            const templateIndex = Math.floor(Math.random() * availableTemplates.length);
+            this.selectedQuestionTemplate = availableTemplates[templateIndex];
+        }
+        
+        console.log(`Selected question type: ${this.selectedQuestionType}, template: ${this.selectedQuestionTemplate}`);
+    }
+
+    highlightNumbers(text) {
+        // Find all numbers in the text and wrap them with highlighting spans
+        return text.replace(/\b\d+\b/g, '<span class="highlighted-number">$&</span>');
     }
 
     getHabitatDifficulty(habitat) {
@@ -47,8 +110,8 @@ class MathEngine {
     }
 
     generateProblem() {
-        const problemTypes = this.problemTypes[this.currentHabitat];
-        const problemType = problemTypes[Math.floor(Math.random() * problemTypes.length)];
+        // Use the selected question type for the level instead of random selection
+        const problemType = this.selectedQuestionType;
         
         let problem;
         switch (problemType) {
@@ -320,20 +383,14 @@ class MathEngine {
     }
 
     generateAdditionProblem() {
-        const contexts = [
-            'There are {a} carrots in one basket and {b} carrots in another. How many carrots total?',
-            'If {a} bunnies hop into the meadow and {b} more join them, how many bunnies are there?',
-            'The caretaker gives {a} lettuce leaves to one group and {b} to another. How many leaves total?',
-            'The sanctuary has {a} baby bunnies and {b} adult bunnies. How many bunnies in total?'
-        ];
-        
         const range = Math.min(10 + this.difficultyLevel * 5, 50);
         const a = Math.floor(Math.random() * range) + 1;
         const b = Math.floor(Math.random() * range) + 1;
         const answer = a + b;
         
-        const context = contexts[Math.floor(Math.random() * contexts.length)];
-        const text = context.replace('{a}', a).replace('{b}', b);
+        // Use the selected template for the level
+        const template = this.selectedQuestionTemplate || this.questionTemplates.addition[0];
+        const text = template.replace('{a}', a).replace('{b}', b);
         
         return {
             type: 'addition',
@@ -349,20 +406,14 @@ class MathEngine {
     }
 
     generateSubtractionProblem() {
-        const contexts = [
-            'There were {a} carrots, but the bunnies ate {b} of them. How many carrots are left?',
-            'If {a} bunnies were in the meadow and {b} hopped away, how many bunnies remain?',
-            'The caretaker had {a} lettuce leaves and gave away {b}. How many are left?',
-            'From {a} bunny treats, {b} were eaten. How many treats remain?'
-        ];
-        
         const range = Math.min(10 + this.difficultyLevel * 5, 50);
         const a = Math.floor(Math.random() * range) + 10;
         const b = Math.floor(Math.random() * (a - 1)) + 1;
         const answer = a - b;
         
-        const context = contexts[Math.floor(Math.random() * contexts.length)];
-        const text = context.replace('{a}', a).replace('{b}', b);
+        // Use the selected template for the level
+        const template = this.selectedQuestionTemplate || this.questionTemplates.subtraction[0];
+        const text = template.replace('{a}', a).replace('{b}', b);
         
         return {
             type: 'subtraction',
@@ -407,20 +458,13 @@ class MathEngine {
     }
 
     generateDoublesProblem() {
-        const contexts = [
-            'Each penguin needs a partner for the ice parade. If there are {n} penguins, how many penguins total?',
-            'The penguins slide down the ice slide in pairs. How many penguins in {n} pairs?',
-            'Each penguin catches {n} fish. How many fish do 2 penguins catch?',
-            'There are {n} penguin pairs playing together. How many penguins are playing?',
-            'Each ice block can hold 2 penguins. How many penguins can {n} blocks hold?'
-        ];
-        
         // Generate doubles from 1×2 to 12×2
         const number = Math.floor(Math.random() * 12) + 1;
         const answer = number * 2;
         
-        const context = contexts[Math.floor(Math.random() * contexts.length)];
-        const text = context.replace('{n}', number);
+        // Use the selected template for the level
+        const template = this.selectedQuestionTemplate || this.questionTemplates.doubles[0];
+        const text = template.replace('{n}', number);
         
         return {
             type: 'doubles',
@@ -437,35 +481,13 @@ class MathEngine {
     }
 
     generateDoublesWordProblem() {
-        const wordProblems = [
-            {
-                text: 'At the penguin nursery, there are {n} baby penguins. Each baby penguin has exactly 2 flippers. How many flippers are there in total?',
-                operation: '{n} × 2 = ?'
-            },
-            {
-                text: 'The penguin chef is making fish soup. Each bowl needs 2 fish. How many fish are needed for {n} bowls?',
-                operation: '{n} × 2 = ?'
-            },
-            {
-                text: 'For the ice skating show, penguins perform in pairs. If there are {n} pairs, how many penguins are performing?',
-                operation: '{n} × 2 = ?'
-            },
-            {
-                text: 'Each penguin family has 2 parents. How many parent penguins are there in {n} families?',
-                operation: '{n} × 2 = ?'
-            },
-            {
-                text: 'The penguins collect ice cubes for their igloo. Each trip, they bring back 2 ice cubes. How many ice cubes after {n} trips?',
-                operation: '{n} × 2 = ?'
-            }
-        ];
-        
         const number = Math.floor(Math.random() * 12) + 1;
         const answer = number * 2;
         
-        const problem = wordProblems[Math.floor(Math.random() * wordProblems.length)];
-        const text = problem.text.replace('{n}', number);
-        const operation = problem.operation.replace('{n}', number);
+        // Use the selected template for the level
+        const template = this.selectedQuestionTemplate || this.questionTemplates.doubles_word_problems[0];
+        const text = template.replace('{n}', number);
+        const operation = `${number} × 2 = ?`;
         
         return {
             type: 'doubles_word_problems',

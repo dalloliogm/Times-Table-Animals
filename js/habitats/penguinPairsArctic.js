@@ -616,12 +616,19 @@ class PenguinPairsArctic {
         const feedback = document.getElementById('feedback');
         
         if (problemTitle) problemTitle.textContent = this.currentProblem.title;
-        if (problemText) problemText.textContent = this.currentProblem.text;
+        if (problemText) {
+            // Use innerHTML with highlighted numbers
+            const highlightedText = this.mathEngine.highlightNumbers(this.currentProblem.text);
+            problemText.innerHTML = highlightedText;
+        }
         if (answerInput) {
             answerInput.value = '';
             answerInput.focus();
         }
         if (feedback) feedback.classList.add('hidden');
+        
+        // Update answer options with actual values
+        this.updateAnswerOptions();
         
         // Update progress indicator
         this.updateProgressIndicator();
@@ -631,6 +638,24 @@ class PenguinPairsArctic {
         if (mathProblem) {
             mathProblem.classList.remove('hidden');
         }
+    }
+
+    updateAnswerOptions() {
+        const currentProblem = this.mathEngine.getCurrentProblem();
+        if (!currentProblem || !currentProblem.options) return;
+        
+        currentProblem.options.forEach((option, index) => {
+            const optionButton = document.getElementById(`option${index + 1}`);
+            if (optionButton) {
+                const optionText = optionButton.querySelector('.option-text');
+                if (optionText) {
+                    optionText.textContent = option;
+                }
+                
+                // Reset visual state
+                optionButton.classList.remove('selected', 'correct', 'incorrect');
+            }
+        });
     }
 
     updateProgressIndicator() {

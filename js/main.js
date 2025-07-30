@@ -434,7 +434,13 @@ class GameController {
     updateProblemUI() {
         const problem = this.mathEngine.getCurrentProblem();
         document.getElementById('problemTitle').textContent = problem.title;
-        document.getElementById('problemText').textContent = problem.text;
+        
+        // Use innerHTML with highlighted numbers for problem text
+        const problemTextElement = document.getElementById('problemText');
+        if (problemTextElement) {
+            const highlightedText = this.mathEngine.highlightNumbers(problem.text);
+            problemTextElement.innerHTML = highlightedText;
+        }
         
         // Update answer options
         this.updateAnswerOptions();

@@ -56,7 +56,13 @@ class BunnyMeadow {
             { x: 300, y: 350, name: 'Fluffy' },
             { x: 500, y: 180, name: 'Cottontail' },
             { x: 700, y: 320, name: 'Whiskers' },
-            { x: 900, y: 250, name: 'Snowball' }
+            { x: 900, y: 250, name: 'Snowball' },
+            { x: 75, y: 150, name: 'Albert' },
+            { x: 900, y: 150, name: 'hot chocolate' },
+            { x: 500, y: 120, name: 'chocolate' },
+            { x: 700, y: 450, name: 'Gio' },
+            { x: 340, y: 200, name: 'Eric' },
+            { x: 600, y: 450, name: 'MT' }
         ];
 
         bunnyPositions.forEach((pos, index) => {
@@ -69,6 +75,16 @@ class BunnyMeadow {
             bunny.happiness = 100;
             bunny.isHungry = false;
             
+            // Apply chocolate brown tinting to chocolate bunnies
+            if (bunny.name === 'chocolate' || bunny.name === 'hot chocolate') {
+                bunny.tintColor = '#D2691E'; // Milk chocolate brown
+            } else  if (bunny.name === 'Gio' || bunny.name === 'Eric' || bunny.name === 'MT') {
+                bunny.tintColor = '#8B4513'; // Saddle brown - more visible than nearly black
+            } else if (bunny.name === 'Albert') {
+                bunny.tintColor = '#FF6B35'; // Orange tint for Albert
+            }
+            // Remove else clause - default bunnies have no tinting (null tintColor)
+
             // Add bunny behavior
             bunny.update = (deltaTime) => {
                 this.updateBunny(bunny, deltaTime);
@@ -434,7 +450,11 @@ class BunnyMeadow {
         const feedback = document.getElementById('feedback');
         
         if (problemTitle) problemTitle.textContent = this.currentProblem.title;
-        if (problemText) problemText.textContent = this.currentProblem.text;
+        if (problemText) {
+            // Use innerHTML with highlighted numbers
+            const highlightedText = this.mathEngine.highlightNumbers(this.currentProblem.text);
+            problemText.innerHTML = highlightedText;
+        }
         if (feedback) feedback.classList.add('hidden');
         
         // Update answer options with generated choices
