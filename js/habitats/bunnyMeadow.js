@@ -52,16 +52,16 @@ class BunnyMeadow {
     createBunnies() {
         // Create main bunny characters
         const bunnyPositions = [
-            { x: 150, y: 200, name: 'Hoppy' },
+            { x: 150, y: 300, name: 'Hoppy' },
             { x: 300, y: 350, name: 'Fluffy' },
-            { x: 500, y: 180, name: 'Cottontail' },
+            { x: 500, y: 280, name: 'Cottontail' },
             { x: 700, y: 320, name: 'Whiskers' },
-            { x: 900, y: 250, name: 'Snowball' },
-            { x: 75, y: 150, name: 'Albert' },
-            { x: 900, y: 150, name: 'hot chocolate' },
-            { x: 500, y: 120, name: 'chocolate' },
+            { x: 900, y: 350, name: 'Snowball' },
+            { x: 75, y: 250, name: 'Albert' },
+            { x: 950, y: 280, name: 'hot chocolate' },
+            { x: 550, y: 250, name: 'chocolate' },
             { x: 700, y: 450, name: 'Gio' },
-            { x: 340, y: 200, name: 'Eric' },
+            { x: 340, y: 300, name: 'Eric' },
             { x: 600, y: 450, name: 'MT' }
         ];
 
