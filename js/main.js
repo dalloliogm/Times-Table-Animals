@@ -265,7 +265,36 @@ class GameController {
             case 'penguinPairsArctic':
                 this.currentHabitat = new PenguinPairsArctic(this.gameEngine, this.mathEngine, this);
                 break;
-            // TODO: Add other habitats
+            case 'penguinArctic':
+                this.currentHabitat = new PenguinArctic(this.gameEngine, this.mathEngine, this);
+                break;
+            case 'elephantSavanna':
+                this.currentHabitat = new ElephantSavanna(this.gameEngine, this.mathEngine, this);
+                break;
+            case 'monkeyJungle':
+                this.currentHabitat = new MonkeyJungle(this.gameEngine, this.mathEngine, this);
+                break;
+            case 'lionPride':
+                this.currentHabitat = new LionPride(this.gameEngine, this.mathEngine, this);
+                break;
+            case 'dolphinCove':
+                this.currentHabitat = new DolphinCove(this.gameEngine, this.mathEngine, this);
+                break;
+            case 'bearForest':
+                this.currentHabitat = new BearForest(this.gameEngine, this.mathEngine, this);
+                break;
+            case 'giraffePlains':
+                this.currentHabitat = new GiraffePlains(this.gameEngine, this.mathEngine, this);
+                break;
+            case 'owlObservatory':
+                this.currentHabitat = new OwlObservatory(this.gameEngine, this.mathEngine, this);
+                break;
+            case 'dragonSanctuary':
+                this.currentHabitat = new DragonSanctuary(this.gameEngine, this.mathEngine, this);
+                break;
+            case 'rainbowReserve':
+                this.currentHabitat = new RainbowReserve(this.gameEngine, this.mathEngine, this);
+                break;
             default:
                 console.log(`Habitat ${habitatName} not yet implemented`);
         }
