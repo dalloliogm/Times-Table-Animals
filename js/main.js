@@ -180,11 +180,17 @@ class GameController {
     }
 
     showMainMenu() {
+        // Remove habitat selection scrolling mode
+        document.body.classList.remove('habitat-select-mode');
+        
         this.switchScreen('mainMenu');
         this.audioManager.playBackgroundMusic('menu');
     }
 
     showSettings() {
+        // Remove habitat selection scrolling mode
+        document.body.classList.remove('habitat-select-mode');
+        
         this.switchScreen('settingsMenu');
         this.updateSettingsUI();
     }
@@ -212,6 +218,9 @@ class GameController {
         this.switchScreen('habitatSelect');
         this.updateHabitatCards();
         this.audioManager.playBackgroundMusic('habitat-selection');
+        
+        // Enable scrolling for mobile habitat selection
+        document.body.classList.add('habitat-select-mode');
     }
 
     updateHabitatCards() {
@@ -252,6 +261,9 @@ class GameController {
     enterHabitat(habitatName) {
         // Cleanup previous habitat first
         this.cleanupCurrentHabitat();
+        
+        // Remove habitat selection scrolling mode
+        document.body.classList.remove('habitat-select-mode');
         
         this.gameState.currentHabitat = habitatName;
         this.switchScreen('gameScreen');

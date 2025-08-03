@@ -12,6 +12,13 @@ body {
     height: 100vh;
 }
 
+/* Allow scrolling specifically for habitat selection on mobile */
+body.habitat-select-mode {
+    overflow: auto !important;
+    height: auto !important;
+    min-height: 100vh;
+}
+
 #gameContainer {
     position: relative;
     width: 100vw;
@@ -37,6 +44,30 @@ body {
 .screen.active {
     opacity: 1;
     visibility: visible;
+}
+
+/* Special handling for habitat selection screen */
+#habitatSelect.screen {
+    position: absolute;
+    height: 100vh;
+    overflow-y: auto;
+    align-items: flex-start;
+    padding: 2rem 0;
+}
+
+/* Enable scrolling for mobile habitat selection */
+body.habitat-select-mode #habitatSelect.screen {
+    position: static !important;
+    height: auto !important;
+    min-height: 100vh;
+    overflow-y: visible !important;
+    display: block !important;
+    padding: 1rem 0;
+}
+
+body.habitat-select-mode #gameContainer {
+    height: auto !important;
+    min-height: 100vh;
 }
 
 /* Loading Screen */
@@ -548,6 +579,15 @@ input[type="range"]::-webkit-slider-thumb {
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     max-width: 800px;
     width: 90%;
+    margin: 0 auto;
+    min-height: fit-content;
+}
+
+/* Ensure habitat content is properly positioned for mobile scrolling */
+body.habitat-select-mode .habitat-content {
+    position: relative;
+    display: block;
+    margin: 1rem auto 3rem auto;
 }
 
 .habitat-content h2 {
@@ -562,6 +602,57 @@ input[type="range"]::-webkit-slider-thumb {
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 1.5rem;
     margin-bottom: 2rem;
+}
+
+/* Mobile-specific habitat grid improvements */
+@media (max-width: 768px) {
+    .habitat-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Force proper mobile scrolling layout */
+    body.habitat-select-mode {
+        position: static !important;
+        overflow: auto !important;
+    }
+    
+    body.habitat-select-mode #habitatSelect {
+        position: static !important;
+        height: auto !important;
+        min-height: calc(100vh + 200px) !important; /* Force content to be taller than viewport */
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 1rem 0 3rem 0;
+    }
+    
+    body.habitat-select-mode .habitat-content {
+        flex-shrink: 0;
+        margin: 0 auto 2rem auto;
+        padding: 1.5rem;
+        width: 95%;
+    }
+}
+
+@media (max-width: 480px) {
+    .habitat-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    body.habitat-select-mode #habitatSelect {
+        min-height: calc(100vh + 400px) !important; /* Even more height for single column */
+        padding: 0.5rem 0 4rem 0;
+    }
+    
+    body.habitat-select-mode .habitat-content {
+        width: 98%;
+        padding: 1rem;
+        margin: 0 auto 3rem auto;
+    }
 }
 
 .habitat-card {
@@ -656,9 +747,67 @@ input[type="range"]::-webkit-slider-thumb {
         padding: 1.5rem;
     }
     
-    .habitat-grid {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 1rem;
+    /* Mobile habitat selection improvements */
+    #habitatSelect {
+        padding: 1rem 0;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+    
+    .habitat-content {
+        width: 95%;
+        padding: 1.5rem;
+        margin-top: 1rem;
+        border-radius: 15px;
+    }
+    
+    .habitat-content h2 {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .habitat-card {
+        padding: 1rem;
+        border-radius: 12px;
+    }
+    
+    .habitat-card h3 {
+        font-size: 1.1rem;
+    }
+    
+    .habitat-card p {
+        font-size: 0.85rem;
+    }
+    
+    .habitat-image {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* Extra small mobile screens */
+@media (max-width: 480px) {
+    #habitatSelect {
+        padding: 0.5rem 0;
+    }
+    
+    .habitat-content {
+        width: 98%;
+        padding: 1rem;
+        margin-top: 0.5rem;
+    }
+    
+    .habitat-content h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+    }
+    
+    .habitat-card {
+        padding: 0.8rem;
+    }
+    
+    .habitat-image {
+        font-size: 2rem;
     }
 }
 
