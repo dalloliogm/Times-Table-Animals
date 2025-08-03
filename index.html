@@ -23,12 +23,12 @@
         <!-- Main Menu -->
         <div id="mainMenu" class="screen">
             <div class="menu-content">
-                <h1>Times Table Animals</h1>
-                <h2>Welcome to Albert Animals!</h2>
+                <h1 data-translate="game.title">Times Table Animals</h1>
+                <h2 data-translate="game.subtitle">Welcome to Albert Animals!</h2>
                 <div class="menu-buttons">
-                    <button id="startGameBtn" class="menu-btn primary">Start Adventure</button>
-                    <button id="settingsBtn" class="menu-btn secondary">Settings</button>
-                    <button id="achievementsBtn" class="menu-btn secondary">Achievements</button>
+                    <button id="startGameBtn" class="menu-btn primary" data-translate="menu.start">Start Adventure</button>
+                    <button id="settingsBtn" class="menu-btn secondary" data-translate="menu.settings">Settings</button>
+                    <button id="achievementsBtn" class="menu-btn secondary" data-translate="menu.achievements">Achievements</button>
                 </div>
             </div>
         </div>
@@ -36,31 +36,57 @@
         <!-- Settings Menu -->
         <div id="settingsMenu" class="screen">
             <div class="settings-content">
-                <h2>Settings</h2>
+                <h2 data-translate="settings.title">Settings</h2>
+                
+                <!-- Language Selector -->
+                <div class="language-selector-container">
+                    <div class="language-selector">
+                        <button id="languageSelectorBtn" class="language-selector-btn">
+                            <span class="language-flag">🇺🇸</span>
+                            <span class="language-name">English</span>
+                            <span class="language-arrow">▼</span>
+                        </button>
+                        <div id="languageDropdown" class="language-dropdown hidden">
+                            <div class="language-option" data-lang="en">
+                                <span class="language-flag">🇺🇸</span>
+                                <span class="language-name">English</span>
+                            </div>
+                            <div class="language-option" data-lang="es">
+                                <span class="language-flag">🇪🇸</span>
+                                <span class="language-name">Español</span>
+                            </div>
+                            <div class="language-option" data-lang="it">
+                                <span class="language-flag">🇮🇹</span>
+                                <span class="language-name">Italiano</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="settings-options">
                     <div class="setting-item">
-                        <label>Background Music</label>
+                        <label data-translate="settings.music">Background Music</label>
                         <input type="checkbox" id="musicToggle" checked>
                         <span class="toggle-slider"></span>
                     </div>
                     <div class="setting-item">
-                        <label>Sound Effects</label>
+                        <label data-translate="settings.sfx">Sound Effects</label>
                         <input type="checkbox" id="sfxToggle" checked>
                         <span class="toggle-slider"></span>
                     </div>
                     <div class="setting-item">
-                        <label>Voice Narration</label>
+                        <label data-translate="settings.voice">Voice Narration</label>
                         <input type="checkbox" id="voiceToggle" checked>
                         <span class="toggle-slider"></span>
                     </div>
                     <div class="setting-item">
-                        <label>Master Volume</label>
+                        <label data-translate="settings.volume">Master Volume</label>
                         <input type="range" id="volumeSlider" min="0" max="100" value="75">
                     </div>
                 </div>
                 <div class="settings-actions">
-                    <button id="resetProgressBtn" class="menu-btn danger">Reset Progress</button>
-                    <button id="backToMenuBtn" class="menu-btn primary">Back to Menu</button>
+                    <button id="resetProgressBtn" class="menu-btn danger" data-translate="settings.reset">Reset Progress</button>
+                    <button id="backToMenuBtn" class="menu-btn primary" data-translate="settings.back">Back to Menu</button>
                 </div>
             </div>
         </div>
@@ -166,7 +192,7 @@
         <!-- Habitat Selection -->
         <div id="habitatSelect" class="screen">
             <div class="habitat-content">
-                <h2>Choose Your Habitat</h2>
+                <h2 data-translate="habitat.choose">Choose Your Habitat</h2>
                 <div class="habitat-grid">
                     <div class="habitat-card unlocked" data-habitat="bunnyMeadow">
                         <div class="habitat-image">🐰</div>
@@ -260,12 +286,13 @@
                         <div class="lock-overlay">🔒</div>
                     </div>
                 </div>
-                <button id="backToHabitats" class="menu-btn secondary">Back</button>
+                <button id="backToHabitats" class="menu-btn secondary" data-translate="habitat.back">Back</button>
             </div>
         </div>
     </div>
 
     <!-- Scripts -->
+    <script src="js/languageManager.js"></script>
     <script src="js/audioManager.js"></script>
     <script src="js/mathEngine.js"></script>
     <script src="js/gameEngine.js"></script>

@@ -27,7 +27,8 @@ class GameController {
                 musicEnabled: true,
                 sfxEnabled: true,
                 voiceEnabled: true,
-                masterVolume: 75
+                masterVolume: 75,
+                language: 'en'
             }
         };
         this.init();
@@ -41,11 +42,20 @@ class GameController {
         this.setupEventListeners();
         
         // Initialize managers
+        this.languageManager = new LanguageManager();
         this.audioManager = new AudioManager(this.gameState.settings);
         this.mathEngine = new MathEngine();
         this.gameEngine = new GameEngine();
         this.timerManager = new TimerManager(this, this.audioManager);
         this.sceneManager = new SceneManager();
+        
+        // Set initial language
+        this.languageManager.setLanguage(this.gameState.settings.language);
+        
+        // Listen for language changes
+        document.addEventListener('languageChanged', (e) => {
+            this.onLanguageChanged(e.detail.language);
+        });
         
         // Set up timer callbacks
         this.setupTimerCallbacks();
@@ -103,6 +113,29 @@ class GameController {
             this.gameState.settings.masterVolume = e.target.value;
             this.audioManager.setMasterVolume(e.target.value);
             this.saveGameState();
+        });
+
+        // Language Selector Events
+        document.getElementById('languageSelectorBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.toggleLanguageDropdown();
+        });
+
+        // Language option selection
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.language-option')) {
+                const option = e.target.closest('.language-option');
+                const langCode = option.getAttribute('data-lang');
+                this.selectLanguage(langCode);
+            }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.language-selector')) {
+                this.closeLanguageDropdown();
+            }
         });
 
         // Reset Progress Button
@@ -205,6 +238,9 @@ class GameController {
         document.getElementById('sfxToggle').checked = this.gameState.settings.sfxEnabled;
         document.getElementById('voiceToggle').checked = this.gameState.settings.voiceEnabled;
         document.getElementById('volumeSlider').value = this.gameState.settings.masterVolume;
+        
+        // Update language selector
+        this.updateLanguageSelectorUI();
     }
 
     startGame() {
@@ -1037,6 +1073,94 @@ class GameController {
                 }
             }, 300);
         }, 3000);
+    }
+
+    // Language selector methods
+    toggleLanguageDropdown() {
+        const dropdown = document.getElementById('languageDropdown');
+        const button = document.getElementById('languageSelectorBtn');
+        
+        if (dropdown && button) {
+            const isHidden = dropdown.classList.contains('hidden');
+            
+            if (isHidden) {
+                dropdown.classList.remove('hidden');
+                button.classList.add('active');
+                this.updateLanguageOptions();
+            } else {
+                dropdown.classList.add('hidden');
+                button.classList.remove('active');
+            }
+        }
+    }
+
+    closeLanguageDropdown() {
+        const dropdown = document.getElementById('languageDropdown');
+        const button = document.getElementById('languageSelectorBtn');
+        
+        if (dropdown && button) {
+            dropdown.classList.add('hidden');
+            button.classList.remove('active');
+        }
+    }
+
+    updateLanguageOptions() {
+        const currentLang = this.gameState.settings.language;
+        const options = document.querySelectorAll('.language-option');
+        
+        options.forEach(option => {
+            const langCode = option.getAttribute('data-lang');
+            if (langCode === currentLang) {
+                option.classList.add('selected');
+            } else {
+                option.classList.remove('selected');
+            }
+        });
+    }
+
+    selectLanguage(langCode) {
+        if (this.gameState.settings.language !== langCode) {
+            this.gameState.settings.language = langCode;
+            this.languageManager.setLanguage(langCode);
+            this.saveGameState();
+            
+            // Update UI immediately
+            this.updateLanguageSelectorUI();
+            
+            // Play audio feedback
+            this.audioManager.playSFX('ui-select');
+        }
+        
+        this.closeLanguageDropdown();
+    }
+
+    updateLanguageSelectorUI() {
+        const currentLang = this.languageManager.getLanguageData(this.gameState.settings.language);
+        const button = document.getElementById('languageSelectorBtn');
+        
+        if (button && currentLang) {
+            const flagSpan = button.querySelector('.language-flag');
+            const nameSpan = button.querySelector('.language-name');
+            
+            if (flagSpan && nameSpan) {
+                flagSpan.textContent = currentLang.flag;
+                nameSpan.textContent = currentLang.name;
+            }
+        }
+        
+        // Update dropdown options selection
+        this.updateLanguageOptions();
+    }
+
+    onLanguageChanged(languageCode) {
+        // Update game state
+        this.gameState.settings.language = languageCode;
+        this.saveGameState();
+        
+        // Update language selector UI
+        this.updateLanguageSelectorUI();
+        
+        console.log(`Language changed to: ${languageCode}`);
     }
 }
 
