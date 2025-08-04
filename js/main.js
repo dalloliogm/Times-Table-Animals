@@ -53,7 +53,8 @@ class GameController {
         // Set initial language
         this.languageManager.setLanguage(this.gameState.settings.language);
         
-        // Set initial difficulty
+        // Set initial language and difficulty for MathEngine
+        this.mathEngine.setLanguage(this.gameState.settings.language);
         this.mathEngine.setDifficulty(this.gameState.settings.difficulty);
         
         // Listen for language changes
@@ -1185,6 +1186,11 @@ class GameController {
         
         // Update language selector UI
         this.updateLanguageSelectorUI();
+        
+        // Update MathEngine language
+        if (this.mathEngine && this.mathEngine.setLanguage) {
+            this.mathEngine.setLanguage(languageCode);
+        }
         
         console.log(`Language changed to: ${languageCode}`);
     }

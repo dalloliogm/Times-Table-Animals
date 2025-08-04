@@ -10,6 +10,8 @@ class MathEngine {
         this.currentHabitat = 'bunnyMeadow';
         this.selectedQuestionTemplate = null;
         this.selectedQuestionType = null;
+        this.currentLanguage = 'en'; // Default to English
+        
         this.problemTypes = {
             bunnyMeadow: ['addition'],
             penguinPairsArctic: ['doubles', 'doubles_word_problems'],
@@ -25,41 +27,55 @@ class MathEngine {
             rainbowReserve: ['all_concepts', 'challenge_problems']
         };
         
-        // Question template pools for consistent questioning within levels
-        this.questionTemplates = {
-            addition: [
-                'There are {a} carrots in one basket and {b} carrots in another. How many carrots total?',
-                'If {a} bunnies hop into the meadow and {b} more join them, how many bunnies are there?',
-                'The caretaker gives {a} lettuce leaves to one group and {b} to another. How many leaves total?',
-                'The sanctuary has {a} baby bunnies and {b} adult bunnies. How many bunnies in total?',
-                'In the morning there were {a} carrots, and the caretaker brought {b} more. How many carrots now?',
-                'Albert saw {a} bunnies playing and {b} bunnies sleeping. How many bunnies did he see?'
-            ],
-            subtraction: [
-                'There were {a} carrots, but the bunnies ate {b} of them. How many carrots are left?',
-                'If {a} bunnies were in the meadow and {b} hopped away, how many bunnies remain?',
-                'The caretaker had {a} lettuce leaves and gave away {b}. How many are left?',
-                'From {a} bunny treats, {b} were eaten. How many treats remain?',
-                'Albert counted {a} flowers, but {b} wilted overnight. How many flowers are still blooming?',
-                'There were {a} bunnies in the burrow, then {b} went out to play. How many stayed inside?'
-            ],
-            doubles: [
-                'Each penguin needs a partner for the ice parade. If there are {n} penguins, how many penguins total?',
-                'The penguins slide down the ice slide in pairs. How many penguins in {n} pairs?',
-                'Each penguin catches {n} fish. How many fish do 2 penguins catch?',
-                'There are {n} penguin pairs playing together. How many penguins are playing?',
-                'Each ice block can hold 2 penguins. How many penguins can {n} blocks hold?',
-                'In the penguin parade, they march 2 by 2. How many penguins are in {n} rows?'
-            ],
-            doubles_word_problems: [
-                'At the penguin nursery, there are {n} baby penguins. Each baby penguin has exactly 2 flippers. How many flippers are there in total?',
-                'The penguin chef is making fish soup. Each bowl needs 2 fish. How many fish are needed for {n} bowls?',
-                'For the ice skating show, penguins perform in pairs. If there are {n} pairs, how many penguins are performing?',
-                'Each penguin family has 2 parents. How many parent penguins are there in {n} families?',
-                'The penguins collect ice cubes for their igloo. Each trip, they bring back 2 ice cubes. How many ice cubes after {n} trips?',
-                'Each sled needs 2 penguin pullers. How many penguins are needed to pull {n} sleds?'
-            ]
-        };
+        // Load the multilingual question templates
+        this.loadQuestionTemplates();
+    }
+    
+    loadQuestionTemplates() {
+        // Use the global QuestionTemplates if available, otherwise fallback
+        if (typeof QuestionTemplates !== 'undefined') {
+            this.questionTemplatesData = QuestionTemplates;
+        } else {
+            console.warn('QuestionTemplates not loaded, using fallback English templates');
+            this.questionTemplatesData = {
+                'en': {
+                    addition: ['There are {a} items and {b} more items. How many total?'],
+                    subtraction: ['There were {a} items, {b} were taken. How many left?'],
+                    doubles: ['There are {n} pairs. How many items total?'],
+                    doubles_word_problems: ['Each has 2 items. With {n} groups, how many total?'],
+                    multiplication: ['Each group has {a} items. With {b} groups, how many total?'],
+                    simple_division: ['{a} items shared among {b} groups. How many per group?'],
+                    division: ['{a} items divided by {b}. What is the result?'],
+                    fractions: ['What is {n}/{d} of the total?'],
+                    equations: ['Solve for x: {a}x = {b}'],
+                    decimals: ['Calculate: {a} + {b}'],
+                    exponentials: ['What is {base} squared?'],
+                    mixed_operations: ['Calculate: {a} + {b} × {c}'],
+                    word_problems: ['Solve this problem step by step.']
+                }
+            };
+        }
+    }
+    
+    getQuestionTemplates() {
+        const langTemplates = this.questionTemplatesData[this.currentLanguage];
+        if (langTemplates) {
+            return langTemplates;
+        }
+        
+        // Fallback to English if current language not found
+        console.warn(`Templates for language '${this.currentLanguage}' not found, falling back to English`);
+        return this.questionTemplatesData['en'] || {};
+    }
+    
+    setLanguage(languageCode) {
+        this.currentLanguage = languageCode;
+        console.log(`MathEngine: Language set to ${languageCode}`);
+        
+        // Re-select question template for current level with new language
+        if (this.selectedQuestionType) {
+            this.selectLevelQuestionTemplate();
+        }
     }
 
     setHabitat(habitat) {
@@ -107,8 +123,9 @@ class MathEngine {
         // Randomly select one problem type for the entire level
         this.selectedQuestionType = problemTypes[Math.floor(Math.random() * problemTypes.length)];
         
-        // Get available templates for the selected problem type
-        const availableTemplates = this.questionTemplates[this.selectedQuestionType];
+        // Get available templates for the selected problem type in current language
+        const questionTemplates = this.getQuestionTemplates();
+        const availableTemplates = questionTemplates[this.selectedQuestionType];
         if (availableTemplates) {
             // Randomly select one template for the entire level
             const templateIndex = Math.floor(Math.random() * availableTemplates.length);
@@ -432,7 +449,8 @@ class MathEngine {
         const answer = a + b;
         
         // Use the selected template for the level
-        const template = this.selectedQuestionTemplate || this.questionTemplates.addition[0];
+        const questionTemplates = this.getQuestionTemplates();
+        const template = this.selectedQuestionTemplate || (questionTemplates.addition && questionTemplates.addition[0]) || 'Calculate {a} + {b}';
         const text = template.replace('{a}', a).replace('{b}', b);
         
         return {
@@ -455,7 +473,8 @@ class MathEngine {
         const answer = a - b;
         
         // Use the selected template for the level
-        const template = this.selectedQuestionTemplate || this.questionTemplates.subtraction[0];
+        const questionTemplates = this.getQuestionTemplates();
+        const template = this.selectedQuestionTemplate || (questionTemplates.subtraction && questionTemplates.subtraction[0]) || 'Calculate {a} - {b}';
         const text = template.replace('{a}', a).replace('{b}', b);
         
         return {
@@ -472,13 +491,6 @@ class MathEngine {
     }
 
     generateMultiplicationProblem() {
-        const contexts = [
-            'Each penguin family needs {a} fish. How many fish do {b} families need?',
-            'There are {a} fish in each ice hole. How many fish in {b} holes?',
-            'If {a} penguins each catch {b} fish, how many fish total?',
-            'The caretaker gives {a} groups of penguins {b} fish each. How many fish total?'
-        ];
-        
         let maxFactor = Math.min(5 + this.difficultyLevel, 12);
         
         // Adjust factor range based on global difficulty
@@ -494,8 +506,11 @@ class MathEngine {
         const b = Math.floor(Math.random() * maxFactor) + 1;
         const answer = a * b;
         
-        const context = contexts[Math.floor(Math.random() * contexts.length)];
-        const text = context.replace('{a}', a).replace('{b}', b);
+        // Use the selected template for the level
+        const questionTemplates = this.getQuestionTemplates();
+        const templates = questionTemplates.multiplication || ['Calculate {a} × {b}'];
+        const template = this.selectedQuestionTemplate || templates[Math.floor(Math.random() * templates.length)];
+        const text = template.replace('{a}', a).replace('{b}', b);
         
         return {
             type: 'multiplication',
@@ -516,7 +531,8 @@ class MathEngine {
         const answer = number * 2;
         
         // Use the selected template for the level
-        const template = this.selectedQuestionTemplate || this.questionTemplates.doubles[0];
+        const questionTemplates = this.getQuestionTemplates();
+        const template = this.selectedQuestionTemplate || (questionTemplates.doubles && questionTemplates.doubles[0]) || 'Double {n}';
         const text = template.replace('{n}', number);
         
         return {
@@ -538,7 +554,8 @@ class MathEngine {
         const answer = number * 2;
         
         // Use the selected template for the level
-        const template = this.selectedQuestionTemplate || this.questionTemplates.doubles_word_problems[0];
+        const questionTemplates = this.getQuestionTemplates();
+        const template = this.selectedQuestionTemplate || (questionTemplates.doubles_word_problems && questionTemplates.doubles_word_problems[0]) || 'There are {n} pairs. How many total?';
         const text = template.replace('{n}', number);
         const operation = `${number} × 2 = ?`;
         
@@ -557,18 +574,15 @@ class MathEngine {
     }
 
     generateSimpleDivisionProblem() {
-        const contexts = [
-            '{a} fish need to be shared equally among {b} penguins. How many fish per penguin?',
-            'If {a} ice cubes are divided into {b} equal groups, how many in each group?',
-            'The caretaker has {a} fish to give to {b} penguin families equally. How many per family?'
-        ];
-        
         const divisor = Math.floor(Math.random() * 8) + 2;
         const quotient = Math.floor(Math.random() * 10) + 1;
         const dividend = divisor * quotient;
         
-        const context = contexts[Math.floor(Math.random() * contexts.length)];
-        const text = context.replace('{a}', dividend).replace('{b}', divisor);
+        // Use the selected template for the level
+        const questionTemplates = this.getQuestionTemplates();
+        const templates = questionTemplates.simple_division || ['Divide {a} by {b}'];
+        const template = this.selectedQuestionTemplate || templates[Math.floor(Math.random() * templates.length)];
+        const text = template.replace('{a}', dividend).replace('{b}', divisor);
         
         return {
             type: 'division',
@@ -584,18 +598,15 @@ class MathEngine {
     }
 
     generateDivisionProblem() {
-        const contexts = [
-            '{a} water buckets need to be shared equally among {b} elephants. How many buckets per elephant?',
-            'If {a} peanuts are divided equally among {b} elephants, how many peanuts each?',
-            'The caretaker has {a} hay bales for {b} elephants. How many bales per elephant?'
-        ];
-        
         const divisor = Math.floor(Math.random() * 10) + 2;
         const quotient = Math.floor(Math.random() * 15) + 1;
         const dividend = divisor * quotient;
         
-        const context = contexts[Math.floor(Math.random() * contexts.length)];
-        const text = context.replace('{a}', dividend).replace('{b}', divisor);
+        // Use the selected template for the level
+        const questionTemplates = this.getQuestionTemplates();
+        const templates = questionTemplates.division || ['Divide {a} by {b}'];
+        const template = this.selectedQuestionTemplate || templates[Math.floor(Math.random() * templates.length)];
+        const text = template.replace('{a}', dividend).replace('{b}', divisor);
         
         return {
             type: 'division',
@@ -611,12 +622,6 @@ class MathEngine {
     }
 
     generateFractionProblem() {
-        const contexts = [
-            'Each monkey gets {n}/{d} of a banana bunch. How many banana bunches for {count} monkeys?',
-            'If {n}/{d} of the jungle is for sleeping, what fraction is for playing?',
-            'The caretaker gives {n}/{d} of the fruit to the monkeys. What fraction is left?'
-        ];
-        
         let denominators;
         // Adjust fraction complexity based on global difficulty
         switch (this.globalDifficulty) {
@@ -638,19 +643,24 @@ class MathEngine {
         let answer, text;
         const problemType = Math.floor(Math.random() * 3);
         
+        // Get the selected template for the level
+        const questionTemplates = this.getQuestionTemplates();
+        const templates = questionTemplates.fractions || ['What is {n}/{d}?'];
+        const template = this.selectedQuestionTemplate || templates[Math.floor(Math.random() * templates.length)];
+        
         if (problemType === 0) {
             // Addition of fractions
             const count = Math.floor(Math.random() * 5) + 2;
             answer = Math.round((n * count / d) * 100) / 100;
-            text = contexts[0].replace('{n}', n).replace('{d}', d).replace('{count}', count);
+            text = template.replace('{n}', n).replace('{d}', d).replace('{count}', count);
         } else if (problemType === 1) {
             // Complement fraction
             answer = d - n;
-            text = contexts[1].replace('{n}', n).replace('{d}', d);
+            text = template.replace('{n}', n).replace('{d}', d);
         } else {
             // Remainder fraction
             answer = d - n;
-            text = contexts[2].replace('{n}', n).replace('{d}', d);
+            text = template.replace('{n}', n).replace('{d}', d);
         }
         
         return {
@@ -667,18 +677,15 @@ class MathEngine {
     }
 
     generateEquationProblem() {
-        const contexts = [
-            'If x lions each need {a} pounds of meat, and we have {b} pounds total, how many lions can we feed?',
-            'The pride has {a} lions. If we need {b} pounds of meat per lion, how much meat total?',
-            'We have {a} lions and need {b} pounds of meat. How much meat per lion?'
-        ];
-        
         const a = Math.floor(Math.random() * 10) + 2;
         const b = Math.floor(Math.random() * 50) + 10;
         const answer = Math.floor(b / a);
         
-        const context = contexts[Math.floor(Math.random() * contexts.length)];
-        const text = context.replace('{a}', a).replace('{b}', b);
+        // Use the selected template for the level
+        const questionTemplates = this.getQuestionTemplates();
+        const templates = questionTemplates.equations || ['Solve: {a}x = {b}'];
+        const template = this.selectedQuestionTemplate || templates[Math.floor(Math.random() * templates.length)];
+        const text = template.replace('{a}', a).replace('{b}', b);
         
         return {
             type: 'equations',
@@ -694,18 +701,15 @@ class MathEngine {
     }
 
     generateExponentialProblem() {
-        const contexts = [
-            'The dragon has {base} treasure chests. Each chest has {base} compartments. How many compartments total?',
-            'If {base} dragons each guard {base} treasures, how many treasures total?',
-            'The magic crystal grows by {base} times each day. After 2 days, how many times bigger?'
-        ];
-        
         const base = Math.floor(Math.random() * 5) + 2;
         const exponent = 2; // Keep it simple for 8-year-olds
         const answer = Math.pow(base, exponent);
         
-        const context = contexts[Math.floor(Math.random() * contexts.length)];
-        const text = context.replace(/{base}/g, base);
+        // Use the selected template for the level
+        const questionTemplates = this.getQuestionTemplates();
+        const templates = questionTemplates.exponentials || ['What is {base} squared?'];
+        const template = this.selectedQuestionTemplate || templates[Math.floor(Math.random() * templates.length)];
+        const text = template.replace(/{base}/g, base);
         
         return {
             type: 'exponentials',
@@ -734,10 +738,16 @@ class MathEngine {
         
         const operation = operations[Math.floor(Math.random() * operations.length)];
         
+        // Use the selected template for the level
+        const questionTemplates = this.getQuestionTemplates();
+        const templates = questionTemplates.mixed_operations || ['Calculate: {a} + {b} × {c}'];
+        const template = this.selectedQuestionTemplate || templates[Math.floor(Math.random() * templates.length)];
+        const text = template.replace('{a}', a).replace('{b}', b).replace('{c}', c) || `Calculate: ${operation.text}`;
+        
         return {
             type: 'mixed_operations',
             title: 'Challenge Problem!',
-            text: `Calculate: ${operation.text}`,
+            text: text,
             answer: operation.answer,
             visual: this.generateMixedOperationVisual(operation.text),
             operation: operation.text,
@@ -748,34 +758,24 @@ class MathEngine {
     }
 
     generateWordProblem() {
-        const problems = [
-            {
-                text: 'The animal sanctuary has 15 animals. If 8 are mammals and the rest are birds, how many birds are there?',
-                answer: 7,
-                operation: '15 - 8 = ?'
-            },
-            {
-                text: 'Each animal needs 3 meals per day. How many meals do 6 animals need per day?',
-                answer: 18,
-                operation: '6 × 3 = ?'
-            },
-            {
-                text: 'The caretaker works 8 hours a day for 5 days. How many hours total?',
-                answer: 40,
-                operation: '8 × 5 = ?'
-            }
-        ];
+        // Use the selected template for the level
+        const questionTemplates = this.getQuestionTemplates();
+        const templates = questionTemplates.word_problems || ['Solve this problem step by step.'];
+        const template = this.selectedQuestionTemplate || templates[Math.floor(Math.random() * templates.length)];
         
-        const problem = problems[Math.floor(Math.random() * problems.length)];
+        // Generate numbers for the word problem
+        const a = Math.floor(Math.random() * 10) + 5;
+        const b = Math.floor(Math.random() * 5) + 2;
+        const answer = a - b;
         
         return {
             type: 'word_problems',
             title: 'Story Problem!',
-            text: problem.text,
-            answer: problem.answer,
+            text: template,
+            answer: answer,
             visual: ['📚', '🧮', '✏️'],
-            operation: problem.operation,
-            explanation: `${problem.operation.replace('?', problem.answer)}`,
+            operation: `${a} - ${b} = ?`,
+            explanation: `${a} - ${b} = ${answer}`,
             habitat: this.currentHabitat,
             difficulty: this.difficultyLevel
         };
