@@ -57,6 +57,9 @@ class GameController {
         this.mathEngine.setLanguage(this.gameState.settings.language);
         this.mathEngine.setDifficulty(this.gameState.settings.difficulty);
         
+        // Make gameController available globally for MathEngine
+        window.gameController = this;
+        
         // Listen for language changes
         document.addEventListener('languageChanged', (e) => {
             this.onLanguageChanged(e.detail.language);
@@ -468,14 +471,20 @@ class GameController {
         // Let the habitat handle the answer checking
         if (this.currentHabitat && this.currentHabitat.checkAnswer) {
             const isCorrect = this.currentHabitat.checkAnswer(selectedAnswer);
-            this.showFeedback(isCorrect ? 'Correct! Well done!' : 'Not quite right, try again!', isCorrect);
+            const feedbackMessage = isCorrect ?
+                this.languageManager.translate('feedback.correct') :
+                this.languageManager.translate('feedback.incorrect');
+            this.showFeedback(feedbackMessage, isCorrect);
             
             // Visual feedback on options
             this.showAnswerFeedback(selectedAnswer, isCorrect);
         } else {
             // Fallback to mathEngine for habitats that don't have checkAnswer
             const isCorrect = this.mathEngine.checkAnswer(selectedAnswer);
-            this.showFeedback(isCorrect ? 'Correct! Well done!' : 'Not quite right, try again!', isCorrect);
+            const feedbackMessage = isCorrect ?
+                this.languageManager.translate('feedback.correct') :
+                this.languageManager.translate('feedback.incorrect');
+            this.showFeedback(feedbackMessage, isCorrect);
             
             // Visual feedback on options
             this.showAnswerFeedback(selectedAnswer, isCorrect);
@@ -1297,7 +1306,7 @@ class GameController {
 
 // Initialize game when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    window.gameController = new GameController();
+    new GameController();
 });
 
 // Export for testing

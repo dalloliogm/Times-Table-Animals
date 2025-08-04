@@ -54,7 +54,35 @@ class LanguageManager {
                     'habitat.giraffePlains': 'Giraffe Plains',
                     'habitat.owlObservatory': 'Owl Observatory',
                     'habitat.dragonSanctuary': 'Dragon Sanctuary',
-                    'habitat.rainbowReserve': 'Rainbow Reserve'
+                    'habitat.rainbowReserve': 'Rainbow Reserve',
+                    
+                    // Problem Titles
+                    'problem.help_bunnies': 'Help the Bunnies!',
+                    'problem.help_penguins': 'Help the Penguins!',
+                    'problem.help_elephants': 'Help the Elephants!',
+                    'problem.help_monkeys': 'Help the Monkeys!',
+                    'problem.help_lions': 'Help the Lions!',
+                    'problem.help_dolphins': 'Help the Dolphins!',
+                    'problem.help_bears': 'Help the Bears!',
+                    'problem.help_giraffes': 'Help the Giraffes!',
+                    'problem.help_owls': 'Help the Owls!',
+                    'problem.help_dragons': 'Help the Dragons!',
+                    'problem.penguin_pairs': 'Penguin Pairs!',
+                    'problem.penguin_story': 'Penguin Story Problem!',
+                    'problem.challenge': 'Challenge Problem!',
+                    'problem.story': 'Story Problem!',
+                    
+                    // Timer and Game Messages
+                    'timer.warning': 'minute remaining!',
+                    'timer.catastrophic_title': 'VOLCANO ERUPTS!',
+                    'timer.catastrophic_message': 'Time ran out! The volcano erupted and scared away all the animals! Don\'t worry - you can try again!',
+                    'timer.try_again': 'Try Again',
+                    'timer.choose_different': 'Choose Different Habitat',
+                    
+                    // Feedback Messages
+                    'feedback.correct': 'Correct! Well done!',
+                    'feedback.incorrect': 'Not quite right, try again!',
+                    'feedback.continue': 'Continue'
                 }
             },
             'es': {
@@ -106,7 +134,35 @@ class LanguageManager {
                     'habitat.giraffePlains': 'Llanuras de Jirafas',
                     'habitat.owlObservatory': 'Observatorio de Búhos',
                     'habitat.dragonSanctuary': 'Santuario de Dragones',
-                    'habitat.rainbowReserve': 'Reserva del Arcoíris'
+                    'habitat.rainbowReserve': 'Reserva del Arcoíris',
+                    
+                    // Problem Titles
+                    'problem.help_bunnies': '¡Ayuda a los Conejos!',
+                    'problem.help_penguins': '¡Ayuda a los Pingüinos!',
+                    'problem.help_elephants': '¡Ayuda a los Elefantes!',
+                    'problem.help_monkeys': '¡Ayuda a los Monos!',
+                    'problem.help_lions': '¡Ayuda a los Leones!',
+                    'problem.help_dolphins': '¡Ayuda a los Delfines!',
+                    'problem.help_bears': '¡Ayuda a los Osos!',
+                    'problem.help_giraffes': '¡Ayuda a las Jirafas!',
+                    'problem.help_owls': '¡Ayuda a los Búhos!',
+                    'problem.help_dragons': '¡Ayuda a los Dragones!',
+                    'problem.penguin_pairs': '¡Parejas de Pingüinos!',
+                    'problem.penguin_story': '¡Problema de Historia de Pingüinos!',
+                    'problem.challenge': '¡Problema de Desafío!',
+                    'problem.story': '¡Problema de Historia!',
+                    
+                    // Timer and Game Messages
+                    'timer.warning': '¡minuto restante!',
+                    'timer.catastrophic_title': '¡EL VOLCÁN ERUPCIONA!',
+                    'timer.catastrophic_message': '¡Se acabó el tiempo! ¡El volcán hizo erupción y asustó a todos los animales! ¡No te preocupes - puedes intentarlo de nuevo!',
+                    'timer.try_again': 'Intentar de Nuevo',
+                    'timer.choose_different': 'Elegir Hábitat Diferente',
+                    
+                    // Feedback Messages
+                    'feedback.correct': '¡Correcto! ¡Muy bien!',
+                    'feedback.incorrect': '¡No del todo correcto, inténtalo de nuevo!',
+                    'feedback.continue': 'Continuar'
                 }
             },
             'it': {
@@ -158,7 +214,35 @@ class LanguageManager {
                     'habitat.giraffePlains': 'Pianure delle Giraffe',
                     'habitat.owlObservatory': 'Osservatorio dei Gufi',
                     'habitat.dragonSanctuary': 'Santuario dei Draghi',
-                    'habitat.rainbowReserve': 'Riserva dell\'Arcobaleno'
+                    'habitat.rainbowReserve': 'Riserva dell\'Arcobaleno',
+                    
+                    // Problem Titles
+                    'problem.help_bunnies': 'Aiuta i Conigli!',
+                    'problem.help_penguins': 'Aiuta i Pinguini!',
+                    'problem.help_elephants': 'Aiuta gli Elefanti!',
+                    'problem.help_monkeys': 'Aiuta le Scimmie!',
+                    'problem.help_lions': 'Aiuta i Leoni!',
+                    'problem.help_dolphins': 'Aiuta i Delfini!',
+                    'problem.help_bears': 'Aiuta gli Orsi!',
+                    'problem.help_giraffes': 'Aiuta le Giraffe!',
+                    'problem.help_owls': 'Aiuta i Gufi!',
+                    'problem.help_dragons': 'Aiuta i Draghi!',
+                    'problem.penguin_pairs': 'Coppie di Pinguini!',
+                    'problem.penguin_story': 'Problema Storia di Pinguini!',
+                    'problem.challenge': 'Problema Sfida!',
+                    'problem.story': 'Problema Storia!',
+                    
+                    // Timer and Game Messages
+                    'timer.warning': 'minuto rimanente!',
+                    'timer.catastrophic_title': 'IL VULCANO ERUTTA!',
+                    'timer.catastrophic_message': 'Tempo scaduto! Il vulcano è esploso e ha spaventato tutti gli animali! Non preoccuparti - puoi riprovare!',
+                    'timer.try_again': 'Riprova',
+                    'timer.choose_different': 'Scegli Habitat Diverso',
+                    
+                    // Feedback Messages
+                    'feedback.correct': 'Corretto! Ben fatto!',
+                    'feedback.incorrect': 'Non proprio giusto, riprova!',
+                    'feedback.continue': 'Continua'
                 }
             }
         };

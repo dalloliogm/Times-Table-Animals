@@ -72,10 +72,22 @@ class MathEngine {
         this.currentLanguage = languageCode;
         console.log(`MathEngine: Language set to ${languageCode}`);
         
+        // Store reference to language manager for translations
+        if (typeof window !== 'undefined' && window.gameController && window.gameController.languageManager) {
+            this.languageManager = window.gameController.languageManager;
+        }
+        
         // Re-select question template for current level with new language
         if (this.selectedQuestionType) {
             this.selectLevelQuestionTemplate();
         }
+    }
+    
+    translate(key) {
+        if (this.languageManager && this.languageManager.translate) {
+            return this.languageManager.translate(key);
+        }
+        return key; // fallback to key if no translator available
     }
 
     setHabitat(habitat) {
@@ -455,7 +467,7 @@ class MathEngine {
         
         return {
             type: 'addition',
-            title: 'Help the Bunnies!',
+            title: this.translate('problem.help_bunnies'),
             text: text,
             answer: answer,
             visual: this.generateAdditionVisual(a, b),
@@ -479,7 +491,7 @@ class MathEngine {
         
         return {
             type: 'subtraction',
-            title: 'Help the Bunnies!',
+            title: this.translate('problem.help_bunnies'),
             text: text,
             answer: answer,
             visual: this.generateSubtractionVisual(a, b),
@@ -514,7 +526,7 @@ class MathEngine {
         
         return {
             type: 'multiplication',
-            title: 'Help the Penguins!',
+            title: this.translate('problem.help_penguins'),
             text: text,
             answer: answer,
             visual: this.generateMultiplicationVisual(a, b),
@@ -537,7 +549,7 @@ class MathEngine {
         
         return {
             type: 'doubles',
-            title: 'Penguin Pairs!',
+            title: this.translate('problem.penguin_pairs'),
             text: text,
             answer: answer,
             visual: this.generateDoublesVisual(number),
@@ -561,7 +573,7 @@ class MathEngine {
         
         return {
             type: 'doubles_word_problems',
-            title: 'Penguin Story Problem!',
+            title: this.translate('problem.penguin_story'),
             text: text,
             answer: answer,
             visual: this.generateDoublesVisual(number),
@@ -586,7 +598,7 @@ class MathEngine {
         
         return {
             type: 'division',
-            title: 'Help the Penguins!',
+            title: this.translate('problem.help_penguins'),
             text: text,
             answer: quotient,
             visual: this.generateDivisionVisual(dividend, divisor),
@@ -610,7 +622,7 @@ class MathEngine {
         
         return {
             type: 'division',
-            title: 'Help the Elephants!',
+            title: this.translate('problem.help_elephants'),
             text: text,
             answer: quotient,
             visual: this.generateDivisionVisual(dividend, divisor),
@@ -665,7 +677,7 @@ class MathEngine {
         
         return {
             type: 'fractions',
-            title: 'Help the Monkeys!',
+            title: this.translate('problem.help_monkeys'),
             text: text,
             answer: answer,
             visual: this.generateFractionVisual(n, d),
@@ -689,7 +701,7 @@ class MathEngine {
         
         return {
             type: 'equations',
-            title: 'Help the Lions!',
+            title: this.translate('problem.help_lions'),
             text: text,
             answer: answer,
             visual: this.generateEquationVisual(a, b),
@@ -713,7 +725,7 @@ class MathEngine {
         
         return {
             type: 'exponentials',
-            title: 'Help the Dragons!',
+            title: this.translate('problem.help_dragons'),
             text: text,
             answer: answer,
             visual: this.generateExponentialVisual(base, exponent),
@@ -746,7 +758,7 @@ class MathEngine {
         
         return {
             type: 'mixed_operations',
-            title: 'Challenge Problem!',
+            title: this.translate('problem.challenge'),
             text: text,
             answer: operation.answer,
             visual: this.generateMixedOperationVisual(operation.text),
@@ -770,7 +782,7 @@ class MathEngine {
         
         return {
             type: 'word_problems',
-            title: 'Story Problem!',
+            title: this.translate('problem.story'),
             text: template,
             answer: answer,
             visual: ['📚', '🧮', '✏️'],

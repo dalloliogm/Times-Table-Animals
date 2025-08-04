@@ -77,11 +77,11 @@ class TimerManager {
                 <div class="catastrophic-icon">
                     <img src="assets/volcano.jpg" alt="Volcano Eruption" class="volcano-image">
                 </div>
-                <h1 class="catastrophic-title">VOLCANO ERUPTS!</h1>
-                <p class="catastrophic-message">The meadow is in danger! The animals need your help!</p>
+                <h1 class="catastrophic-title">${this.translate('timer.catastrophic_title')}</h1>
+                <p class="catastrophic-message">${this.translate('timer.catastrophic_message')}</p>
                 <div class="catastrophic-buttons">
-                    <button id="tryAgainBtn" class="catastrophic-btn primary">Try Again</button>
-                    <button id="backToHabitatsBtn" class="catastrophic-btn secondary">Back to Habitats</button>
+                    <button id="tryAgainBtn" class="catastrophic-btn primary">${this.translate('timer.try_again')}</button>
+                    <button id="backToHabitatsBtn" class="catastrophic-btn secondary">${this.translate('timer.choose_different')}</button>
                 </div>
             </div>
         `;
@@ -97,6 +97,13 @@ class TimerManager {
         document.getElementById('backToHabitatsBtn').addEventListener('click', () => {
             this.onBackToHabitats();
         });
+    }
+    
+    translate(key) {
+        if (this.gameController && this.gameController.languageManager && this.gameController.languageManager.translate) {
+            return this.gameController.languageManager.translate(key);
+        }
+        return key; // fallback to key if no translator available
     }
 
     startTimer(habitat) {
@@ -262,7 +269,7 @@ class TimerManager {
     createWarningEffect(threshold) {
         // Enhanced volcanic-themed warning messages
         const warningMessages = {
-            60000: { text: 'The volcano is rumbling! 1 minute left!', icon: '<img src="assets/volcano.jpg" alt="Volcano" class="warning-volcano-image">', class: 'warning-mild' },
+            60000: { text: `The volcano is rumbling! 1 ${this.translate('timer.warning')}`, icon: '<img src="assets/volcano.jpg" alt="Volcano" class="warning-volcano-image">', class: 'warning-mild' },
             45000: { text: 'Smoke rising from the crater! 45 seconds!', icon: '💨', class: 'warning-moderate' },
             30000: { text: 'Lava bubbling! 30 seconds left!', icon: '🔥', class: 'warning-urgent' },
             20000: { text: 'Ground shaking! 20 seconds!', icon: '⚡', class: 'warning-critical' },
@@ -378,8 +385,8 @@ class TimerManager {
         const themes = {
             bunnyMeadow: {
                 icon: '<img src="assets/volcano.jpg" alt="Volcano Eruption" class="volcano-image">',
-                title: 'VOLCANO ERUPTS!',
-                message: 'The meadow is in danger! The bunnies need your help!'
+                title: this.translate('timer.catastrophic_title'),
+                message: this.translate('timer.catastrophic_message')
             },
             penguinPairsArctic: {
                 icon: '❄️',
@@ -414,6 +421,8 @@ class TimerManager {
             const icon = this.catastrophicOverlay.querySelector('.catastrophic-icon');
             const title = this.catastrophicOverlay.querySelector('.catastrophic-title');
             const message = this.catastrophicOverlay.querySelector('.catastrophic-message');
+            const tryAgainBtn = this.catastrophicOverlay.querySelector('#tryAgainBtn');
+            const backToHabitatsBtn = this.catastrophicOverlay.querySelector('#backToHabitatsBtn');
             
             if (icon) {
                 if (habitat === 'bunnyMeadow') {
@@ -424,6 +433,8 @@ class TimerManager {
             }
             if (title) title.textContent = theme.title;
             if (message) message.textContent = theme.message;
+            if (tryAgainBtn) tryAgainBtn.textContent = this.translate('timer.try_again');
+            if (backToHabitatsBtn) backToHabitatsBtn.textContent = this.translate('timer.choose_different');
         }
     }
 
