@@ -314,6 +314,128 @@ body.habitat-select-mode #gameContainer {
     color: white;
 }
 
+/* Difficulty Selector */
+.difficulty-selector-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.difficulty-selector {
+    position: relative;
+    display: inline-block;
+}
+
+.difficulty-selector-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.difficulty-selector-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+    background: linear-gradient(45deg, #FF8E53, #FF6B6B);
+}
+
+.difficulty-selector-btn:active {
+    transform: translateY(0);
+}
+
+.difficulty-icon {
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.difficulty-name {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.difficulty-arrow {
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.difficulty-selector-btn.active .difficulty-arrow {
+    transform: rotate(180deg);
+}
+
+.difficulty-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 0.5rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    z-index: 1000;
+    min-width: 180px;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-50%) translateY(-10px);
+    transition: all 0.3s ease;
+}
+
+.difficulty-dropdown:not(.hidden) {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.difficulty-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.difficulty-option:last-child {
+    border-bottom: none;
+}
+
+.difficulty-option:hover {
+    background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+    color: white;
+}
+
+.difficulty-option .difficulty-icon {
+    font-size: 1.1rem;
+}
+
+.difficulty-option .difficulty-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.difficulty-option.selected {
+    background: rgba(255, 107, 107, 0.1);
+    color: #FF6B6B;
+    font-weight: bold;
+}
+
+.difficulty-option.selected:hover {
+    background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+    color: white;
+}
+
 .settings-options {
     display: flex;
     flex-direction: column;
@@ -985,6 +1107,28 @@ body.habitat-select-mode .habitat-content {
         font-size: 0.9rem;
     }
     
+    .difficulty-selector-container {
+        margin-bottom: 1.5rem;
+    }
+    
+    .difficulty-selector-btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+    
+    .difficulty-dropdown {
+        min-width: 160px;
+        margin-top: 0.3rem;
+    }
+    
+    .difficulty-option {
+        padding: 0.8rem 1.2rem;
+    }
+    
+    .difficulty-option .difficulty-name {
+        font-size: 0.9rem;
+    }
+    
     .settings-actions {
         flex-direction: column;
         gap: 10px;
@@ -1002,6 +1146,19 @@ body.habitat-select-mode .habitat-content {
     }
     
     .language-option {
+        padding: 0.7rem 1rem;
+    }
+    
+    .difficulty-selector-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+    
+    .difficulty-dropdown {
+        min-width: 140px;
+    }
+    
+    .difficulty-option {
         padding: 0.7rem 1rem;
     }
 }

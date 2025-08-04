@@ -24,8 +24,14 @@ class LanguageManager {
                     'settings.sfx': 'Sound Effects',
                     'settings.voice': 'Voice Narration',
                     'settings.volume': 'Master Volume',
+                    'settings.difficulty': 'Difficulty',
                     'settings.reset': 'Reset Progress',
                     'settings.back': 'Back to Menu',
+                    
+                    // Difficulty Levels
+                    'difficulty.easy': 'Easy',
+                    'difficulty.medium': 'Medium',
+                    'difficulty.hard': 'Hard',
                     
                     // Habitat Selection
                     'habitat.choose': 'Choose Your Habitat',
@@ -70,8 +76,14 @@ class LanguageManager {
                     'settings.sfx': 'Efectos de Sonido',
                     'settings.voice': 'Narración de Voz',
                     'settings.volume': 'Volumen Principal',
+                    'settings.difficulty': 'Dificultad',
                     'settings.reset': 'Reiniciar Progreso',
                     'settings.back': 'Volver al Menú',
+                    
+                    // Difficulty Levels
+                    'difficulty.easy': 'Fácil',
+                    'difficulty.medium': 'Medio',
+                    'difficulty.hard': 'Difícil',
                     
                     // Habitat Selection
                     'habitat.choose': 'Elige tu Hábitat',
@@ -116,8 +128,14 @@ class LanguageManager {
                     'settings.sfx': 'Effetti Sonori',
                     'settings.voice': 'Narrazione Vocale',
                     'settings.volume': 'Volume Principale',
+                    'settings.difficulty': 'Difficoltà',
                     'settings.reset': 'Azzera Progresso',
                     'settings.back': 'Torna al Menu',
+                    
+                    // Difficulty Levels
+                    'difficulty.easy': 'Facile',
+                    'difficulty.medium': 'Medio',
+                    'difficulty.hard': 'Difficile',
                     
                     // Habitat Selection
                     'habitat.choose': 'Scegli il tuo Habitat',

@@ -28,7 +28,8 @@ class GameController {
                 sfxEnabled: true,
                 voiceEnabled: true,
                 masterVolume: 75,
-                language: 'en'
+                language: 'en',
+                difficulty: 'medium'
             }
         };
         this.init();
@@ -51,6 +52,9 @@ class GameController {
         
         // Set initial language
         this.languageManager.setLanguage(this.gameState.settings.language);
+        
+        // Set initial difficulty
+        this.mathEngine.setDifficulty(this.gameState.settings.difficulty);
         
         // Listen for language changes
         document.addEventListener('languageChanged', (e) => {
@@ -135,6 +139,25 @@ class GameController {
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.language-selector')) {
                 this.closeLanguageDropdown();
+            }
+            if (!e.target.closest('.difficulty-selector')) {
+                this.closeDifficultyDropdown();
+            }
+        });
+
+        // Difficulty Selector Events
+        document.getElementById('difficultySelectorBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.toggleDifficultyDropdown();
+        });
+
+        // Difficulty option selection
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.difficulty-option')) {
+                const option = e.target.closest('.difficulty-option');
+                const difficulty = option.getAttribute('data-difficulty');
+                this.selectDifficulty(difficulty);
             }
         });
 
@@ -241,6 +264,9 @@ class GameController {
         
         // Update language selector
         this.updateLanguageSelectorUI();
+        
+        // Update difficulty selector
+        this.updateDifficultySelectorUI();
     }
 
     startGame() {
@@ -1161,6 +1187,105 @@ class GameController {
         this.updateLanguageSelectorUI();
         
         console.log(`Language changed to: ${languageCode}`);
+    }
+
+    // Difficulty selector methods
+    toggleDifficultyDropdown() {
+        const dropdown = document.getElementById('difficultyDropdown');
+        const button = document.getElementById('difficultySelectorBtn');
+        
+        if (dropdown && button) {
+            const isHidden = dropdown.classList.contains('hidden');
+            
+            if (isHidden) {
+                dropdown.classList.remove('hidden');
+                button.classList.add('active');
+                this.updateDifficultyOptions();
+            } else {
+                dropdown.classList.add('hidden');
+                button.classList.remove('active');
+            }
+        }
+    }
+
+    closeDifficultyDropdown() {
+        const dropdown = document.getElementById('difficultyDropdown');
+        const button = document.getElementById('difficultySelectorBtn');
+        
+        if (dropdown && button) {
+            dropdown.classList.add('hidden');
+            button.classList.remove('active');
+        }
+    }
+
+    updateDifficultyOptions() {
+        const currentDifficulty = this.gameState.settings.difficulty;
+        const options = document.querySelectorAll('.difficulty-option');
+        
+        options.forEach(option => {
+            const difficulty = option.getAttribute('data-difficulty');
+            if (difficulty === currentDifficulty) {
+                option.classList.add('selected');
+            } else {
+                option.classList.remove('selected');
+            }
+        });
+    }
+
+    selectDifficulty(difficulty) {
+        if (this.gameState.settings.difficulty !== difficulty) {
+            this.gameState.settings.difficulty = difficulty;
+            this.saveGameState();
+            
+            // Update math engine difficulty
+            if (this.mathEngine && this.mathEngine.setDifficulty) {
+                this.mathEngine.setDifficulty(difficulty);
+            }
+            
+            // Update UI immediately
+            this.updateDifficultySelectorUI();
+            
+            // Play audio feedback
+            this.audioManager.playSFX('ui-select');
+            
+            console.log(`Difficulty changed to: ${difficulty}`);
+        }
+        
+        this.closeDifficultyDropdown();
+    }
+
+    updateDifficultySelectorUI() {
+        const currentDifficulty = this.gameState.settings.difficulty;
+        const button = document.getElementById('difficultySelectorBtn');
+        
+        if (button && currentDifficulty) {
+            const iconSpan = button.querySelector('.difficulty-icon');
+            const nameSpan = button.querySelector('.difficulty-name');
+            
+            if (iconSpan && nameSpan) {
+                // Update icon based on difficulty
+                switch (currentDifficulty) {
+                    case 'easy':
+                        iconSpan.textContent = '⭐';
+                        nameSpan.setAttribute('data-translate', 'difficulty.easy');
+                        nameSpan.textContent = this.languageManager.translate('difficulty.easy');
+                        break;
+                    case 'medium':
+                        iconSpan.textContent = '⭐⭐';
+                        nameSpan.setAttribute('data-translate', 'difficulty.medium');
+                        nameSpan.textContent = this.languageManager.translate('difficulty.medium');
+                        break;
+                    case 'hard':
+                        iconSpan.textContent = '⭐⭐⭐';
+                        nameSpan.setAttribute('data-translate', 'difficulty.hard');
+                        nameSpan.textContent = this.languageManager.translate('difficulty.hard');
+                        break;
+                }
+            }
+        }
+        
+        // Update dropdown options selection
+        this.updateDifficultyOptions();
     }
 }
 

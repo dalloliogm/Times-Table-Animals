@@ -6,6 +6,7 @@ class MathEngine {
         this.currentProblem = null;
         this.problemHistory = [];
         this.difficultyLevel = 1;
+        this.globalDifficulty = 'medium'; // easy, medium, hard
         this.currentHabitat = 'bunnyMeadow';
         this.selectedQuestionTemplate = null;
         this.selectedQuestionType = null;
@@ -64,8 +65,39 @@ class MathEngine {
     setHabitat(habitat) {
         this.currentHabitat = habitat;
         this.difficultyLevel = this.getHabitatDifficulty(habitat);
+        // Apply global difficulty adjustment
+        this.applyGlobalDifficultyAdjustment();
         // Select question template for this level
         this.selectLevelQuestionTemplate();
+    }
+
+    setDifficulty(difficulty) {
+        this.globalDifficulty = difficulty;
+        console.log(`Math Engine: Difficulty set to ${difficulty}`);
+        // Reapply difficulty adjustment if we have a current habitat
+        if (this.currentHabitat) {
+            this.applyGlobalDifficultyAdjustment();
+        }
+    }
+
+    applyGlobalDifficultyAdjustment() {
+        const baseDifficulty = this.getHabitatDifficulty(this.currentHabitat);
+        
+        switch (this.globalDifficulty) {
+            case 'easy':
+                this.difficultyLevel = Math.max(1, baseDifficulty - 2);
+                break;
+            case 'medium':
+                this.difficultyLevel = baseDifficulty;
+                break;
+            case 'hard':
+                this.difficultyLevel = baseDifficulty + 2;
+                break;
+            default:
+                this.difficultyLevel = baseDifficulty;
+        }
+        
+        console.log(`Applied difficulty adjustment: ${this.globalDifficulty} -> Level ${this.difficultyLevel}`);
     }
 
     selectLevelQuestionTemplate() {
@@ -383,7 +415,18 @@ class MathEngine {
     }
 
     generateAdditionProblem() {
-        const range = Math.min(10 + this.difficultyLevel * 5, 50);
+        let range = Math.min(10 + this.difficultyLevel * 5, 50);
+        
+        // Adjust range based on global difficulty
+        switch (this.globalDifficulty) {
+            case 'easy':
+                range = Math.min(range, 20);
+                break;
+            case 'hard':
+                range = Math.min(range + 20, 100);
+                break;
+        }
+        
         const a = Math.floor(Math.random() * range) + 1;
         const b = Math.floor(Math.random() * range) + 1;
         const answer = a + b;
@@ -436,7 +479,17 @@ class MathEngine {
             'The caretaker gives {a} groups of penguins {b} fish each. How many fish total?'
         ];
         
-        const maxFactor = Math.min(5 + this.difficultyLevel, 12);
+        let maxFactor = Math.min(5 + this.difficultyLevel, 12);
+        
+        // Adjust factor range based on global difficulty
+        switch (this.globalDifficulty) {
+            case 'easy':
+                maxFactor = Math.min(maxFactor, 5);
+                break;
+            case 'hard':
+                maxFactor = Math.min(maxFactor + 3, 15);
+                break;
+        }
         const a = Math.floor(Math.random() * maxFactor) + 1;
         const b = Math.floor(Math.random() * maxFactor) + 1;
         const answer = a * b;
@@ -564,7 +617,21 @@ class MathEngine {
             'The caretaker gives {n}/{d} of the fruit to the monkeys. What fraction is left?'
         ];
         
-        const denominators = [2, 3, 4, 5, 6, 8, 10];
+        let denominators;
+        // Adjust fraction complexity based on global difficulty
+        switch (this.globalDifficulty) {
+            case 'easy':
+                denominators = [2, 3, 4];
+                break;
+            case 'medium':
+                denominators = [2, 3, 4, 5, 6, 8];
+                break;
+            case 'hard':
+                denominators = [2, 3, 4, 5, 6, 8, 10, 12];
+                break;
+            default:
+                denominators = [2, 3, 4, 5, 6, 8, 10];
+        }
         const d = denominators[Math.floor(Math.random() * denominators.length)];
         const n = Math.floor(Math.random() * (d - 1)) + 1;
         

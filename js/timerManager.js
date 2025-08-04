@@ -6,9 +6,9 @@ class TimerManager {
         this.gameController = gameController;
         this.audioManager = audioManager;
         
-        // Timer configuration - TEMPORARILY SHORTENED FOR TESTING
+        // Timer configuration
         this.config = {
-            levelDuration: 180_000, 
+            levelDuration: 300000, 
             warningThresholds: [175_000, 165_000, 160_000, 140_000, 100_000, 80_000, 60_000, 40_000, 20_000], // Warning every 2 seconds
             urgencyThreshold: 120_000, // When to start urgency effects
             criticalThreshold: 80_000, // When to start critical effects
