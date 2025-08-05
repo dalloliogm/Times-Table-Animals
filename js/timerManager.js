@@ -63,7 +63,11 @@ class TimerManager {
         }
         
         if (this.timerDisplay) {
-            this.timerDisplay.textContent = '3:00';
+            // Calculate initial display from levelDuration
+            const minutes = Math.floor(this.config.levelDuration / 60000);
+            const seconds = Math.floor((this.config.levelDuration % 60000) / 1000);
+            const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            this.timerDisplay.textContent = timeString;
         }
     }
 
@@ -389,27 +393,27 @@ class TimerManager {
                 message: this.translate('timer.catastrophic_message')
             },
             penguinPairsArctic: {
-                icon: '❄️',
+                icon: '<img src="assets/volcano.jpg" alt="Volcano Eruption" class="volcano-image">',
                 title: 'MASSIVE BLIZZARD!',
                 message: 'The penguins are lost in the storm!'
             },
             penguinArctic: {
-                icon: '🧊',
+                icon: '<img src="assets/volcano.jpg" alt="Volcano Eruption" class="volcano-image">',
                 title: 'ICE AGE RETURNS!',
                 message: 'Everything is freezing! Help the penguins!'
             },
             elephantSavanna: {
-                icon: '🌵',
+                icon: '<img src="assets/volcano.jpg" alt="Volcano Eruption" class="volcano-image">',
                 title: 'SEVERE DROUGHT!',
                 message: 'The savanna is parched! The elephants need water!'
             },
             monkeyJungle: {
-                icon: '🔥',
+                icon: '<img src="assets/volcano.jpg" alt="Volcano Eruption" class="volcano-image">',
                 title: 'JUNGLE FIRE!',
                 message: 'The trees are burning! Save the monkeys!'
             },
             lionPride: {
-                icon: '🌪️',
+                icon: '<img src="assets/volcano.jpg" alt="Volcano Eruption" class="volcano-image">',
                 title: 'SANDSTORM CHAOS!',
                 message: 'Can\'t see the pride! Help them find safety!'
             }
@@ -425,11 +429,7 @@ class TimerManager {
             const backToHabitatsBtn = this.catastrophicOverlay.querySelector('#backToHabitatsBtn');
             
             if (icon) {
-                if (habitat === 'bunnyMeadow') {
-                    icon.innerHTML = theme.icon;
-                } else {
-                    icon.textContent = theme.icon;
-                }
+                icon.innerHTML = theme.icon;
             }
             if (title) title.textContent = theme.title;
             if (message) message.textContent = theme.message;
