@@ -56,6 +56,20 @@ class LanguageManager {
                     'habitat.dragonSanctuary': 'Dragon Sanctuary',
                     'habitat.rainbowReserve': 'Rainbow Reserve',
                     
+                    // Habitat Descriptions
+                    'habitat.desc.addition_subtraction': 'Addition & Subtraction',
+                    'habitat.desc.doubles_tables': 'Doubles (2× Tables)',
+                    'habitat.desc.multiplication': 'Multiplication',
+                    'habitat.desc.division': 'Division',
+                    'habitat.desc.fractions': 'Fractions',
+                    'habitat.desc.equations_word': 'Equations & Word Problems',
+                    'habitat.desc.decimals_measurement': 'Decimals & Measurement',
+                    'habitat.desc.mixed_operations': 'Mixed Operations',
+                    'habitat.desc.measurement_geometry': 'Measurement & Geometry',
+                    'habitat.desc.advanced_multiplication': 'Advanced Multiplication',
+                    'habitat.desc.exponentials_advanced': 'Exponentials & Advanced',
+                    'habitat.desc.ultimate_challenge': 'Ultimate Challenge',
+                    
                     // Problem Titles
                     'problem.help_bunnies': 'Help the Bunnies!',
                     'problem.help_penguins': 'Help the Penguins!',
@@ -136,6 +150,20 @@ class LanguageManager {
                     'habitat.dragonSanctuary': 'Santuario de Dragones',
                     'habitat.rainbowReserve': 'Reserva del Arcoíris',
                     
+                    // Habitat Descriptions
+                    'habitat.desc.addition_subtraction': 'Suma y Resta',
+                    'habitat.desc.doubles_tables': 'Dobles (Tablas del 2×)',
+                    'habitat.desc.multiplication': 'Multiplicación',
+                    'habitat.desc.division': 'División',
+                    'habitat.desc.fractions': 'Fracciones',
+                    'habitat.desc.equations_word': 'Ecuaciones y Problemas de Palabras',
+                    'habitat.desc.decimals_measurement': 'Decimales y Medición',
+                    'habitat.desc.mixed_operations': 'Operaciones Mixtas',
+                    'habitat.desc.measurement_geometry': 'Medición y Geometría',
+                    'habitat.desc.advanced_multiplication': 'Multiplicación Avanzada',
+                    'habitat.desc.exponentials_advanced': 'Exponenciales y Avanzado',
+                    'habitat.desc.ultimate_challenge': 'Desafío Definitivo',
+                    
                     // Problem Titles
                     'problem.help_bunnies': '¡Ayuda a los Conejos!',
                     'problem.help_penguins': '¡Ayuda a los Pingüinos!',
@@ -215,6 +243,20 @@ class LanguageManager {
                     'habitat.owlObservatory': 'Osservatorio dei Gufi',
                     'habitat.dragonSanctuary': 'Santuario dei Draghi',
                     'habitat.rainbowReserve': 'Riserva dell\'Arcobaleno',
+                    
+                    // Habitat Descriptions
+                    'habitat.desc.addition_subtraction': 'Addizione e Sottrazione',
+                    'habitat.desc.doubles_tables': 'Doppie (Tabelle del 2×)',
+                    'habitat.desc.multiplication': 'Moltiplicazione',
+                    'habitat.desc.division': 'Divisione',
+                    'habitat.desc.fractions': 'Frazioni',
+                    'habitat.desc.equations_word': 'Equazioni e Problemi di Parole',
+                    'habitat.desc.decimals_measurement': 'Decimali e Misurazione',
+                    'habitat.desc.mixed_operations': 'Operazioni Miste',
+                    'habitat.desc.measurement_geometry': 'Misurazione e Geometria',
+                    'habitat.desc.advanced_multiplication': 'Moltiplicazione Avanzata',
+                    'habitat.desc.exponentials_advanced': 'Esponenziali e Avanzato',
+                    'habitat.desc.ultimate_challenge': 'Sfida Definitiva',
                     
                     // Problem Titles
                     'problem.help_bunnies': 'Aiuta i Conigli!',
