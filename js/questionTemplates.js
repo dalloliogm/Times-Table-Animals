@@ -105,6 +105,62 @@ const QuestionTemplates = {
             'The animal sanctuary has 15 animals. If 8 are mammals and the rest are birds, how many birds are there?',
             'Each animal needs 3 meals per day. How many meals do 6 animals need per day?',
             'The caretaker works 8 hours a day for 5 days. How many hours total?'
+        ],
+
+        // Measurement Questions
+        measurement: [
+            'The dolphin pool is {a} meters long and {b} meters wide. What is the area?',
+            'Each dolphin weighs {a} kilograms. How much do {b} dolphins weigh?',
+            'The water depth is {a} meters. If it increases by {b} meters, what is the new depth?',
+            'A dolphin can swim {a} meters per minute. How far in {b} minutes?'
+        ],
+
+        // Geometry Questions
+        geometry: [
+            'The giraffe enclosure is a rectangle {a} meters by {b} meters. What is the perimeter?',
+            'Each triangle habitat has {a} sides. How many sides do {b} triangles have?',
+            'The circular pond has a radius of {a} meters. What is the diameter?',
+            'How many corners does a shape with {a} sides have?'
+        ],
+
+        // Advanced Multiplication Questions
+        advanced_multiplication: [
+            'Each owl catches {a} mice per night for {b} nights. How many mice total?',
+            'There are {a} rows of {b} owl nests each. How many nests total?',
+            'If {a} owls each have {b} feathers, how many feathers in total?',
+            'Each observation takes {a} minutes, repeated {b} times. Total minutes?'
+        ],
+
+        // Pattern Questions
+        patterns: [
+            'The sequence is {a}, {b}, {c}. What comes next?',
+            'Owls hoot in groups of {a}. How many hoots in {b} groups?',
+            'The pattern repeats every {a} steps. What step is position {b}?',
+            'Following the pattern {a}, {b}, what is the {c}th number?'
+        ],
+
+        // Advanced Equations
+        advanced_equations: [
+            'Solve for x: {a}x + {b} = {c}',
+            'If {a}x - {b} = {c}, what is x?',
+            'Find x when {a}(x + {b}) = {c}',
+            'What value of x makes {a}x = {b} + {c} true?'
+        ],
+
+        // All Concepts (Mixed Advanced)
+        all_concepts: [
+            'A rainbow has {a} colors, each section is {b} degrees. Total degrees?',
+            'Calculate: {a}² + {b} × {c}',
+            'If {a}/{b} = {c}/x, what is x?',
+            'The rainbow appears for {a} minutes, {b} times per week. Minutes per week?'
+        ],
+
+        // Challenge Problems
+        challenge_problems: [
+            'The ultimate challenge: ({a} + {b}) × {c} - {d} = ?',
+            'Master level: {a}² + {b}³ = ?',
+            'Expert puzzle: If {a} × x = {b} + {c}, find x',
+            'Supreme test: {a} × {b} ÷ {c} + {d} = ?'
         ]
     },
 
@@ -211,6 +267,62 @@ const QuestionTemplates = {
             'El santuario de animales tiene 15 animales. Si 8 son mamíferos y el resto son aves, ¿cuántas aves hay?',
             'Cada animal necesita 3 comidas por día. ¿Cuántas comidas necesitan 6 animales por día?',
             'El cuidador trabaja 8 horas al día durante 5 días. ¿Cuántas horas en total?'
+        ],
+
+        // Preguntas de Medición
+        measurement: [
+            'La piscina de delfines mide {a} metros de largo y {b} metros de ancho. ¿Cuál es el área?',
+            'Cada delfín pesa {a} kilogramos. ¿Cuánto pesan {b} delfines?',
+            'La profundidad del agua es {a} metros. Si aumenta {b} metros, ¿cuál es la nueva profundidad?',
+            'Un delfín puede nadar {a} metros por minuto. ¿Qué distancia en {b} minutos?'
+        ],
+
+        // Preguntas de Geometría
+        geometry: [
+            'El recinto de jirafas es un rectángulo de {a} metros por {b} metros. ¿Cuál es el perímetro?',
+            'Cada hábitat triangular tiene {a} lados. ¿Cuántos lados tienen {b} triángulos?',
+            'El estanque circular tiene un radio de {a} metros. ¿Cuál es el diámetro?',
+            '¿Cuántas esquinas tiene una forma con {a} lados?'
+        ],
+
+        // Preguntas de Multiplicación Avanzada
+        advanced_multiplication: [
+            'Cada búho atrapa {a} ratones por noche durante {b} noches. ¿Cuántos ratones en total?',
+            'Hay {a} filas de {b} nidos de búho cada una. ¿Cuántos nidos en total?',
+            'Si {a} búhos tienen {b} plumas cada uno, ¿cuántas plumas en total?',
+            'Cada observación toma {a} minutos, repetida {b} veces. ¿Minutos totales?'
+        ],
+
+        // Preguntas de Patrones
+        patterns: [
+            'La secuencia es {a}, {b}, {c}. ¿Qué sigue?',
+            'Los búhos ululan en grupos de {a}. ¿Cuántos ululidos en {b} grupos?',
+            'El patrón se repite cada {a} pasos. ¿Qué paso es la posición {b}?',
+            'Siguiendo el patrón {a}, {b}, ¿cuál es el {c}º número?'
+        ],
+
+        // Ecuaciones Avanzadas
+        advanced_equations: [
+            'Resuelve para x: {a}x + {b} = {c}',
+            'Si {a}x - {b} = {c}, ¿cuál es x?',
+            'Encuentra x cuando {a}(x + {b}) = {c}',
+            '¿Qué valor de x hace que {a}x = {b} + {c} sea verdadero?'
+        ],
+
+        // Todos los Conceptos (Mixto Avanzado)
+        all_concepts: [
+            'Un arcoíris tiene {a} colores, cada sección es {b} grados. ¿Grados totales?',
+            'Calcula: {a}² + {b} × {c}',
+            'Si {a}/{b} = {c}/x, ¿cuál es x?',
+            'El arcoíris aparece por {a} minutos, {b} veces por semana. ¿Minutos por semana?'
+        ],
+
+        // Problemas de Desafío
+        challenge_problems: [
+            'El desafío definitivo: ({a} + {b}) × {c} - {d} = ?',
+            'Nivel maestro: {a}² + {b}³ = ?',
+            'Rompecabezas experto: Si {a} × x = {b} + {c}, encuentra x',
+            'Prueba suprema: {a} × {b} ÷ {c} + {d} = ?'
         ]
     },
 
@@ -317,6 +429,62 @@ const QuestionTemplates = {
             'Il santuario degli animali ha 15 animali. Se 8 sono mammiferi e il resto sono uccelli, quanti uccelli ci sono?',
             'Ogni animale ha bisogno di 3 pasti al giorno. Quanti pasti servono a 6 animali al giorno?',
             'Il custode lavora 8 ore al giorno per 5 giorni. Quante ore in totale?'
+        ],
+
+        // Domande di Misurazione
+        measurement: [
+            'La piscina dei delfini è lunga {a} metri e larga {b} metri. Qual è l\'area?',
+            'Ogni delfino pesa {a} chilogrammi. Quanto pesano {b} delfini?',
+            'La profondità dell\'acqua è {a} metri. Se aumenta di {b} metri, qual è la nuova profondità?',
+            'Un delfino può nuotare {a} metri al minuto. Quanto lontano in {b} minuti?'
+        ],
+
+        // Domande di Geometria
+        geometry: [
+            'Il recinto delle giraffe è un rettangolo di {a} metri per {b} metri. Qual è il perimetro?',
+            'Ogni habitat triangolare ha {a} lati. Quanti lati hanno {b} triangoli?',
+            'Lo stagno circolare ha un raggio di {a} metri. Qual è il diametro?',
+            'Quanti angoli ha una forma con {a} lati?'
+        ],
+
+        // Domande di Moltiplicazione Avanzata
+        advanced_multiplication: [
+            'Ogni gufo cattura {a} topi per notte per {b} notti. Quanti topi in totale?',
+            'Ci sono {a} file di {b} nidi di gufo ciascuna. Quanti nidi in totale?',
+            'Se {a} gufi hanno {b} piume ciascuno, quante piume in totale?',
+            'Ogni osservazione richiede {a} minuti, ripetuta {b} volte. Minuti totali?'
+        ],
+
+        // Domande sui Schemi
+        patterns: [
+            'La sequenza è {a}, {b}, {c}. Cosa viene dopo?',
+            'I gufi fanno il verso in gruppi di {a}. Quanti versi in {b} gruppi?',
+            'Il schema si ripete ogni {a} passi. Che passo è la posizione {b}?',
+            'Seguendo lo schema {a}, {b}, qual è il {c}º numero?'
+        ],
+
+        // Equazioni Avanzate
+        advanced_equations: [
+            'Risolvi per x: {a}x + {b} = {c}',
+            'Se {a}x - {b} = {c}, qual è x?',
+            'Trova x quando {a}(x + {b}) = {c}',
+            'Quale valore di x rende vero {a}x = {b} + {c}?'
+        ],
+
+        // Tutti i Concetti (Misto Avanzato)
+        all_concepts: [
+            'Un arcobaleno ha {a} colori, ogni sezione è {b} gradi. Gradi totali?',
+            'Calcola: {a}² + {b} × {c}',
+            'Se {a}/{b} = {c}/x, qual è x?',
+            'L\'arcobaleno appare per {a} minuti, {b} volte a settimana. Minuti a settimana?'
+        ],
+
+        // Problemi di Sfida
+        challenge_problems: [
+            'La sfida definitiva: ({a} + {b}) × {c} - {d} = ?',
+            'Livello maestro: {a}² + {b}³ = ?',
+            'Puzzle esperto: Se {a} × x = {b} + {c}, trova x',
+            'Test supremo: {a} × {b} ÷ {c} + {d} = ?'
         ]
     }
 };

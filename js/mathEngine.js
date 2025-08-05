@@ -84,9 +84,23 @@ class MathEngine {
     }
     
     translate(key) {
+        // Try to get language manager reference if not available
+        if (!this.languageManager) {
+            if (typeof window !== 'undefined' && window.gameController && window.gameController.languageManager) {
+                this.languageManager = window.gameController.languageManager;
+            }
+        }
+        
         if (this.languageManager && this.languageManager.translate) {
             return this.languageManager.translate(key);
         }
+        
+        // Fallback: try to access global language manager directly
+        if (typeof window !== 'undefined' && window.languageManager && window.languageManager.translate) {
+            return window.languageManager.translate(key);
+        }
+        
+        console.warn(`MathEngine: Translation failed for key '${key}', returning key as fallback`);
         return key; // fallback to key if no translator available
     }
 
@@ -215,6 +229,27 @@ class MathEngine {
             case 'word_problems':
                 problem = this.generateWordProblem();
                 break;
+            case 'measurement':
+                problem = this.generateMeasurementProblem();
+                break;
+            case 'geometry':
+                problem = this.generateGeometryProblem();
+                break;
+            case 'advanced_multiplication':
+                problem = this.generateAdvancedMultiplicationProblem();
+                break;
+            case 'patterns':
+                problem = this.generatePatternProblem();
+                break;
+            case 'advanced_equations':
+                problem = this.generateAdvancedEquationProblem();
+                break;
+            case 'all_concepts':
+                problem = this.generateAllConceptsProblem();
+                break;
+            case 'challenge_problems':
+                problem = this.generateChallengeProblem();
+                break;
             default:
                 problem = this.generateAdditionProblem();
         }
@@ -262,6 +297,15 @@ class MathEngine {
                 break;
             case 'exponentials':
                 distractors = this.generateExponentialDistractors(problem, correctAnswer);
+                break;
+            case 'measurement':
+            case 'geometry':
+            case 'advanced_multiplication':
+            case 'patterns':
+            case 'advanced_equations':
+            case 'all_concepts':
+            case 'challenge_problems':
+                distractors = this.generateAdvancedDistractors(problem, correctAnswer);
                 break;
             default:
                 distractors = this.generateGenericDistractors(correctAnswer);
@@ -401,6 +445,21 @@ class MathEngine {
             base, // Just the base
             correctAnswer + 1, // Off by one
             correctAnswer - 1 // Off by one
+        ].filter(distractor => distractor !== correctAnswer && distractor > 0);
+    }
+
+    generateAdvancedDistractors(problem, correctAnswer) {
+        return [
+            correctAnswer + 1, // Off by one
+            correctAnswer - 1, // Off by one
+            correctAnswer + 2, // Off by two
+            correctAnswer - 2, // Off by two
+            Math.floor(correctAnswer * 1.5), // 1.5x the answer
+            Math.floor(correctAnswer / 2), // Half the answer
+            correctAnswer + 5, // Add 5
+            correctAnswer - 5, // Subtract 5
+            Math.floor(correctAnswer * 2), // Double
+            Math.abs(correctAnswer - 10) // Subtract 10 (absolute value)
         ].filter(distractor => distractor !== correctAnswer && distractor > 0);
     }
 
@@ -788,6 +847,179 @@ class MathEngine {
             visual: ['📚', '🧮', '✏️'],
             operation: `${a} - ${b} = ?`,
             explanation: `${a} - ${b} = ${answer}`,
+            habitat: this.currentHabitat,
+            difficulty: this.difficultyLevel
+        };
+    }
+
+    generateMeasurementProblem() {
+        // Use the selected template for the level
+        const questionTemplates = this.getQuestionTemplates();
+        const templates = questionTemplates.measurement || ['Calculate: {a} × {b}'];
+        const template = this.selectedQuestionTemplate || templates[Math.floor(Math.random() * templates.length)];
+        
+        // Generate numbers for measurement problems
+        const a = Math.floor(Math.random() * 10) + 5;
+        const b = Math.floor(Math.random() * 8) + 2;
+        const answer = a * b;
+        
+        return {
+            type: 'measurement',
+            title: this.translate('problem.help_dolphins'),
+            text: template.replace('{a}', a).replace('{b}', b),
+            answer: answer,
+            visual: ['📏', '🐬', '💧'],
+            operation: `${a} × ${b} = ?`,
+            explanation: `${a} × ${b} = ${answer}`,
+            habitat: this.currentHabitat,
+            difficulty: this.difficultyLevel
+        };
+    }
+
+    generateGeometryProblem() {
+        // Use the selected template for the level
+        const questionTemplates = this.getQuestionTemplates();
+        const templates = questionTemplates.geometry || ['Calculate: {a} + {b}'];
+        const template = this.selectedQuestionTemplate || templates[Math.floor(Math.random() * templates.length)];
+        
+        // Generate numbers for geometry problems
+        const a = Math.floor(Math.random() * 8) + 3;
+        const b = Math.floor(Math.random() * 6) + 2;
+        const answer = (a + b) * 2; // Simple perimeter calculation
+        
+        return {
+            type: 'geometry',
+            title: this.translate('problem.help_giraffes'),
+            text: template.replace('{a}', a).replace('{b}', b),
+            answer: answer,
+            visual: ['📐', '🦒', '🔺'],
+            operation: `2 × (${a} + ${b}) = ?`,
+            explanation: `2 × (${a} + ${b}) = ${answer}`,
+            habitat: this.currentHabitat,
+            difficulty: this.difficultyLevel
+        };
+    }
+
+    generateAdvancedMultiplicationProblem() {
+        // Use the selected template for the level
+        const questionTemplates = this.getQuestionTemplates();
+        const templates = questionTemplates.advanced_multiplication || ['Calculate: {a} × {b}'];
+        const template = this.selectedQuestionTemplate || templates[Math.floor(Math.random() * templates.length)];
+        
+        // Generate larger numbers for advanced multiplication
+        const a = Math.floor(Math.random() * 12) + 8;
+        const b = Math.floor(Math.random() * 8) + 3;
+        const answer = a * b;
+        
+        return {
+            type: 'advanced_multiplication',
+            title: this.translate('problem.help_owls'),
+            text: template.replace('{a}', a).replace('{b}', b),
+            answer: answer,
+            visual: ['🦉', '🌙', '🔢'],
+            operation: `${a} × ${b} = ?`,
+            explanation: `${a} × ${b} = ${answer}`,
+            habitat: this.currentHabitat,
+            difficulty: this.difficultyLevel
+        };
+    }
+
+    generatePatternProblem() {
+        // Use the selected template for the level
+        const questionTemplates = this.getQuestionTemplates();
+        const templates = questionTemplates.patterns || ['What comes next: {a}, {b}, {c}?'];
+        const template = this.selectedQuestionTemplate || templates[Math.floor(Math.random() * templates.length)];
+        
+        // Generate simple arithmetic pattern
+        const a = Math.floor(Math.random() * 5) + 2;
+        const b = a + 2;
+        const c = b + 2;
+        const answer = c + 2;
+        
+        return {
+            type: 'patterns',
+            title: this.translate('problem.help_owls'),
+            text: template.replace('{a}', a).replace('{b}', b).replace('{c}', c),
+            answer: answer,
+            visual: ['🔢', '🦉', '📊'],
+            operation: `${a}, ${b}, ${c}, ?`,
+            explanation: `Pattern: +2 each time, so ${answer}`,
+            habitat: this.currentHabitat,
+            difficulty: this.difficultyLevel
+        };
+    }
+
+    generateAdvancedEquationProblem() {
+        // Use the selected template for the level
+        const questionTemplates = this.getQuestionTemplates();
+        const templates = questionTemplates.advanced_equations || ['Solve: {a}x + {b} = {c}'];
+        const template = this.selectedQuestionTemplate || templates[Math.floor(Math.random() * templates.length)];
+        
+        // Generate equation ax + b = c
+        const a = Math.floor(Math.random() * 5) + 2;
+        const x = Math.floor(Math.random() * 8) + 1;
+        const b = Math.floor(Math.random() * 10) + 5;
+        const c = a * x + b;
+        
+        return {
+            type: 'advanced_equations',
+            title: this.translate('problem.help_dragons'),
+            text: template.replace('{a}', a).replace('{b}', b).replace('{c}', c),
+            answer: x,
+            visual: ['🐉', '🔥', '⚡'],
+            operation: `${a}x + ${b} = ${c}`,
+            explanation: `x = (${c} - ${b}) ÷ ${a} = ${x}`,
+            habitat: this.currentHabitat,
+            difficulty: this.difficultyLevel
+        };
+    }
+
+    generateAllConceptsProblem() {
+        // Use the selected template for the level
+        const questionTemplates = this.getQuestionTemplates();
+        const templates = questionTemplates.all_concepts || ['Calculate: {a}² + {b} × {c}'];
+        const template = this.selectedQuestionTemplate || templates[Math.floor(Math.random() * templates.length)];
+        
+        // Generate mixed operations problem
+        const a = Math.floor(Math.random() * 4) + 2;
+        const b = Math.floor(Math.random() * 6) + 3;
+        const c = Math.floor(Math.random() * 5) + 2;
+        const answer = (a * a) + (b * c);
+        
+        return {
+            type: 'all_concepts',
+            title: this.translate('problem.challenge'),
+            text: template.replace('{a}', a).replace('{b}', b).replace('{c}', c),
+            answer: answer,
+            visual: ['🌈', '⭐', '🎯'],
+            operation: `${a}² + ${b} × ${c}`,
+            explanation: `${a}² + ${b} × ${c} = ${a*a} + ${b*c} = ${answer}`,
+            habitat: this.currentHabitat,
+            difficulty: this.difficultyLevel
+        };
+    }
+
+    generateChallengeProblem() {
+        // Use the selected template for the level
+        const questionTemplates = this.getQuestionTemplates();
+        const templates = questionTemplates.challenge_problems || ['Ultimate challenge: ({a} + {b}) × {c} - {d}'];
+        const template = this.selectedQuestionTemplate || templates[Math.floor(Math.random() * templates.length)];
+        
+        // Generate complex operation
+        const a = Math.floor(Math.random() * 8) + 2;
+        const b = Math.floor(Math.random() * 6) + 1;
+        const c = Math.floor(Math.random() * 4) + 2;
+        const d = Math.floor(Math.random() * 10) + 5;
+        const answer = (a + b) * c - d;
+        
+        return {
+            type: 'challenge_problems',
+            title: this.translate('problem.challenge'),
+            text: template.replace('{a}', a).replace('{b}', b).replace('{c}', c).replace('{d}', d),
+            answer: answer,
+            visual: ['🏆', '🌈', '💫'],
+            operation: `(${a} + ${b}) × ${c} - ${d}`,
+            explanation: `(${a} + ${b}) × ${c} - ${d} = ${a+b} × ${c} - ${d} = ${(a+b)*c} - ${d} = ${answer}`,
             habitat: this.currentHabitat,
             difficulty: this.difficultyLevel
         };
