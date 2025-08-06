@@ -420,16 +420,77 @@ class MathEngine {
         const numbers = problem.operation.match(/\d+/g);
         const a = parseInt(numbers[0]);
         const b = parseInt(numbers[1]);
+        const c = numbers[2] ? parseInt(numbers[2]) : null;
         
-        return [
-            a + b, // Addition instead of division
-            b - a, // Subtraction
-            a, // Just the coefficient
-            b, // Just the constant
-            correctAnswer + 1, // Off by one
-            correctAnswer - 1, // Off by one
-            Math.floor(correctAnswer * 2) // Double
-        ].filter(distractor => distractor !== correctAnswer && distractor > 0);
+        let distractors = [];
+        
+        // Generate context-aware distractors based on equation type
+        if (problem.equationType) {
+            switch (problem.equationType) {
+                case 'simple_multiplication':
+                    distractors = [
+                        b - a, // Subtraction error
+                        Math.floor(b / 2), // Divided by wrong number
+                        a, // Just the coefficient
+                        correctAnswer + 1, // Off by one
+                        correctAnswer - 1, // Off by one
+                        Math.floor(correctAnswer * 2), // Double
+                        b // Just the constant (wrong approach)
+                    ];
+                    break;
+                    
+                case 'addition_equation':
+                    distractors = [
+                        b - correctAnswer, // The addend (wrong variable)
+                        b, // Just the sum
+                        a, // Just the addend
+                        correctAnswer + a, // Added instead of subtracted
+                        correctAnswer - 2, // Off by two
+                        correctAnswer + 2, // Off by two
+                        Math.abs(a - b) // Absolute difference
+                    ];
+                    break;
+                    
+                case 'subtraction_equation':
+                    distractors = [
+                        Math.abs(b - a), // Subtracted wrong way
+                        a, // Just the subtrahend
+                        b, // Just the result
+                        correctAnswer - a, // Double subtracted
+                        correctAnswer + 2, // Off by two
+                        correctAnswer - 2, // Off by two
+                        a + b // Added instead of subtracted
+                    ];
+                    break;
+                    
+                case 'mixed_equation':
+                    distractors = [
+                        Math.floor((c - b) / 2), // Divided by wrong number
+                        c - b, // Forgot to divide
+                        Math.floor(c / a), // Ignored the constant
+                        a, // Just the coefficient
+                        correctAnswer + 1, // Off by one
+                        correctAnswer - 1, // Off by one
+                        Math.floor(correctAnswer * 2) // Double
+                    ];
+                    break;
+            }
+        }
+        
+        // Fallback to generic distractors if no specific type
+        if (distractors.length === 0) {
+            distractors = [
+                a + b, // Addition instead of division
+                Math.abs(b - a), // Subtraction
+                a, // Just the coefficient
+                b, // Just the constant
+                correctAnswer + 1, // Off by one
+                correctAnswer - 1, // Off by one
+                Math.floor(correctAnswer * 2) // Double
+            ];
+        }
+        
+        return distractors.filter(distractor => distractor !== correctAnswer && distractor > 0);
     }
 
     generateExponentialDistractors(problem, correctAnswer) {
@@ -748,26 +809,76 @@ class MathEngine {
     }
 
     generateEquationProblem() {
-        const a = Math.floor(Math.random() * 10) + 2;
-        const b = Math.floor(Math.random() * 50) + 10;
-        const answer = Math.floor(b / a);
+        // Create diverse equation types with clean integer solutions
+        const equationTypes = [
+            'simple_multiplication', // ax = b
+            'addition_equation',     // x + a = b
+            'subtraction_equation',  // x - a = b
+            'mixed_equation'         // ax + b = c
+        ];
+        
+        const equationType = equationTypes[Math.floor(Math.random() * equationTypes.length)];
+        let a, b, c, answer, operation, explanation, text;
         
         // Use the selected template for the level
         const questionTemplates = this.getQuestionTemplates();
         const templates = questionTemplates.equations || ['Solve: {a}x = {b}'];
-        const template = this.selectedQuestionTemplate || templates[Math.floor(Math.random() * templates.length)];
-        const text = template.replace('{a}', a).replace('{b}', b);
+        let template = this.selectedQuestionTemplate || templates[Math.floor(Math.random() * templates.length)];
+        
+        switch (equationType) {
+            case 'simple_multiplication':
+                // Generate ax = b where x is a clean integer
+                answer = Math.floor(Math.random() * 12) + 1; // x from 1-12
+                a = Math.floor(Math.random() * 8) + 2; // coefficient from 2-9
+                b = a * answer; // ensure clean division
+                operation = `${a} × x = ${b}`;
+                explanation = `x = ${b} ÷ ${a} = ${answer}`;
+                text = template.replace('{a}', a).replace('{b}', b);
+                break;
+                
+            case 'addition_equation':
+                // Generate x + a = b
+                answer = Math.floor(Math.random() * 20) + 5; // x from 5-24
+                a = Math.floor(Math.random() * 15) + 3; // addend from 3-17
+                b = answer + a;
+                operation = `x + ${a} = ${b}`;
+                explanation = `x = ${b} - ${a} = ${answer}`;
+                text = `Solve: x + ${a} = ${b}`;
+                break;
+                
+            case 'subtraction_equation':
+                // Generate x - a = b
+                a = Math.floor(Math.random() * 12) + 3; // subtrahend from 3-14
+                b = Math.floor(Math.random() * 15) + 2; // result from 2-16
+                answer = a + b; // ensure positive result
+                operation = `x - ${a} = ${b}`;
+                explanation = `x = ${b} + ${a} = ${answer}`;
+                text = `Solve: x - ${a} = ${b}`;
+                break;
+                
+            case 'mixed_equation':
+                // Generate ax + b = c (simpler version for kids)
+                answer = Math.floor(Math.random() * 8) + 1; // x from 1-8
+                a = Math.floor(Math.random() * 4) + 2; // coefficient from 2-5
+                b = Math.floor(Math.random() * 10) + 5; // constant from 5-14
+                c = a * answer + b;
+                operation = `${a}x + ${b} = ${c}`;
+                explanation = `x = (${c} - ${b}) ÷ ${a} = ${answer}`;
+                text = `Solve: ${a}x + ${b} = ${c}`;
+                break;
+        }
         
         return {
             type: 'equations',
             title: this.translate('problem.help_lions'),
             text: text,
             answer: answer,
-            visual: this.generateEquationVisual(a, b),
-            operation: `${a} × x = ${b}`,
-            explanation: `x = ${b} ÷ ${a} = ${answer}`,
+            visual: this.generateEquationVisual(a, b || c),
+            operation: operation,
+            explanation: explanation,
             habitat: this.currentHabitat,
-            difficulty: this.difficultyLevel
+            difficulty: this.difficultyLevel,
+            equationType: equationType
         };
     }
 

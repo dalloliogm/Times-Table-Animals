@@ -345,63 +345,220 @@ class GameController {
     }
 
     enterHabitat(habitatName) {
-        // Cleanup previous habitat first
-        this.cleanupCurrentHabitat();
+        console.log(`GameController: Entering habitat ${habitatName}`);
         
-        // Remove scrolling modes
-        document.body.classList.remove('habitat-select-mode', 'credits-mode');
+        try {
+            // Cleanup previous habitat first
+            this.cleanupCurrentHabitat();
+            
+            // Remove scrolling modes
+            document.body.classList.remove('habitat-select-mode', 'credits-mode');
+            
+            this.gameState.currentHabitat = habitatName;
+            this.switchScreen('gameScreen');
+            this.updateGameUI();
+            
+            // Show loading indicator
+            this.showHabitatLoadingIndicator(habitatName);
+            
+            // Use setTimeout to allow UI to update before heavy initialization
+            setTimeout(() => {
+                this.initializeHabitat(habitatName);
+            }, 50);
+            
+        } catch (error) {
+            console.error(`Error entering habitat ${habitatName}:`, error);
+            this.handleHabitatLoadingError(habitatName, error);
+        }
+    }
+    
+    showHabitatLoadingIndicator(habitatName) {
+        // Show loading message
+        const mathProblem = document.getElementById('mathProblem');
+        if (mathProblem) {
+            mathProblem.innerHTML = `
+                <div style="text-align: center; padding: 50px; font-family: 'Comic Sans MS', cursive;">
+                    <div style="font-size: 24px; color: #4ECDC4; margin-bottom: 20px;">
+                        Loading ${this.getHabitatDisplayName(habitatName)}...
+                    </div>
+                    <div style="font-size: 48px; animation: spin 1s linear infinite;">🔄</div>
+                </div>
+                <style>
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+                </style>
+            `;
+            mathProblem.classList.remove('hidden');
+        }
+    }
+    
+    initializeHabitat(habitatName) {
+        try {
+            console.log(`GameController: Initializing habitat ${habitatName}`);
+            
+            // Validate that required managers are ready
+            if (!this.gameEngine) {
+                throw new Error('GameEngine not available');
+            }
+            if (!this.mathEngine) {
+                throw new Error('MathEngine not available');
+            }
+            
+            // Initialize habitat with error handling
+            let habitatClass = this.getHabitatClass(habitatName);
+            if (!habitatClass) {
+                throw new Error(`Habitat class not found for ${habitatName}`);
+            }
+            
+            // Create habitat instance
+            this.currentHabitat = new habitatClass(this.gameEngine, this.mathEngine, this);
+            
+            // Validate habitat was created successfully
+            if (!this.currentHabitat) {
+                throw new Error(`Failed to create habitat instance for ${habitatName}`);
+            }
+            
+            // Set audio manager if available
+            if (this.currentHabitat.setAudioManager && this.audioManager) {
+                this.currentHabitat.setAudioManager(this.audioManager);
+            }
+            
+            // Wait a bit for habitat initialization to complete
+            setTimeout(() => {
+                this.finalizeHabitatEntry(habitatName);
+            }, 100);
+            
+        } catch (error) {
+            console.error(`Error initializing habitat ${habitatName}:`, error);
+            this.handleHabitatLoadingError(habitatName, error);
+        }
+    }
+    
+    getHabitatClass(habitatName) {
+        const habitatClasses = {
+            'bunnyMeadow': BunnyMeadow,
+            'penguinPairsArctic': PenguinPairsArctic,
+            'penguinArctic': PenguinArctic,
+            'elephantSavanna': ElephantSavanna,
+            'monkeyJungle': MonkeyJungle,
+            'lionPride': LionPride,
+            'dolphinCove': DolphinCove,
+            'bearForest': BearForest,
+            'giraffePlains': GiraffePlains,
+            'owlObservatory': OwlObservatory,
+            'dragonSanctuary': DragonSanctuary,
+            'rainbowReserve': RainbowReserve
+        };
         
-        this.gameState.currentHabitat = habitatName;
-        this.switchScreen('gameScreen');
-        this.updateGameUI();
+        return habitatClasses[habitatName];
+    }
+    
+    getHabitatDisplayName(habitatName) {
+        const habitatNames = {
+            bunnyMeadow: 'Bunny Meadow',
+            penguinPairsArctic: 'Penguin Pairs Arctic',
+            penguinArctic: 'Penguin Arctic',
+            elephantSavanna: 'Elephant Savanna',
+            monkeyJungle: 'Monkey Jungle',
+            lionPride: 'Lion Pride Lands',
+            dolphinCove: 'Dolphin Cove',
+            bearForest: 'Bear Forest',
+            giraffePlains: 'Giraffe Plains',
+            owlObservatory: 'Owl Observatory',
+            dragonSanctuary: 'Dragon Sanctuary',
+            rainbowReserve: 'Rainbow Reserve'
+        };
         
-        // Initialize habitat
-        switch(habitatName) {
-            case 'bunnyMeadow':
-                this.currentHabitat = new BunnyMeadow(this.gameEngine, this.mathEngine, this);
-                break;
-            case 'penguinPairsArctic':
-                this.currentHabitat = new PenguinPairsArctic(this.gameEngine, this.mathEngine, this);
-                break;
-            case 'penguinArctic':
-                this.currentHabitat = new PenguinArctic(this.gameEngine, this.mathEngine, this);
-                break;
-            case 'elephantSavanna':
-                this.currentHabitat = new ElephantSavanna(this.gameEngine, this.mathEngine, this);
-                break;
-            case 'monkeyJungle':
-                this.currentHabitat = new MonkeyJungle(this.gameEngine, this.mathEngine, this);
-                break;
-            case 'lionPride':
-                this.currentHabitat = new LionPride(this.gameEngine, this.mathEngine, this);
-                break;
-            case 'dolphinCove':
-                this.currentHabitat = new DolphinCove(this.gameEngine, this.mathEngine, this);
-                break;
-            case 'bearForest':
-                this.currentHabitat = new BearForest(this.gameEngine, this.mathEngine, this);
-                break;
-            case 'giraffePlains':
-                this.currentHabitat = new GiraffePlains(this.gameEngine, this.mathEngine, this);
-                break;
-            case 'owlObservatory':
-                this.currentHabitat = new OwlObservatory(this.gameEngine, this.mathEngine, this);
-                break;
-            case 'dragonSanctuary':
-                this.currentHabitat = new DragonSanctuary(this.gameEngine, this.mathEngine, this);
-                break;
-            case 'rainbowReserve':
-                this.currentHabitat = new RainbowReserve(this.gameEngine, this.mathEngine, this);
-                break;
-            default:
-                console.log(`Habitat ${habitatName} not yet implemented`);
+        return habitatNames[habitatName] || 'Unknown Habitat';
+    }
+    
+    finalizeHabitatEntry(habitatName) {
+        try {
+            console.log(`GameController: Finalizing habitat entry for ${habitatName}`);
+            
+            // Start timer for the level
+            if (this.timerManager) {
+                this.timerManager.startTimer(habitatName);
+            }
+            
+            // Start background music
+            if (this.audioManager) {
+                this.audioManager.playBackgroundMusic(habitatName);
+            }
+            
+            // Start the game engine
+            if (this.gameEngine) {
+                this.gameEngine.startGame();
+            }
+            
+            console.log(`GameController: Habitat ${habitatName} loaded successfully`);
+            
+        } catch (error) {
+            console.error(`Error finalizing habitat entry for ${habitatName}:`, error);
+            this.handleHabitatLoadingError(habitatName, error);
+        }
+    }
+    
+    handleHabitatLoadingError(habitatName, error) {
+        console.error(`Failed to load habitat ${habitatName}:`, error);
+        
+        // Show error message to user
+        const mathProblem = document.getElementById('mathProblem');
+        if (mathProblem) {
+            mathProblem.innerHTML = `
+                <div style="text-align: center; padding: 50px; font-family: 'Comic Sans MS', cursive;">
+                    <div style="font-size: 24px; color: #FF6B6B; margin-bottom: 20px;">
+                        Oops! ${this.getHabitatDisplayName(habitatName)} is having trouble loading.
+                    </div>
+                    <div style="font-size: 18px; color: #666; margin-bottom: 30px;">
+                        Don't worry, let's try again!
+                    </div>
+                    <button id="retryHabitatBtn" style="
+                        background: #4ECDC4;
+                        color: white;
+                        border: none;
+                        padding: 15px 30px;
+                        font-size: 16px;
+                        border-radius: 25px;
+                        cursor: pointer;
+                        font-family: inherit;
+                        margin-right: 10px;
+                    ">Try Again</button>
+                    <button id="backToHabitatsFromError" style="
+                        background: #95A5A6;
+                        color: white;
+                        border: none;
+                        padding: 15px 30px;
+                        font-size: 16px;
+                        border-radius: 25px;
+                        cursor: pointer;
+                        font-family: inherit;
+                    ">Back to Habitats</button>
+                </div>
+            `;
+            mathProblem.classList.remove('hidden');
+            
+            // Add event listeners for error buttons
+            const retryBtn = document.getElementById('retryHabitatBtn');
+            const backBtn = document.getElementById('backToHabitatsFromError');
+            
+            if (retryBtn) {
+                retryBtn.addEventListener('click', () => {
+                    this.enterHabitat(habitatName);
+                });
+            }
+            
+            if (backBtn) {
+                backBtn.addEventListener('click', () => {
+                    this.showHabitatSelection();
+                });
+            }
         }
         
-        // Start timer for the level
-        this.timerManager.startTimer(habitatName);
-        
-        this.audioManager.playBackgroundMusic(habitatName);
-        this.gameEngine.startGame();
+        // Clean up any partially initialized habitat
+        this.cleanupCurrentHabitat();
     }
 
     updateGameUI() {
@@ -762,20 +919,56 @@ class GameController {
             completionContent.style.transform = 'scale(1)';
         }, 100);
         
-        // Handle continue button
+        // Handle continue button with improved error handling
         const continueBtn = document.getElementById('continueToHabitats');
-        continueBtn.addEventListener('click', () => {
-            this.hideCompletionOverlay();
-            this.cleanupCurrentHabitat();
-            this.showHabitatSelection();
-        });
-        
-        // Auto-continue after 5 seconds
-        setTimeout(() => {
-            if (document.getElementById('completionOverlay')) {
-                continueBtn.click();
-            }
-        }, 5000);
+        if (continueBtn) {
+            // Create the completion handler function
+            const handleCompletion = () => {
+                console.log('Completion button clicked - returning to habitat selection');
+                try {
+                    this.hideCompletionOverlay();
+                    this.cleanupCurrentHabitat();
+                    this.showHabitatSelection();
+                } catch (error) {
+                    console.error('Error in completion handler:', error);
+                    // Fallback: force navigation to habitat selection
+                    this.showHabitatSelection();
+                }
+            };
+            
+            // Add click event listener
+            continueBtn.addEventListener('click', handleCompletion);
+            
+            // Also add keyboard support (Enter key)
+            continueBtn.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleCompletion();
+                }
+            });
+            
+            // Make button focusable for accessibility
+            continueBtn.tabIndex = 0;
+            continueBtn.focus();
+            
+            // Auto-continue after 5 seconds with better validation
+            setTimeout(() => {
+                const overlay = document.getElementById('completionOverlay');
+                const button = document.getElementById('continueToHabitats');
+                if (overlay && button && overlay.parentNode) {
+                    console.log('Auto-completing after 5 seconds');
+                    handleCompletion();
+                }
+            }, 5000);
+        } else {
+            console.error('Continue button not found - adding fallback timeout');
+            // Fallback if button creation failed
+            setTimeout(() => {
+                this.hideCompletionOverlay();
+                this.cleanupCurrentHabitat();
+                this.showHabitatSelection();
+            }, 3000);
+        }
     }
 
     getNextHabitat(currentHabitat) {
@@ -794,11 +987,25 @@ class GameController {
 
     hideCompletionOverlay() {
         const overlay = document.getElementById('completionOverlay');
-        if (overlay) {
+        if (overlay && overlay.parentNode) {
+            console.log('Hiding completion overlay');
             overlay.style.opacity = '0';
+            
+            // Disable button to prevent double-clicks
+            const button = overlay.querySelector('#continueToHabitats');
+            if (button) {
+                button.disabled = true;
+                button.style.pointerEvents = 'none';
+            }
+            
             setTimeout(() => {
-                if (overlay.parentNode) {
-                    overlay.parentNode.removeChild(overlay);
+                try {
+                    if (overlay && overlay.parentNode) {
+                        overlay.parentNode.removeChild(overlay);
+                        console.log('Completion overlay removed from DOM');
+                    }
+                } catch (error) {
+                    console.error('Error removing completion overlay:', error);
                 }
             }, 500);
         }
@@ -904,12 +1111,65 @@ class GameController {
     }
 
     startTimerUpdateLoop() {
-        // Update timer every 100ms
-        setInterval(() => {
-            if (this.timerManager) {
-                this.timerManager.update();
+        console.log('GameController: Starting timer update loop');
+        
+        // Update timer every 100ms with error handling
+        this.timerUpdateInterval = setInterval(() => {
+            try {
+                if (this.timerManager && this.timerManager.isTimerActive && this.timerManager.isTimerActive()) {
+                    this.timerManager.update();
+                }
+            } catch (error) {
+                console.error('Error in timer update loop:', error);
+                // Don't stop the loop completely, just log the error
             }
         }, 100);
+        
+        // Also add a backup timer that runs less frequently for validation
+        this.timerValidationInterval = setInterval(() => {
+            try {
+                if (this.timerManager && this.currentScreen === 'gameScreen') {
+                    this.validateTimerState();
+                }
+            } catch (error) {
+                console.error('Error in timer validation:', error);
+            }
+        }, 1000); // Every second
+    }
+    
+    validateTimerState() {
+        if (!this.timerManager) return;
+        
+        // Check if timer should be active but isn't
+        if (this.currentScreen === 'gameScreen' &&
+            this.gameState.currentHabitat &&
+            !this.timerManager.isTimerActive()) {
+            
+            console.warn('Timer should be active but isn\'t - attempting to restart');
+            this.timerManager.startTimer(this.gameState.currentHabitat);
+        }
+        
+        // Check if timer is active but shouldn't be
+        if (this.currentScreen !== 'gameScreen' &&
+            this.timerManager.isTimerActive()) {
+            
+            console.warn('Timer is active but shouldn\'t be - stopping timer');
+            this.timerManager.stopTimer();
+        }
+    }
+    
+    stopTimerUpdateLoop() {
+        if (this.timerUpdateInterval) {
+            clearInterval(this.timerUpdateInterval);
+            this.timerUpdateInterval = null;
+            console.log('Timer update loop stopped');
+        }
+        
+        if (this.timerValidationInterval) {
+            clearInterval(this.timerValidationInterval);
+            this.timerValidationInterval = null;
+            console.log('Timer validation loop stopped');
+        }
     }
 
     restartCurrentHabitat() {
