@@ -398,6 +398,9 @@ class GameController {
         try {
             console.log(`GameController: Initializing habitat ${habitatName}`);
             
+            // Clear loading indicator FIRST, before creating habitat
+            this.clearHabitatLoadingIndicator();
+            
             // Validate that required managers are ready
             if (!this.gameEngine) {
                 throw new Error('GameEngine not available');
@@ -412,7 +415,7 @@ class GameController {
                 throw new Error(`Habitat class not found for ${habitatName}`);
             }
             
-            // Create habitat instance
+            // Create habitat instance (this will immediately call startNextProblem)
             this.currentHabitat = new habitatClass(this.gameEngine, this.mathEngine, this);
             
             // Validate habitat was created successfully
@@ -425,10 +428,8 @@ class GameController {
                 this.currentHabitat.setAudioManager(this.audioManager);
             }
             
-            // Wait a bit for habitat initialization to complete
-            setTimeout(() => {
-                this.finalizeHabitatEntry(habitatName);
-            }, 100);
+            // Finalize habitat entry immediately (no need for extra delay)
+            this.finalizeHabitatEntry(habitatName);
             
         } catch (error) {
             console.error(`Error initializing habitat ${habitatName}:`, error);
@@ -499,6 +500,18 @@ class GameController {
             console.error(`Error finalizing habitat entry for ${habitatName}:`, error);
             this.handleHabitatLoadingError(habitatName, error);
         }
+    }
+    
+    clearHabitatLoadingIndicator() {
+        // Clear the loading content and reset to proper initial state
+        const mathProblem = document.getElementById('mathProblem');
+        if (mathProblem) {
+            // Clear the loading content but keep element available for habitat use
+            mathProblem.innerHTML = '';
+            // Don't hide it - let the habitat control visibility
+        }
+        
+        console.log('Loading indicator cleared, mathProblem ready for habitat use');
     }
     
     handleHabitatLoadingError(habitatName, error) {
