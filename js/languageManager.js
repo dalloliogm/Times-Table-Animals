@@ -16,6 +16,7 @@ class LanguageManager {
                     'menu.start': 'Start Adventure',
                     'menu.settings': 'Settings',
                     'menu.achievements': 'Achievements',
+                    'menu.credits': 'Credits (people who made this game)',
                     
                     // Settings
                     'settings.title': 'Settings',
@@ -96,7 +97,23 @@ class LanguageManager {
                     // Feedback Messages
                     'feedback.correct': 'Correct! Well done!',
                     'feedback.incorrect': 'Not quite right, try again!',
-                    'feedback.continue': 'Continue'
+                    'feedback.continue': 'Continue',
+                    
+                    // Credits
+                    'credits.title': 'Credits',
+                    'credits.team_title': 'Development Team',
+                    'credits.albert_role': 'Leader, CEO, Director & Designer',
+                    'credits.albert_desc': 'Visionary behind Times Table Animals and creative director',
+                    'credits.giovanni_role': 'Computer Expert',
+                    'credits.giovanni_desc': 'Technical mastermind and programming wizard',
+                    'credits.game_info_title': 'Game Information',
+                    'credits.version': 'Version',
+                    'credits.engine': 'Engine',
+                    'credits.languages': 'Languages',
+                    'credits.thanks_title': 'Special Thanks',
+                    'credits.thanks_text': 'Thank you to all the young mathematicians who will embark on this animal adventure!',
+                    'credits.mission': 'Our mission: Making math fun, one animal habitat at a time! 🐰🐧🐘',
+                    'credits.back': 'Back to Menu'
                 }
             },
             'es': {
@@ -110,6 +127,7 @@ class LanguageManager {
                     'menu.start': 'Comenzar Aventura',
                     'menu.settings': 'Configuración',
                     'menu.achievements': 'Logros',
+                    'menu.credits': 'Créditos',
                     
                     // Settings
                     'settings.title': 'Configuración',
@@ -190,7 +208,23 @@ class LanguageManager {
                     // Feedback Messages
                     'feedback.correct': '¡Correcto! ¡Muy bien!',
                     'feedback.incorrect': '¡No del todo correcto, inténtalo de nuevo!',
-                    'feedback.continue': 'Continuar'
+                    'feedback.continue': 'Continuar',
+                    
+                    // Credits
+                    'credits.title': 'Créditos',
+                    'credits.team_title': 'Equipo de Desarrollo',
+                    'credits.albert_role': 'Líder, CEO, Director y Diseñador',
+                    'credits.albert_desc': 'Visionario detrás de Animales de Tablas y director creativo',
+                    'credits.giovanni_role': 'Experto en Computación',
+                    'credits.giovanni_desc': 'Maestro técnico y mago de la programación',
+                    'credits.game_info_title': 'Información del Juego',
+                    'credits.version': 'Versión',
+                    'credits.engine': 'Motor',
+                    'credits.languages': 'Idiomas',
+                    'credits.thanks_title': 'Agradecimientos Especiales',
+                    'credits.thanks_text': '¡Gracias a todos los jóvenes matemáticos que se embarcarán en esta aventura animal!',
+                    'credits.mission': '¡Nuestra misión: hacer que las matemáticas sean divertidas, un hábitat animal a la vez! 🐰🐧🐘',
+                    'credits.back': 'Volver al Menú'
                 }
             },
             'it': {
@@ -204,6 +238,7 @@ class LanguageManager {
                     'menu.start': 'Inizia Avventura',
                     'menu.settings': 'Impostazioni',
                     'menu.achievements': 'Risultati',
+                    'menu.credits': 'Crediti',
                     
                     // Settings
                     'settings.title': 'Impostazioni',
@@ -284,7 +319,23 @@ class LanguageManager {
                     // Feedback Messages
                     'feedback.correct': 'Corretto! Ben fatto!',
                     'feedback.incorrect': 'Non proprio giusto, riprova!',
-                    'feedback.continue': 'Continua'
+                    'feedback.continue': 'Continua',
+                    
+                    // Credits
+                    'credits.title': 'Crediti',
+                    'credits.team_title': 'Team di Sviluppo',
+                    'credits.albert_role': 'Leader, CEO, Direttore e Designer',
+                    'credits.albert_desc': 'Visionario dietro Animali delle Tabelline e direttore creativo',
+                    'credits.giovanni_role': 'Esperto di Computer',
+                    'credits.giovanni_desc': 'Genio tecnico e mago della programmazione',
+                    'credits.game_info_title': 'Informazioni sul Gioco',
+                    'credits.version': 'Versione',
+                    'credits.engine': 'Motore',
+                    'credits.languages': 'Lingue',
+                    'credits.thanks_title': 'Ringraziamenti Speciali',
+                    'credits.thanks_text': 'Grazie a tutti i giovani matematici che intraprenderanno questa avventura animale!',
+                    'credits.mission': 'La nostra missione: rendere la matematica divertente, un habitat animale alla volta! 🐰🐧🐘',
+                    'credits.back': 'Torna al Menu'
                 }
             }
         };

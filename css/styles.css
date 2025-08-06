@@ -1162,3 +1162,325 @@ body.habitat-select-mode .habitat-content {
         padding: 0.7rem 1rem;
     }
 }
+
+/* Credits Screen */
+#creditsScreen {
+    background: linear-gradient(135deg, #FFE4E1 0%, #FFA07A 50%, #87CEEB 100%);
+    overflow-y: auto;
+    align-items: flex-start;
+    padding: 2rem 0;
+}
+
+/* Enable scrolling for credits screen */
+body.credits-mode {
+    overflow: auto !important;
+    height: auto !important;
+    min-height: 100vh;
+}
+
+body.credits-mode #creditsScreen {
+    position: static !important;
+    height: auto !important;
+    min-height: 100vh;
+    overflow-y: visible !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 1rem 0 3rem 0;
+}
+
+.credits-content {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    max-width: 800px;
+    width: 90%;
+    margin: 0 auto;
+    text-align: center;
+    animation: creditsEntrance 0.8s ease-out;
+    flex-shrink: 0;
+}
+
+/* Ensure credits content is properly positioned for scrolling */
+body.credits-mode .credits-content {
+    position: relative;
+    display: block;
+    margin: 1rem auto 3rem auto;
+    max-height: none;
+}
+
+@keyframes creditsEntrance {
+    0% {
+        transform: scale(0.8) translateY(50px);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+.credits-content h2 {
+    font-size: 2.5rem;
+    color: #FF6B6B;
+    margin-bottom: 2rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.credits-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: rgba(255, 107, 107, 0.05);
+    border-radius: 15px;
+    border-left: 4px solid #FF6B6B;
+}
+
+.credits-section h3 {
+    font-size: 1.5rem;
+    color: #4ECDC4;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.credits-section h3::before,
+.credits-section h3::after {
+    content: '🌟';
+    font-size: 1rem;
+}
+
+.credits-team {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.team-member {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.team-member:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.member-avatar {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    animation: avatarPulse 3s ease-in-out infinite;
+}
+
+@keyframes avatarPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.member-info {
+    flex: 1;
+    text-align: left;
+}
+
+.member-info h4 {
+    font-size: 1.3rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.member-roles {
+    font-size: 1rem;
+    color: #FF6B6B;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.member-description {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.4;
+}
+
+.credits-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: left;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.credits-info p {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.credits-info strong {
+    color: #4ECDC4;
+}
+
+.credits-thanks {
+    text-align: center;
+}
+
+.credits-thanks p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.credits-thanks p:last-child {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #FF6B6B;
+    background: linear-gradient(45deg, #FFE4E1, #FFA07A);
+    padding: 1rem;
+    border-radius: 10px;
+    border: 2px solid #FF6B6B;
+    animation: missionGlow 2s ease-in-out infinite;
+}
+
+@keyframes missionGlow {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(255, 107, 107, 0.6);
+    }
+}
+
+.credits-actions {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid rgba(255, 107, 107, 0.2);
+}
+
+/* Responsive Credits */
+@media (max-width: 768px) {
+    #creditsScreen {
+        padding: 1rem 0;
+    }
+    
+    body.credits-mode #creditsScreen {
+        min-height: calc(100vh + 200px) !important;
+        padding: 0.5rem 0 4rem 0;
+    }
+    
+    .credits-content {
+        padding: 1.5rem;
+        width: 95%;
+    }
+    
+    body.credits-mode .credits-content {
+        margin: 0.5rem auto 2rem auto;
+        padding: 1.5rem;
+        width: 95%;
+    }
+    
+    .credits-content h2 {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .credits-section {
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .credits-section h3 {
+        font-size: 1.3rem;
+    }
+    
+    .team-member {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .member-info {
+        text-align: center;
+    }
+    
+    .member-avatar {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+    
+    .credits-info {
+        max-width: 100%;
+    }
+    
+    .credits-thanks p:last-child {
+        font-size: 1rem;
+        padding: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    body.credits-mode #creditsScreen {
+        min-height: calc(100vh + 400px) !important;
+        padding: 0.5rem 0 5rem 0;
+    }
+    
+    .credits-content {
+        padding: 1rem;
+    }
+    
+    body.credits-mode .credits-content {
+        width: 98%;
+        padding: 1rem;
+        margin: 0.5rem auto 3rem auto;
+    }
+    
+    .credits-content h2 {
+        font-size: 1.8rem;
+    }
+    
+    .credits-section h3 {
+        font-size: 1.2rem;
+        flex-direction: column;
+        gap: 0.2rem;
+    }
+    
+    .team-member {
+        padding: 1rem;
+    }
+    
+    .member-info h4 {
+        font-size: 1.2rem;
+    }
+    
+    .member-roles {
+        font-size: 0.9rem;
+    }
+    
+    .member-description {
+        font-size: 0.85rem;
+    }
+}

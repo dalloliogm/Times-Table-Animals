@@ -94,6 +94,10 @@ class GameController {
             this.showAchievements();
         });
 
+        document.getElementById('creditsBtn').addEventListener('click', () => {
+            this.showCredits();
+        });
+
         // Settings Events
         document.getElementById('backToMenuBtn').addEventListener('click', () => {
             this.showMainMenu();
@@ -170,6 +174,11 @@ class GameController {
             this.resetProgress();
         });
 
+        // Credits Screen Events
+        document.getElementById('backToMenuFromCredits').addEventListener('click', () => {
+            this.showMainMenu();
+        });
+
         // Game UI Events
         document.getElementById('pauseBtn').addEventListener('click', () => {
             this.pauseGame();
@@ -240,16 +249,16 @@ class GameController {
     }
 
     showMainMenu() {
-        // Remove habitat selection scrolling mode
-        document.body.classList.remove('habitat-select-mode');
+        // Remove scrolling modes
+        document.body.classList.remove('habitat-select-mode', 'credits-mode');
         
         this.switchScreen('mainMenu');
         this.audioManager.playBackgroundMusic('menu');
     }
 
     showSettings() {
-        // Remove habitat selection scrolling mode
-        document.body.classList.remove('habitat-select-mode');
+        // Remove scrolling modes
+        document.body.classList.remove('habitat-select-mode', 'credits-mode');
         
         this.switchScreen('settingsMenu');
         this.updateSettingsUI();
@@ -258,6 +267,17 @@ class GameController {
     showAchievements() {
         // TODO: Implement achievements screen
         console.log('Achievements screen not yet implemented');
+    }
+
+    showCredits() {
+        // Remove habitat selection scrolling mode
+        document.body.classList.remove('habitat-select-mode');
+        
+        // Enable credits scrolling mode
+        document.body.classList.add('credits-mode');
+        
+        this.switchScreen('creditsScreen');
+        this.audioManager.playBackgroundMusic('menu');
     }
 
     updateSettingsUI() {
@@ -328,8 +348,8 @@ class GameController {
         // Cleanup previous habitat first
         this.cleanupCurrentHabitat();
         
-        // Remove habitat selection scrolling mode
-        document.body.classList.remove('habitat-select-mode');
+        // Remove scrolling modes
+        document.body.classList.remove('habitat-select-mode', 'credits-mode');
         
         this.gameState.currentHabitat = habitatName;
         this.switchScreen('gameScreen');

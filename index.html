@@ -29,6 +29,7 @@
                     <button id="startGameBtn" class="menu-btn primary" data-translate="menu.start">Start Adventure</button>
                     <button id="settingsBtn" class="menu-btn secondary" data-translate="menu.settings">Settings</button>
                     <button id="achievementsBtn" class="menu-btn secondary" data-translate="menu.achievements">Achievements</button>
+                    <button id="creditsBtn" class="menu-btn secondary" data-translate="menu.credits">Credits</button>
                 </div>
             </div>
         </div>
@@ -112,6 +113,57 @@
                 <div class="settings-actions">
                     <button id="resetProgressBtn" class="menu-btn danger" data-translate="settings.reset">Reset Progress</button>
                     <button id="backToMenuBtn" class="menu-btn primary" data-translate="settings.back">Back to Menu</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Credits Screen -->
+        <div id="creditsScreen" class="screen">
+            <div class="credits-content">
+                <h2 data-translate="credits.title">Credits</h2>
+                
+                <div class="credits-section">
+                    <h3 data-translate="credits.team_title">Development Team</h3>
+                    <div class="credits-team">
+                        <div class="team-member">
+                            <div class="member-avatar">🎯</div>
+                            <div class="member-info">
+                                <h4>Albert</h4>
+                                <p class="member-roles" data-translate="credits.albert_role">Leader, CEO, Director, Mastermind, Designer and Tester</p>
+                                <p class="member-description" data-translate="credits.albert_desc">Visionary behind Times Table Animals and creative director</p>
+                            </div>
+                        </div>
+                        
+                        <div class="team-member">
+                            <div class="member-avatar">💻</div>
+                            <div class="member-info">
+                                <h4>Giovanni</h4>
+                                <p class="member-roles" data-translate="credits.giovanni_role">Computer Expert, Tester</p>
+                                <p class="member-description" data-translate="credits.giovanni_desc">Technical mastermind and programming wizard</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="credits-section">
+                    <h3 data-translate="credits.game_info_title">Game Information</h3>
+                    <div class="credits-info">
+                        <p><strong data-translate="credits.version">Version:</strong> 1.0.0</p>
+                        <p><strong data-translate="credits.engine">Engine:</strong> HTML5 Canvas</p>
+                        <p><strong data-translate="credits.languages">Languages:</strong> English, Español, Italiano</p>
+                    </div>
+                </div>
+                
+                <div class="credits-section">
+                    <h3 data-translate="credits.thanks_title">Special Thanks</h3>
+                    <div class="credits-thanks">
+                        <p data-translate="credits.thanks_text">Thank you to all the young mathematicians who will embark on this animal adventure!</p>
+                        <p data-translate="credits.mission">Our mission: Making math fun, one animal habitat at a time! 🐰🐧🐘</p>
+                    </div>
+                </div>
+                
+                <div class="credits-actions">
+                    <button id="backToMenuFromCredits" class="menu-btn primary" data-translate="credits.back">Back to Menu</button>
                 </div>
             </div>
         </div>
