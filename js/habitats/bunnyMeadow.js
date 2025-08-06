@@ -437,9 +437,13 @@ class BunnyMeadow {
             this.audioManager.playSFX('problem-appear');
         }
         
-        // Ensure GameController has the same problem reference
+        // Ensure GameController has the same problem reference and updates UI
         if (this.gameController && this.gameController.mathEngine) {
             this.gameController.mathEngine.currentProblem = this.currentProblem;
+            // Also call GameController's updateProblemUI to ensure everything is synced
+            if (this.gameController.updateProblemUI) {
+                this.gameController.updateProblemUI();
+            }
         }
     }
 
