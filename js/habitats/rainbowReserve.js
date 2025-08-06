@@ -292,6 +292,11 @@ class RainbowReserve {
         this.problemsSolved++;
         this.celebrationActive = true;
         
+        // Update GameController progress tracking
+        if (this.gameController) {
+            this.gameController.updateProgress();
+        }
+        
         // Show celebration
         this.createCelebration();
         

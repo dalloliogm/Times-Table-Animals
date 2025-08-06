@@ -1004,6 +1004,11 @@ class LionPride {
         this.problemsSolved++;
         console.log(`Lion Pride: Problem solved! Progress: ${this.problemsSolved}/${this.totalProblems}`);
         
+        // Update GameController progress tracking
+        if (this.gameController) {
+            this.gameController.updateProgress();
+        }
+        
         if (this.audioManager) {
             this.audioManager.playSFX('correct');
             this.audioManager.playVoice('celebration');

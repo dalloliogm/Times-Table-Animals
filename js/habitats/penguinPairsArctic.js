@@ -797,6 +797,11 @@ class PenguinPairsArctic {
     onCorrectAnswer() {
         this.problemsSolved++;
         
+        // Update GameController progress tracking
+        if (this.gameController) {
+            this.gameController.updateProgress();
+        }
+        
         if (this.audioManager) {
             this.audioManager.playSFX('correct');
             this.audioManager.playVoice('celebration');
