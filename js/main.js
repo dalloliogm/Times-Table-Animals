@@ -358,13 +358,8 @@ class GameController {
             this.switchScreen('gameScreen');
             this.updateGameUI();
             
-            // Show loading indicator
-            this.showHabitatLoadingIndicator(habitatName);
-            
-            // Use setTimeout to allow UI to update before heavy initialization
-            setTimeout(() => {
-                this.initializeHabitat(habitatName);
-            }, 50);
+            // Initialize habitat directly
+            this.initializeHabitat(habitatName);
             
         } catch (error) {
             console.error(`Error entering habitat ${habitatName}:`, error);
@@ -372,34 +367,9 @@ class GameController {
         }
     }
     
-    showHabitatLoadingIndicator(habitatName) {
-        // Show loading message
-        const mathProblem = document.getElementById('mathProblem');
-        if (mathProblem) {
-            mathProblem.innerHTML = `
-                <div style="text-align: center; padding: 50px; font-family: 'Comic Sans MS', cursive;">
-                    <div style="font-size: 24px; color: #4ECDC4; margin-bottom: 20px;">
-                        Loading ${this.getHabitatDisplayName(habitatName)}...
-                    </div>
-                    <div style="font-size: 48px; animation: spin 1s linear infinite;">🔄</div>
-                </div>
-                <style>
-                @keyframes spin {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                }
-                </style>
-            `;
-            mathProblem.classList.remove('hidden');
-        }
-    }
-    
     initializeHabitat(habitatName) {
         try {
             console.log(`GameController: Initializing habitat ${habitatName}`);
-            
-            // Clear loading indicator FIRST, before creating habitat
-            this.clearHabitatLoadingIndicator();
             
             // Validate that required managers are ready
             if (!this.gameEngine) {
@@ -415,7 +385,7 @@ class GameController {
                 throw new Error(`Habitat class not found for ${habitatName}`);
             }
             
-            // Create habitat instance (this will immediately call startNextProblem)
+            // Create habitat instance
             this.currentHabitat = new habitatClass(this.gameEngine, this.mathEngine, this);
             
             // Validate habitat was created successfully
@@ -428,7 +398,7 @@ class GameController {
                 this.currentHabitat.setAudioManager(this.audioManager);
             }
             
-            // Finalize habitat entry immediately (no need for extra delay)
+            // Finalize habitat entry
             this.finalizeHabitatEntry(habitatName);
             
         } catch (error) {
@@ -502,17 +472,6 @@ class GameController {
         }
     }
     
-    clearHabitatLoadingIndicator() {
-        // Clear the loading content and reset to proper initial state
-        const mathProblem = document.getElementById('mathProblem');
-        if (mathProblem) {
-            // Clear the loading content but keep element available for habitat use
-            mathProblem.innerHTML = '';
-            // Don't hide it - let the habitat control visibility
-        }
-        
-        console.log('Loading indicator cleared, mathProblem ready for habitat use');
-    }
     
     handleHabitatLoadingError(habitatName, error) {
         console.error(`Failed to load habitat ${habitatName}:`, error);
