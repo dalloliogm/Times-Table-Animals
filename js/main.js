@@ -803,6 +803,13 @@ class GameController {
     }
 
     showHabitatCompletion(habitat) {
+        // Prevent multiple overlays from being created
+        const existingOverlay = document.getElementById('completionOverlay');
+        if (existingOverlay) {
+            console.log('Completion overlay already exists, removing it first');
+            existingOverlay.remove();
+        }
+        
         // Hide math problem UI
         const mathProblem = document.getElementById('mathProblem');
         if (mathProblem) {
@@ -845,6 +852,7 @@ class GameController {
             z-index: 9999;
             opacity: 0;
             transition: opacity 0.5s ease;
+            cursor: pointer;
         `;
         
         // Create completion content
@@ -855,6 +863,7 @@ class GameController {
             color: white;
             transform: scale(0.8);
             transition: transform 0.5s ease;
+            cursor: default;
         `;
         
         // Check if next habitat was unlocked
@@ -879,11 +888,30 @@ class GameController {
                 cursor: pointer;
                 transition: background 0.3s ease;
                 font-family: inherit;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                border: 2px solid transparent;
             ">Continue to Habitats</button>
+            <div style="margin-top: 15px; font-size: 14px; opacity: 0.7;">
+                Click anywhere to continue
+            </div>
         `;
         
         completionOverlay.appendChild(completionContent);
         document.body.appendChild(completionOverlay);
+        
+        // Create the completion handler function
+        const handleCompletion = (source = 'unknown') => {
+            console.log(`Completion triggered by: ${source}`);
+            try {
+                this.hideCompletionOverlay();
+                this.cleanupCurrentHabitat();
+                this.showHabitatSelection();
+            } catch (error) {
+                console.error('Error in completion handler:', error);
+                // Fallback: force navigation to habitat selection
+                this.showHabitatSelection();
+            }
+        };
         
         // Animate in
         setTimeout(() => {
@@ -891,56 +919,62 @@ class GameController {
             completionContent.style.transform = 'scale(1)';
         }, 100);
         
-        // Handle continue button with improved error handling
+        // Add multiple ways to close the overlay for maximum reliability
+        
+        // 1. Click anywhere on overlay (but prevent event bubbling on content)
+        completionOverlay.addEventListener('click', (e) => {
+            if (e.target === completionOverlay) {
+                handleCompletion('overlay-click');
+            }
+        });
+        
+        // 2. Button click
         const continueBtn = document.getElementById('continueToHabitats');
         if (continueBtn) {
-            // Create the completion handler function
-            const handleCompletion = () => {
-                console.log('Completion button clicked - returning to habitat selection');
-                try {
-                    this.hideCompletionOverlay();
-                    this.cleanupCurrentHabitat();
-                    this.showHabitatSelection();
-                } catch (error) {
-                    console.error('Error in completion handler:', error);
-                    // Fallback: force navigation to habitat selection
-                    this.showHabitatSelection();
-                }
-            };
-            
-            // Add click event listener
-            continueBtn.addEventListener('click', handleCompletion);
-            
-            // Also add keyboard support (Enter key)
-            continueBtn.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleCompletion();
-                }
+            continueBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                handleCompletion('button-click');
             });
             
-            // Make button focusable for accessibility
+            // Make button more visible when focused
+            continueBtn.addEventListener('mouseenter', () => {
+                continueBtn.style.background = '#3DBDAE';
+                continueBtn.style.transform = 'scale(1.05)';
+            });
+            
+            continueBtn.addEventListener('mouseleave', () => {
+                continueBtn.style.background = '#4ECDC4';
+                continueBtn.style.transform = 'scale(1)';
+            });
+            
+            // Focus the button
             continueBtn.tabIndex = 0;
             continueBtn.focus();
-            
-            // Auto-continue after 5 seconds with better validation
-            setTimeout(() => {
-                const overlay = document.getElementById('completionOverlay');
-                const button = document.getElementById('continueToHabitats');
-                if (overlay && button && overlay.parentNode) {
-                    console.log('Auto-completing after 5 seconds');
-                    handleCompletion();
-                }
-            }, 5000);
-        } else {
-            console.error('Continue button not found - adding fallback timeout');
-            // Fallback if button creation failed
-            setTimeout(() => {
-                this.hideCompletionOverlay();
-                this.cleanupCurrentHabitat();
-                this.showHabitatSelection();
-            }, 3000);
         }
+        
+        // 3. Keyboard support (any key)
+        const keyHandler = (e) => {
+            console.log('Key pressed in completion overlay:', e.key);
+            if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
+                e.preventDefault();
+                document.removeEventListener('keydown', keyHandler);
+                handleCompletion('keyboard');
+            }
+        };
+        document.addEventListener('keydown', keyHandler);
+        
+        // 4. Auto-continue after 3 seconds (reduced from 5)
+        const autoCompleteTimer = setTimeout(() => {
+            const overlay = document.getElementById('completionOverlay');
+            if (overlay && overlay.parentNode) {
+                console.log('Auto-completing after 3 seconds');
+                document.removeEventListener('keydown', keyHandler);
+                handleCompletion('auto-timeout');
+            }
+        }, 3000);
+        
+        // Store timer reference for cleanup
+        completionOverlay.autoCompleteTimer = autoCompleteTimer;
     }
 
     getNextHabitat(currentHabitat) {
@@ -959,28 +993,46 @@ class GameController {
 
     hideCompletionOverlay() {
         const overlay = document.getElementById('completionOverlay');
-        if (overlay && overlay.parentNode) {
+        if (overlay) {
             console.log('Hiding completion overlay');
-            overlay.style.opacity = '0';
             
-            // Disable button to prevent double-clicks
-            const button = overlay.querySelector('#continueToHabitats');
-            if (button) {
-                button.disabled = true;
-                button.style.pointerEvents = 'none';
+            // Clear any timers
+            if (overlay.autoCompleteTimer) {
+                clearTimeout(overlay.autoCompleteTimer);
+                overlay.autoCompleteTimer = null;
             }
+            
+            // Remove all event listeners by cloning and replacing the overlay
+            // This prevents any lingering event handlers
+            const newOverlay = overlay.cloneNode(true);
+            overlay.parentNode.replaceChild(newOverlay, overlay);
+            
+            // Fade out and remove
+            newOverlay.style.opacity = '0';
+            newOverlay.style.pointerEvents = 'none';
             
             setTimeout(() => {
                 try {
-                    if (overlay && overlay.parentNode) {
-                        overlay.parentNode.removeChild(overlay);
+                    if (newOverlay && newOverlay.parentNode) {
+                        newOverlay.parentNode.removeChild(newOverlay);
                         console.log('Completion overlay removed from DOM');
                     }
                 } catch (error) {
                     console.error('Error removing completion overlay:', error);
                 }
             }, 500);
+        } else {
+            console.log('No completion overlay to hide');
         }
+        
+        // Also clean up any lingering overlays that might exist
+        const allOverlays = document.querySelectorAll('.completion-overlay');
+        allOverlays.forEach((overlay, index) => {
+            console.log(`Removing lingering overlay ${index + 1}`);
+            if (overlay.parentNode) {
+                overlay.parentNode.removeChild(overlay);
+            }
+        });
     }
 
     switchScreen(screenName) {
