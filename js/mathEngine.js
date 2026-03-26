@@ -148,17 +148,21 @@ class MathEngine {
         
         // Randomly select one problem type for the entire level
         this.selectedQuestionType = problemTypes[Math.floor(Math.random() * problemTypes.length)];
-        
-        // Get available templates for the selected problem type in current language
-        const questionTemplates = this.getQuestionTemplates();
-        const availableTemplates = questionTemplates[this.selectedQuestionType];
-        if (availableTemplates) {
-            // Randomly select one template for the entire level
-            const templateIndex = Math.floor(Math.random() * availableTemplates.length);
-            this.selectedQuestionTemplate = availableTemplates[templateIndex];
-        }
+        this.selectedQuestionTemplate = this.getTemplateForProblemType(this.selectedQuestionType);
         
         console.log(`Selected question type: ${this.selectedQuestionType}, template: ${this.selectedQuestionTemplate}`);
+    }
+
+    getTemplateForProblemType(problemType) {
+        const questionTemplates = this.getQuestionTemplates();
+        const availableTemplates = questionTemplates[problemType];
+
+        if (!availableTemplates || availableTemplates.length === 0) {
+            return null;
+        }
+
+        const templateIndex = Math.floor(Math.random() * availableTemplates.length);
+        return availableTemplates[templateIndex];
     }
 
     highlightNumbers(text) {
@@ -184,74 +188,100 @@ class MathEngine {
         return difficultyMap[habitat] || 1;
     }
 
-    generateProblem() {
-        // Use the selected question type for the level instead of random selection
-        const problemType = this.selectedQuestionType;
-        
+    getProblemTypeForGeneration(problemTypeOverride) {
+        if (problemTypeOverride) {
+            return problemTypeOverride;
+        }
+
+        if (this.selectedQuestionType) {
+            return this.selectedQuestionType;
+        }
+
+        const habitatProblemTypes = this.problemTypes[this.currentHabitat] || ['addition'];
+        return habitatProblemTypes[0];
+    }
+
+    generateProblem(problemTypeOverride = null) {
+        const problemType = this.getProblemTypeForGeneration(problemTypeOverride);
+        const previousQuestionType = this.selectedQuestionType;
+        const previousQuestionTemplate = this.selectedQuestionTemplate;
+
+        if (problemTypeOverride) {
+            this.selectedQuestionType = problemType;
+            this.selectedQuestionTemplate = this.getTemplateForProblemType(problemType);
+        }
+
         let problem;
-        switch (problemType) {
-            case 'addition':
-                problem = this.generateAdditionProblem();
-                break;
-            case 'subtraction':
-                problem = this.generateSubtractionProblem();
-                break;
-            case 'doubles':
-                problem = this.generateDoublesProblem();
-                break;
-            case 'doubles_word_problems':
-                problem = this.generateDoublesWordProblem();
-                break;
-            case 'multiplication':
-                problem = this.generateMultiplicationProblem();
-                break;
-            case 'simple_division':
-                problem = this.generateSimpleDivisionProblem();
-                break;
-            case 'division':
-                problem = this.generateDivisionProblem();
-                break;
-            case 'fractions':
-                problem = this.generateFractionProblem();
-                break;
-            case 'equations':
-                problem = this.generateEquationProblem();
-                break;
-            case 'decimals':
-                problem = this.generateDecimalProblem();
-                break;
-            case 'exponentials':
-                problem = this.generateExponentialProblem();
-                break;
-            case 'mixed_operations':
-                problem = this.generateMixedOperationProblem();
-                break;
-            case 'word_problems':
-                problem = this.generateWordProblem();
-                break;
-            case 'measurement':
-                problem = this.generateMeasurementProblem();
-                break;
-            case 'geometry':
-                problem = this.generateGeometryProblem();
-                break;
-            case 'advanced_multiplication':
-                problem = this.generateAdvancedMultiplicationProblem();
-                break;
-            case 'patterns':
-                problem = this.generatePatternProblem();
-                break;
-            case 'advanced_equations':
-                problem = this.generateAdvancedEquationProblem();
-                break;
-            case 'all_concepts':
-                problem = this.generateAllConceptsProblem();
-                break;
-            case 'challenge_problems':
-                problem = this.generateChallengeProblem();
-                break;
-            default:
-                problem = this.generateAdditionProblem();
+        try {
+            switch (problemType) {
+                case 'addition':
+                    problem = this.generateAdditionProblem();
+                    break;
+                case 'subtraction':
+                    problem = this.generateSubtractionProblem();
+                    break;
+                case 'doubles':
+                    problem = this.generateDoublesProblem();
+                    break;
+                case 'doubles_word_problems':
+                    problem = this.generateDoublesWordProblem();
+                    break;
+                case 'multiplication':
+                    problem = this.generateMultiplicationProblem();
+                    break;
+                case 'simple_division':
+                    problem = this.generateSimpleDivisionProblem();
+                    break;
+                case 'division':
+                    problem = this.generateDivisionProblem();
+                    break;
+                case 'fractions':
+                    problem = this.generateFractionProblem();
+                    break;
+                case 'equations':
+                    problem = this.generateEquationProblem();
+                    break;
+                case 'decimals':
+                    problem = this.generateDecimalProblem();
+                    break;
+                case 'exponentials':
+                    problem = this.generateExponentialProblem();
+                    break;
+                case 'mixed_operations':
+                    problem = this.generateMixedOperationProblem();
+                    break;
+                case 'word_problems':
+                    problem = this.generateWordProblem();
+                    break;
+                case 'measurement':
+                    problem = this.generateMeasurementProblem();
+                    break;
+                case 'geometry':
+                    problem = this.generateGeometryProblem();
+                    break;
+                case 'advanced_multiplication':
+                    problem = this.generateAdvancedMultiplicationProblem();
+                    break;
+                case 'patterns':
+                    problem = this.generatePatternProblem();
+                    break;
+                case 'advanced_equations':
+                    problem = this.generateAdvancedEquationProblem();
+                    break;
+                case 'all_concepts':
+                    problem = this.generateAllConceptsProblem();
+                    break;
+                case 'challenge_problems':
+                    problem = this.generateChallengeProblem();
+                    break;
+                default:
+                    problem = this.generateAdditionProblem();
+            }
+        } finally {
+            if (problemTypeOverride) {
+                this.selectedQuestionType = previousQuestionType;
+                this.selectedQuestionTemplate = previousQuestionTemplate;
+            }
         }
 
         // Add multiple choice options
