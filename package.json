@@ -8,7 +8,7 @@
     "test:install": "npm install puppeteer",
     "test:quick": "node tests/quick-test.js",
     "serve": "python -m http.server 8080 2>/dev/null || python3 -m http.server 8080 2>/dev/null || echo 'Python not found. Open index.html in browser manually.'",
-    "deploy:test": "npm run test && echo 'All tests passed! Ready for deployment.'",
+    "deploy:test": "npm run test && npm run deploy:check && echo 'All tests passed! Ready for deployment.'",
     "deploy:check": "node tests/deployment-check.js"
   },
   "keywords": [

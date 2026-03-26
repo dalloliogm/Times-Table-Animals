@@ -48,7 +48,7 @@ class TimerManager {
 
     init() {
         this.createTimerUI();
-        this.createCatastrophicOverlay();
+        this.cacheCatastrophicOverlay();
     }
 
     createTimerUI() {
@@ -71,36 +71,12 @@ class TimerManager {
         }
     }
 
-    createCatastrophicOverlay() {
-        // Create overlay for catastrophic events
-        const overlay = document.createElement('div');
-        overlay.id = 'catastrophicOverlay';
-        overlay.className = 'catastrophic-overlay hidden';
-        overlay.innerHTML = `
-            <div class="catastrophic-content">
-                <div class="catastrophic-icon">
-                    <img src="assets/volcano.jpg" alt="Volcano Eruption" class="volcano-image">
-                </div>
-                <h1 class="catastrophic-title">${this.translate('timer.catastrophic_title')}</h1>
-                <p class="catastrophic-message">${this.translate('timer.catastrophic_message')}</p>
-                <div class="catastrophic-buttons">
-                    <button id="tryAgainBtn" class="catastrophic-btn primary">${this.translate('timer.try_again')}</button>
-                    <button id="backToHabitatsBtn" class="catastrophic-btn secondary">${this.translate('timer.choose_different')}</button>
-                </div>
-            </div>
-        `;
+    cacheCatastrophicOverlay() {
+        this.catastrophicOverlay = document.getElementById('catastrophicOverlay');
 
-        document.body.appendChild(overlay);
-        this.catastrophicOverlay = overlay;
-
-        // Add event listeners
-        document.getElementById('tryAgainBtn').addEventListener('click', () => {
-            this.onTryAgain();
-        });
-
-        document.getElementById('backToHabitatsBtn').addEventListener('click', () => {
-            this.onBackToHabitats();
-        });
+        if (!this.catastrophicOverlay) {
+            console.warn('TimerManager: catastrophic overlay element not found in DOM');
+        }
     }
     
     translate(key) {
@@ -425,7 +401,7 @@ class TimerManager {
             const icon = this.catastrophicOverlay.querySelector('.catastrophic-icon');
             const title = this.catastrophicOverlay.querySelector('.catastrophic-title');
             const message = this.catastrophicOverlay.querySelector('.catastrophic-message');
-            const tryAgainBtn = this.catastrophicOverlay.querySelector('#tryAgainBtn');
+            const tryAgainBtn = this.catastrophicOverlay.querySelector('#retryLevelBtn');
             const backToHabitatsBtn = this.catastrophicOverlay.querySelector('#backToHabitatsBtn');
             
             if (icon) {
