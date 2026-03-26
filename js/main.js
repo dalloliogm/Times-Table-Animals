@@ -1160,13 +1160,24 @@ class GameController {
             }
         }, 1000); // Every second
     }
+
+    shouldTimerBeRunning() {
+        if (!this.timerManager) return false;
+
+        const completionOverlay = document.getElementById('completionOverlay');
+        const completionOverlayVisible = completionOverlay && document.body.contains(completionOverlay);
+
+        return this.currentScreen === 'gameScreen' &&
+            Boolean(this.gameState.currentHabitat) &&
+            !completionOverlayVisible &&
+            !this.timerManager.isCatastrophicEventActive();
+    }
     
     validateTimerState() {
         if (!this.timerManager) return;
         
         // Check if timer should be active but isn't
-        if (this.currentScreen === 'gameScreen' &&
-            this.gameState.currentHabitat &&
+        if (this.shouldTimerBeRunning() &&
             !this.timerManager.isTimerActive()) {
             
             console.warn('Timer should be active but isn\'t - attempting to restart');
@@ -1174,7 +1185,7 @@ class GameController {
         }
         
         // Check if timer is active but shouldn't be
-        if (this.currentScreen !== 'gameScreen' &&
+        if (!this.shouldTimerBeRunning() &&
             this.timerManager.isTimerActive()) {
             
             console.warn('Timer is active but shouldn\'t be - stopping timer');

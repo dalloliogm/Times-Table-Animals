@@ -27,6 +27,7 @@ class TimerManager {
         this.startTime = 0;
         this.warningsShown = [];
         this.currentHabitat = null;
+        this.catastrophicEventActive = false;
         
         // UI elements
         this.timerBar = null;
@@ -90,6 +91,7 @@ class TimerManager {
         console.log(`TimerManager: Starting timer for habitat ${habitat}`);
         
         this.currentHabitat = habitat;
+        this.catastrophicEventActive = false;
         this.isActive = true;
         this.timeRemaining = this.config.levelDuration;
         this.startTime = Date.now();
@@ -305,6 +307,7 @@ class TimerManager {
 
     triggerCatastrophicEvent() {
         console.log(`TimerManager: Triggering catastrophic event for ${this.currentHabitat}`);
+        this.catastrophicEventActive = true;
         
         this.stopTimer();
         
@@ -427,6 +430,7 @@ class TimerManager {
 
     hideCatastrophicOverlay() {
         if (this.catastrophicOverlay) {
+            this.catastrophicEventActive = false;
             this.catastrophicOverlay.classList.remove('show');
             setTimeout(() => {
                 this.catastrophicOverlay.classList.add('hidden');
@@ -479,6 +483,10 @@ class TimerManager {
 
     isTimerActive() {
         return this.isActive;
+    }
+
+    isCatastrophicEventActive() {
+        return this.catastrophicEventActive;
     }
 
     // Enhanced visual effects methods
