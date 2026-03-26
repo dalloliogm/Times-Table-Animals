@@ -52,6 +52,7 @@ class AudioManager {
             'menu': this.createAudioTrack('menu-music', true),
             'habitat-selection': this.createAudioTrack('habitat-selection-music', true),
             'bunnyMeadow': this.createAudioTrack('bunny-meadow-music', true),
+            'penguinPairsArctic': this.createAudioTrack('penguin-pairs-arctic-music', true),
             'penguinArctic': this.createAudioTrack('penguin-arctic-music', true),
             'elephantSavanna': this.createAudioTrack('elephant-savanna-music', true),
             'monkeyJungle': this.createAudioTrack('monkey-jungle-music', true),
@@ -65,36 +66,78 @@ class AudioManager {
         };
 
         // Sound effects
-        this.sfxTracks = {
-            'correct': this.createAudioTrack('correct-answer-sfx'),
-            'incorrect': this.createAudioTrack('incorrect-answer-sfx'),
-            'badge-earned': this.createAudioTrack('badge-earned-sfx'),
-            'button-click': this.createAudioTrack('button-click-sfx'),
-            'habitat-enter': this.createAudioTrack('habitat-enter-sfx'),
-            'problem-appear': this.createAudioTrack('problem-appear-sfx'),
-            'celebration': this.createAudioTrack('celebration-sfx'),
-            'bunny-hop': this.createAudioTrack('bunny-hop-sfx'),
-            'penguin-waddle': this.createAudioTrack('penguin-waddle-sfx'),
-            'elephant-trumpet': this.createAudioTrack('elephant-trumpet-sfx'),
-            'monkey-chatter': this.createAudioTrack('monkey-chatter-sfx'),
-            'lion-roar': this.createAudioTrack('lion-roar-sfx'),
-            'dolphin-click': this.createAudioTrack('dolphin-click-sfx'),
-            'bear-growl': this.createAudioTrack('bear-growl-sfx'),
-            'giraffe-munch': this.createAudioTrack('giraffe-munch-sfx'),
-            'owl-hoot': this.createAudioTrack('owl-hoot-sfx'),
-            'dragon-breath': this.createAudioTrack('dragon-breath-sfx'),
-            // Enhanced timer warning sounds
-            'timer-warning': this.createAudioTrack('timer-warning-sfx'),
-            'timer-warning-urgent': this.createAudioTrack('timer-warning-urgent-sfx'),
-            'timer-warning-critical': this.createAudioTrack('timer-warning-critical-sfx'),
-            'timer-warning-emergency': this.createAudioTrack('timer-warning-emergency-sfx'),
-            'volcano-rumble': this.createAudioTrack('volcano-rumble-sfx'),
-            'earthquake': this.createAudioTrack('earthquake-sfx'),
-            'catastrophic-event': this.createAudioTrack('catastrophic-event-sfx'),
-            'volcanic-explosion': this.createAudioTrack('volcanic-explosion-sfx'),
-            'ground-shake': this.createAudioTrack('ground-shake-sfx'),
-            'danger-siren': this.createAudioTrack('danger-siren-sfx')
-        };
+        const sfxTrackNames = [
+            'correct',
+            'incorrect',
+            'badge-earned',
+            'button-click',
+            'ui-select',
+            'click',
+            'habitat-enter',
+            'problem-appear',
+            'new-problem',
+            'celebration',
+            'habitat-complete',
+            'hint',
+            'encouragement',
+            'collect',
+            'challenge-step',
+            'times-table-practice',
+            'equation-solve',
+            'geometry-click',
+            'telescope-focus',
+            'telescope-view',
+            'constellation-reveal',
+            'bunny-hop',
+            'penguin-waddle',
+            'penguin-call',
+            'elephant-trumpet',
+            'monkey-chatter',
+            'lion-roar',
+            'dolphin-click',
+            'bear-growl',
+            'giraffe-munch',
+            'giraffe-call',
+            'owl-hoot',
+            'dragon-breath',
+            'dragon-roar',
+            'zebra-neigh',
+            'startled',
+            'hunt-success',
+            'munch',
+            'vine-swing',
+            'coconut-drop',
+            'bubble-pop',
+            'gentle-splash',
+            'splash',
+            'mud-splash',
+            'honey-splash',
+            'ice-crack',
+            'stone-tap',
+            'leaf-rustle',
+            'leaves-rustle',
+            'rustle-leaves',
+            'cave-echo',
+            'crystal-chime',
+            'treasure-open',
+            'treasure-reveal',
+            'bell-ring',
+            'sled-bell',
+            'timer-warning',
+            'timer-warning-urgent',
+            'timer-warning-critical',
+            'timer-warning-emergency',
+            'volcano-rumble',
+            'earthquake',
+            'catastrophic-event',
+            'volcanic-explosion',
+            'ground-shake',
+            'danger-siren'
+        ];
+
+        this.sfxTracks = Object.fromEntries(
+            sfxTrackNames.map((trackName) => [trackName, this.createAudioTrack(`${trackName}-sfx`)])
+        );
 
         // Voice narration
         this.voiceTracks = {
@@ -201,14 +244,18 @@ class AudioManager {
         }
     }
 
+    ensureSFXTrack(soundName) {
+        if (!this.sfxTracks[soundName]) {
+            this.sfxTracks[soundName] = this.createAudioTrack(`${soundName}-sfx`);
+        }
+
+        return this.sfxTracks[soundName];
+    }
+
     playSFX(soundName) {
         if (!this.settings.sfxEnabled) return;
         
-        const track = this.sfxTracks[soundName];
-        if (!track) {
-            console.warn(`Sound effect '${soundName}' not found`);
-            return;
-        }
+        const track = this.ensureSFXTrack(soundName);
         
         if (this.useHTML5Audio) {
             this.playHTML5Audio(track);
@@ -261,6 +308,7 @@ class AudioManager {
         const musicPatterns = {
             'menu': { notes: [261.63, 293.66, 329.63, 349.23], tempo: 500 },
             'bunnyMeadow': { notes: [349.23, 392.00, 440.00, 493.88], tempo: 400 },
+            'penguinPairsArctic': { notes: [246.94, 293.66, 329.63, 369.99], tempo: 520 },
             'penguinArctic': { notes: [220.00, 246.94, 293.66, 329.63], tempo: 600 },
             'elephantSavanna': { notes: [174.61, 196.00, 220.00, 246.94], tempo: 800 }
         };
@@ -272,12 +320,21 @@ class AudioManager {
     generateSFX(soundName) {
         // Generate simple synthesized sound effects
         if (!this.audioContext || !this.settings.sfxEnabled) return;
+
+        const patternName = this.getSFXPatternName(soundName);
         
         const sfxPatterns = {
             'correct': { type: 'sine', frequency: 523.25, duration: 0.3 },
             'incorrect': { type: 'sawtooth', frequency: 146.83, duration: 0.5 },
             'badge-earned': { type: 'sine', frequency: 783.99, duration: 0.8 },
             'button-click': { type: 'square', frequency: 1000, duration: 0.1 },
+            'problem-appear': { type: 'triangle', frequency: 659.25, duration: 0.18 },
+            'celebration': { type: 'sine', frequency: 698.46, duration: 0.45 },
+            'animal-call': { type: 'triangle', frequency: 220.00, duration: 0.35 },
+            'water': { type: 'sine', frequency: 392.00, duration: 0.22 },
+            'rustle': { type: 'sawtooth', frequency: 180.00, duration: 0.16 },
+            'impact': { type: 'square', frequency: 246.94, duration: 0.12 },
+            'chime': { type: 'sine', frequency: 880.00, duration: 0.3 },
             // Enhanced timer warning sounds
             'timer-warning': { type: 'sine', frequency: 440, duration: 0.3 },
             'timer-warning-urgent': { type: 'square', frequency: 523.25, duration: 0.5 },
@@ -285,13 +342,13 @@ class AudioManager {
             'timer-warning-emergency': { type: 'square', frequency: 880, duration: 1.0 }
         };
         
-        const pattern = sfxPatterns[soundName];
+        const pattern = sfxPatterns[patternName];
         if (pattern) {
             this.playTone(pattern.type, pattern.frequency, pattern.duration);
         }
         
         // Handle complex sound effects
-        switch (soundName) {
+        switch (patternName) {
             case 'volcano-rumble':
                 this.playVolcanoRumble();
                 break;
@@ -311,6 +368,62 @@ class AudioManager {
                 this.playDangerSiren();
                 break;
         }
+    }
+
+    getSFXPatternName(soundName) {
+        const aliases = {
+            'ui-select': 'button-click',
+            'click': 'button-click',
+            'collect': 'celebration',
+            'problem-appear': 'problem-appear',
+            'new-problem': 'problem-appear',
+            'hint': 'problem-appear',
+            'encouragement': 'celebration',
+            'habitat-complete': 'celebration',
+            'times-table-practice': 'problem-appear',
+            'equation-solve': 'problem-appear',
+            'geometry-click': 'button-click',
+            'telescope-focus': 'button-click',
+            'telescope-view': 'problem-appear',
+            'constellation-reveal': 'chime',
+            'bell-ring': 'chime',
+            'sled-bell': 'chime',
+            'crystal-chime': 'chime',
+            'treasure-open': 'chime',
+            'treasure-reveal': 'chime',
+            'bubble-pop': 'water',
+            'gentle-splash': 'water',
+            'splash': 'water',
+            'mud-splash': 'water',
+            'honey-splash': 'water',
+            'ice-crack': 'impact',
+            'stone-tap': 'impact',
+            'challenge-step': 'impact',
+            'coconut-drop': 'impact',
+            'leaf-rustle': 'rustle',
+            'leaves-rustle': 'rustle',
+            'rustle-leaves': 'rustle',
+            'vine-swing': 'rustle',
+            'cave-echo': 'rustle',
+            'penguin-call': 'animal-call',
+            'giraffe-call': 'animal-call',
+            'zebra-neigh': 'animal-call',
+            'dragon-roar': 'animal-call',
+            'startled': 'animal-call',
+            'hunt-success': 'celebration',
+            'munch': 'animal-call',
+            'bunny-hop': 'animal-call',
+            'elephant-trumpet': 'animal-call',
+            'monkey-chatter': 'animal-call',
+            'lion-roar': 'animal-call',
+            'dolphin-click': 'animal-call',
+            'bear-growl': 'animal-call',
+            'giraffe-munch': 'animal-call',
+            'owl-hoot': 'animal-call',
+            'dragon-breath': 'animal-call'
+        };
+
+        return aliases[soundName] || soundName;
     }
 
     playTone(type, frequency, duration) {
