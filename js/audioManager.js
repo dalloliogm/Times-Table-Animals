@@ -13,6 +13,11 @@ class AudioManager {
         this.musicGain = null;
         this.sfxGain = null;
         this.voiceGain = null;
+        this.voicePlaybackState = {
+            lastSpokenAt: {},
+            playCounts: {}
+        };
+        this.lastVoiceVariantIndex = {};
         
         this.init();
     }
@@ -269,6 +274,10 @@ class AudioManager {
 
     playVoice(voiceName) {
         if (!this.settings.voiceEnabled) return;
+
+        if (!this.shouldPlayVoice(voiceName)) {
+            return;
+        }
         
         const track = this.voiceTracks[voiceName];
         if (!track) {
@@ -284,6 +293,36 @@ class AudioManager {
         
         // For now, we'll use text-to-speech API if available
         this.speakText(this.getVoiceText(voiceName));
+    }
+
+    shouldPlayVoice(voiceName) {
+        const now = Date.now();
+        const lastSpoken = this.voicePlaybackState.lastSpokenAt[voiceName] || 0;
+        const count = (this.voicePlaybackState.playCounts[voiceName] || 0) + 1;
+        this.voicePlaybackState.playCounts[voiceName] = count;
+
+        // Keep high-frequency feedback from becoming repetitive.
+        const rules = {
+            encouragement: { minIntervalMs: 10000, everyN: 3 },
+            celebration: { minIntervalMs: 12000, everyN: 3 }
+        };
+
+        const rule = rules[voiceName];
+        if (!rule) {
+            this.voicePlaybackState.lastSpokenAt[voiceName] = now;
+            return true;
+        }
+
+        if (now - lastSpoken < rule.minIntervalMs) {
+            return false;
+        }
+
+        if (count % rule.everyN !== 0) {
+            return false;
+        }
+
+        this.voicePlaybackState.lastSpokenAt[voiceName] = now;
+        return true;
     }
 
     playHTML5Audio(track) {
@@ -458,10 +497,20 @@ class AudioManager {
     speakText(text) {
         // Use Web Speech API for text-to-speech if available
         if ('speechSynthesis' in window && this.settings.voiceEnabled) {
+            if (!text) {
+                return;
+            }
+
+            // Prevent stacking multiple queued messages.
+            speechSynthesis.cancel();
+
             const utterance = new SpeechSynthesisUtterance(text);
-            utterance.rate = 0.8;
-            utterance.pitch = 1.2;
-            utterance.volume = this.settings.masterVolume / 100;
+            utterance.rate = 0.95;
+            utterance.pitch = 1.08;
+
+            // Keep voice narration softer than music/SFX.
+            const masterVolume = this.settings.masterVolume / 100;
+            utterance.volume = Math.min(0.45, masterVolume * 0.6);
             
             // Try to use a child-friendly voice
             const voices = speechSynthesis.getVoices();
@@ -481,15 +530,52 @@ class AudioManager {
 
     getVoiceText(voiceName) {
         const voiceTexts = {
-            'welcome': 'Welcome to Welcome Albert Animals! Get ready for a mathematical adventure!',
-            'habitat-intro': 'Choose a habitat to explore and help our animal friends!',
-            'problem-intro': 'Here\'s a math problem to solve. Take your time and think carefully!',
-            'encouragement': 'Great job! You\'re doing wonderful! Keep up the good work!',
-            'celebration': 'Fantastic! You solved it correctly! The animals are so happy!',
-            'badge-earned': 'Amazing! You\'ve earned a new badge! You\'re becoming a great animal caretaker!'
+            'welcome': [
+                'Welcome to Albert Animals. Ready for a math adventure?'
+            ],
+            'habitat-intro': [
+                'Choose a habitat and help your animal friends.'
+            ],
+            'problem-intro': [
+                'Try this math problem. You can do it.'
+            ],
+            'encouragement': [
+                'Nice work!',
+                'Great thinking!',
+                'You are doing well!',
+                'Keep it up!'
+            ],
+            'celebration': [
+                'Correct!',
+                'Excellent!',
+                'Fantastic answer!',
+                'Well done!'
+            ],
+            'badge-earned': [
+                'Amazing! You earned a new badge!'
+            ]
         };
-        
-        return voiceTexts[voiceName] || '';
+
+        const variants = voiceTexts[voiceName];
+        if (!variants || variants.length === 0) {
+            return '';
+        }
+
+        if (variants.length === 1) {
+            return variants[0];
+        }
+
+        const previousIndex = this.lastVoiceVariantIndex[voiceName];
+        let nextIndex = Math.floor(Math.random() * variants.length);
+
+        if (typeof previousIndex === 'number' && variants.length > 1) {
+            while (nextIndex === previousIndex) {
+                nextIndex = Math.floor(Math.random() * variants.length);
+            }
+        }
+
+        this.lastVoiceVariantIndex[voiceName] = nextIndex;
+        return variants[nextIndex];
     }
 
     pauseAll() {
