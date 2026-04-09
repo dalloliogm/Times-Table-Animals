@@ -1270,24 +1270,24 @@ class MathEngine {
 
     getHint() {
         if (!this.currentProblem) {
-            return "No problem to give a hint for!";
+            return this.translate('hint.no_problem');
         }
         
         const hints = {
-            addition: "Try counting all the items together!",
-            subtraction: "Count how many are left after taking some away!",
-            doubles: "Think about pairs! Count by twos or double the number!",
-            doubles_word_problems: "Look for the word 'pairs' or 'each has 2'. Double the number!",
-            multiplication: "Count the groups and multiply!",
-            division: "Try sharing equally among the groups!",
-            fractions: "Think about parts of a whole!",
-            equations: "What number makes this equation true?",
-            exponentials: "Multiply the number by itself!",
-            mixed_operations: "Follow the order of operations!",
-            word_problems: "Break down the problem step by step!"
+            addition: 'hint.addition',
+            subtraction: 'hint.subtraction',
+            doubles: 'hint.doubles',
+            doubles_word_problems: 'hint.doubles_word_problems',
+            multiplication: 'hint.multiplication',
+            division: 'hint.division',
+            fractions: 'hint.fractions',
+            equations: 'hint.equations',
+            exponentials: 'hint.exponentials',
+            mixed_operations: 'hint.mixed_operations',
+            word_problems: 'hint.word_problems'
         };
         
-        return hints[this.currentProblem.type] || "Think carefully about the problem!";
+        return this.translate(hints[this.currentProblem.type] || 'hint.default');
     }
 
     getProgressStats() {

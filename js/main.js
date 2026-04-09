@@ -3,16 +3,6 @@
 
 class GameController {
     constructor() {
-        this.leoHomeMessages = {
-            loadingScreen: "\" Hi, I'm Leo. I'm getting your animal adventure ready! \"",
-            mainMenu: "\" Hi, I'm Leo! I'll wave hello and help with tricky questions. \"",
-            habitatSelect: "\" Pick a habitat, and if a question feels tricky, I'll help you break it down. \""
-        };
-        this.leoAdviceStarters = [
-            'Leo says',
-            'Leo the Lion says',
-            'Leo whispers'
-        ];
         this.currentScreen = 'loadingScreen';
         this.isSubmittingAnswer = false; // Flag to prevent double submission
         this.gameState = {
@@ -861,7 +851,7 @@ class GameController {
         const leoAdvice = document.getElementById('leoAdvice');
 
         if (!currentProblem || !leoAdvice) {
-            this.showTemporaryMessage('Leo is ready to help when a problem appears.');
+            this.showTemporaryMessage(this.translate('leo.help.ready', 'Leo is ready to help when a problem appears.'));
             return;
         }
 
@@ -1356,15 +1346,38 @@ class GameController {
         if (!mascot) return;
 
         const message = mascot.querySelector('.leo-message');
-        if (message && this.leoHomeMessages[screenName]) {
-            message.textContent = this.leoHomeMessages[screenName];
+        if (message) {
+            message.textContent = this.getLeoHomeMessage(screenName);
         }
+    }
+
+    getLeoHomeMessage(screenName) {
+        const translationKeys = {
+            loadingScreen: 'leo.home.loading',
+            mainMenu: 'leo.home.main_menu',
+            habitatSelect: 'leo.home.habitat_select'
+        };
+        const fallbacks = {
+            loadingScreen: '" Hi, I\'m Leo. I\'m getting your animal adventure ready! "',
+            mainMenu: '" Hi, I\'m Leo! I\'ll wave hello and help with tricky questions. "',
+            habitatSelect: '" Pick a habitat, and if a question feels tricky, I\'ll help you break it down. "'
+        };
+
+        return this.translate(translationKeys[screenName], fallbacks[screenName] || '');
     }
 
     getLeoAdvice() {
         const hint = this.mathEngine && this.mathEngine.getHint ? this.mathEngine.getHint() : 'Take it one step at a time.';
-        const starter = this.leoAdviceStarters[Math.floor(Math.random() * this.leoAdviceStarters.length)];
+        const starter = this.translate('leo.help.starter', 'Leo says');
         return `${starter}: ${hint}`;
+    }
+
+    translate(key, fallback = key) {
+        if (this.languageManager && this.languageManager.translate) {
+            return this.languageManager.translate(key);
+        }
+
+        return fallback;
     }
 
     saveGameState() {
@@ -1841,6 +1854,13 @@ class GameController {
         // Update MathEngine language
         if (this.mathEngine && this.mathEngine.setLanguage) {
             this.mathEngine.setLanguage(languageCode);
+        }
+
+        this.initializeLeoMascot();
+
+        const leoAdvice = document.getElementById('leoAdvice');
+        if (leoAdvice && !leoAdvice.classList.contains('hidden')) {
+            leoAdvice.textContent = this.getLeoAdvice();
         }
         
         console.log(`Language changed to: ${languageCode}`);
