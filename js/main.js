@@ -3,6 +3,16 @@
 
 class GameController {
     constructor() {
+        this.leoHomeMessages = {
+            loadingScreen: "\" Hi, I'm Leo. I'm getting your animal adventure ready! \"",
+            mainMenu: "\" Hi, I'm Leo! I'll wave hello and help with tricky questions. \"",
+            habitatSelect: "\" Pick a habitat, and if a question feels tricky, I'll help you break it down. \""
+        };
+        this.leoAdviceStarters = [
+            'Leo says',
+            'Leo the Lion says',
+            'Leo whispers'
+        ];
         this.currentScreen = 'loadingScreen';
         this.isSubmittingAnswer = false; // Flag to prevent double submission
         this.gameState = {
@@ -67,6 +77,9 @@ class GameController {
         
         // Set up timer callbacks
         this.setupTimerCallbacks();
+
+        // Initialize Leo mascot messages
+        this.initializeLeoMascot();
         
         // Start timer update loop
         this.startTimerUpdateLoop();
@@ -246,6 +259,7 @@ class GameController {
 
     showLoadingScreen() {
         this.switchScreen('loadingScreen');
+        this.updateLeoHomeMessage('loadingScreen');
     }
 
     showMainMenu() {
@@ -253,6 +267,7 @@ class GameController {
         document.body.classList.remove('habitat-select-mode', 'credits-mode');
         
         this.switchScreen('mainMenu');
+        this.updateLeoHomeMessage('mainMenu');
         this.audioManager.playBackgroundMusic('menu');
     }
 
@@ -265,8 +280,14 @@ class GameController {
     }
 
     showAchievements() {
-        // TODO: Implement achievements screen
-        console.log('Achievements screen not yet implemented');
+        const progressEntries = Object.entries(this.gameState.habitatProgress);
+        const completedHabitats = progressEntries.filter(([, progress]) => progress.completed >= progress.total).length;
+        const unlockedHabitats = progressEntries.filter(([, progress]) => progress.unlocked).length;
+        const totalProblemsSolved = progressEntries.reduce((sum, [, progress]) => sum + progress.completed, 0);
+
+        this.showTemporaryMessage(
+            `Achievements: ${this.gameState.badgeCount} badges, ${completedHabitats} habitats completed, ${unlockedHabitats} unlocked, ${totalProblemsSolved} problems solved.`
+        );
     }
 
     showCredits() {
@@ -302,6 +323,7 @@ class GameController {
         this.cleanupCurrentHabitat();
         
         this.switchScreen('habitatSelect');
+        this.updateLeoHomeMessage('habitatSelect');
         this.updateHabitatCards();
         this.audioManager.playBackgroundMusic('habitat-selection');
         
@@ -673,10 +695,21 @@ class GameController {
     showFeedback(message, isCorrect) {
         const feedback = document.getElementById('feedback');
         const feedbackText = document.getElementById('feedbackText');
+        const leoAdvice = document.getElementById('leoAdvice');
         
         feedbackText.textContent = message;
         feedback.className = isCorrect ? 'correct' : 'incorrect';
         feedback.classList.remove('hidden');
+
+        if (leoAdvice) {
+            if (isCorrect) {
+                leoAdvice.classList.add('hidden');
+                leoAdvice.textContent = '';
+            } else {
+                leoAdvice.textContent = this.getLeoAdvice();
+                leoAdvice.classList.remove('hidden');
+            }
+        }
         
         // Add animation
         feedback.classList.add(isCorrect ? 'correct-feedback' : 'incorrect-feedback');
@@ -689,8 +722,13 @@ class GameController {
 
     nextProblem() {
         const feedback = document.getElementById('feedback');
+        const leoAdvice = document.getElementById('leoAdvice');
         
         feedback.classList.add('hidden');
+        if (leoAdvice) {
+            leoAdvice.classList.add('hidden');
+            leoAdvice.textContent = '';
+        }
         
         // Reset all answer options
         document.querySelectorAll('.answer-option').forEach(option => {
@@ -1046,6 +1084,28 @@ class GameController {
         this.currentScreen = screenName;
     }
 
+    initializeLeoMascot() {
+        this.updateLeoHomeMessage('loadingScreen');
+        this.updateLeoHomeMessage('mainMenu');
+        this.updateLeoHomeMessage('habitatSelect');
+    }
+
+    updateLeoHomeMessage(screenName) {
+        const mascot = document.querySelector(`.leo-mascot[data-leo-context="${screenName}"]`);
+        if (!mascot) return;
+
+        const message = mascot.querySelector('.leo-message');
+        if (message && this.leoHomeMessages[screenName]) {
+            message.textContent = this.leoHomeMessages[screenName];
+        }
+    }
+
+    getLeoAdvice() {
+        const hint = this.mathEngine && this.mathEngine.getHint ? this.mathEngine.getHint() : 'Take it one step at a time.';
+        const starter = this.leoAdviceStarters[Math.floor(Math.random() * this.leoAdviceStarters.length)];
+        return `${starter}: ${hint}`;
+    }
+
     saveGameState() {
         try {
             localStorage.setItem('timesTableAnimalsGame', JSON.stringify(this.gameState));
@@ -1231,6 +1291,12 @@ class GameController {
         const feedback = document.getElementById('feedback');
         if (feedback) {
             feedback.classList.add('hidden');
+        }
+
+        const leoAdvice = document.getElementById('leoAdvice');
+        if (leoAdvice) {
+            leoAdvice.classList.add('hidden');
+            leoAdvice.textContent = '';
         }
         
         // Clear answer option states

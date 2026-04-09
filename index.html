@@ -15,6 +15,16 @@
             <div class="loading-content">
                 <h1>Times Table Animals</h1>
                 <h2>Welcome to Albert Animals!</h2>
+                <div class="leo-mascot leo-loading" data-leo-context="loadingScreen">
+                    <div class="leo-character" aria-hidden="true">
+                        <span class="leo-face">🦁</span>
+                        <span class="leo-paw">👋</span>
+                    </div>
+                    <div class="leo-bubble">
+                        <p class="leo-name">Leo the Mascot</p>
+                        <p class="leo-message">" Hi, I'm Leo. I'm getting your animal adventure ready! "</p>
+                    </div>
+                </div>
                 <div class="loading-spinner"></div>
                 <p>Loading your animal adventure...</p>
             </div>
@@ -25,6 +35,16 @@
             <div class="menu-content">
                 <h1 data-translate="game.title">Times Table Animals</h1>
                 <h2 data-translate="game.subtitle">Welcome to Albert Animals!</h2>
+                <div class="leo-mascot leo-home" data-leo-context="mainMenu">
+                    <div class="leo-character" aria-hidden="true">
+                        <span class="leo-face">🦁</span>
+                        <span class="leo-paw">👋</span>
+                    </div>
+                    <div class="leo-bubble">
+                        <p class="leo-name">Leo the Mascot</p>
+                        <p class="leo-message">" Hi, I'm Leo! I'll wave hello and help with tricky questions. "</p>
+                    </div>
+                </div>
                 <div class="menu-buttons">
                     <button id="startGameBtn" class="menu-btn primary" data-translate="menu.start">Start Adventure</button>
                     <button id="settingsBtn" class="menu-btn secondary" data-translate="menu.settings">Settings</button>
@@ -233,6 +253,7 @@
                         </div>
                         <div id="feedback" class="hidden">
                             <span id="feedbackText"></span>
+                            <div id="leoAdvice" class="leo-advice hidden"></div>
                             <button id="nextProblem" data-translate="feedback.continue">Continue</button>
                         </div>
                     </div>
@@ -270,6 +291,16 @@
         <div id="habitatSelect" class="screen">
             <div class="habitat-content">
                 <h2 data-translate="habitat.choose">Choose Your Habitat</h2>
+                <div class="leo-mascot leo-home leo-habitat-welcome" data-leo-context="habitatSelect">
+                    <div class="leo-character" aria-hidden="true">
+                        <span class="leo-face">🦁</span>
+                        <span class="leo-paw">👋</span>
+                    </div>
+                    <div class="leo-bubble">
+                        <p class="leo-name">Leo the Mascot</p>
+                        <p class="leo-message">" Pick a habitat, and if a question feels tricky, I'll help you break it down. "</p>
+                    </div>
+                </div>
                 <div class="habitat-grid">
                     <div class="habitat-card unlocked" data-habitat="bunnyMeadow">
                         <div class="habitat-image">🐰</div>
