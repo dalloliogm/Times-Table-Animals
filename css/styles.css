@@ -665,6 +665,7 @@ input[type="range"]::-webkit-slider-thumb {
 #gameControls {
     display: flex;
     gap: 0.5rem;
+    align-items: center;
 }
 
 #gameControls button {
@@ -681,6 +682,21 @@ input[type="range"]::-webkit-slider-thumb {
 #gameControls button:hover {
     transform: scale(1.1);
     background: white;
+}
+
+#helpBtn.game-help-btn {
+    border-radius: 999px;
+    padding: 0.55rem 1rem;
+    min-width: 84px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #7a4a14;
+    background: linear-gradient(135deg, rgba(255, 248, 220, 0.98), rgba(255, 230, 160, 0.98));
+}
+
+#helpBtn.game-help-btn:hover {
+    transform: translateY(-1px) scale(1.03);
+    background: linear-gradient(135deg, #fff7d6, #ffd37a);
 }
 
 /* Math Problem UI */
@@ -891,6 +907,7 @@ input[type="range"]::-webkit-slider-thumb {
     color: #7a4a14;
     font-size: 1rem;
     line-height: 1.4;
+    text-align: left;
 }
 
 #feedback.correct {

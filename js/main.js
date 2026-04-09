@@ -251,6 +251,10 @@ class GameController {
         });
 
         // Game UI Events
+        document.getElementById('helpBtn').addEventListener('click', () => {
+            this.showLeoHelp();
+        });
+
         document.getElementById('pauseBtn').addEventListener('click', () => {
             this.pauseGame();
         });
@@ -848,6 +852,25 @@ class GameController {
         setTimeout(() => {
             feedback.classList.remove('correct-feedback', 'incorrect-feedback');
         }, 800);
+    }
+
+    showLeoHelp() {
+        const currentProblem = this.mathEngine && this.mathEngine.getCurrentProblem
+            ? this.mathEngine.getCurrentProblem()
+            : null;
+        const leoAdvice = document.getElementById('leoAdvice');
+
+        if (!currentProblem || !leoAdvice) {
+            this.showTemporaryMessage('Leo is ready to help when a problem appears.');
+            return;
+        }
+
+        leoAdvice.textContent = this.getLeoAdvice();
+        leoAdvice.classList.remove('hidden');
+
+        if (this.audioManager) {
+            this.audioManager.playVoice('encouragement');
+        }
     }
 
     nextProblem() {
