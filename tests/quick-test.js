@@ -7,21 +7,55 @@ const path = require('path');
 async function quickTest() {
     console.log('🔧 Running Quick Game Test...\n');
     
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
     const page = await browser.newPage();
+
+    page.on('console', msg => {
+        console.log(`[BROWSER] ${msg.type().toUpperCase()}: ${msg.text()}`);
+    });
+
+    page.on('pageerror', error => {
+        console.log(`[PAGEERROR] ${error.message}`);
+    });
     
     try {
         // Load game
         const gamePath = path.join(__dirname, '../index.html');
-        await page.goto(`file://${gamePath}`, { waitUntil: 'networkidle0' });
+        await page.goto(`file://${gamePath}`, { waitUntil: 'domcontentloaded' });
+        await page.waitForFunction(() => window.gameController, { timeout: 5000 });
         
         console.log('✅ Game loads successfully');
+
+        const ensureScreen = async (buttonSelector, expectedScreen, label) => {
+            await page.click(buttonSelector);
+            await page.waitForFunction(
+                (screenId) => {
+                    const target = document.getElementById(screenId);
+                    return target && target.classList.contains('active');
+                },
+                { timeout: 3000 },
+                expectedScreen
+            );
+            console.log(`✅ ${label} works`);
+        };
         
-        // Test main menu
-        await page.waitForSelector('#startGameBtn', { timeout: 3000 });
-        await page.click('#startGameBtn');
-        
-        console.log('✅ Main menu works');
+        await page.evaluate(() => {
+            if (window.gameController) {
+                window.gameController.forceOpenMainMenu();
+            }
+        });
+        await page.waitForFunction(() => document.getElementById('mainMenu')?.classList.contains('active'));
+
+        await ensureScreen('#settingsBtn', 'settingsMenu', 'Settings');
+        await ensureScreen('#backToMenuBtn', 'mainMenu', 'Back to Menu from Settings');
+        await ensureScreen('#achievementsBtn', 'achievementsScreen', 'Achievements');
+        await ensureScreen('#backToMenuFromAchievements', 'mainMenu', 'Back to Menu from Achievements');
+        await ensureScreen('#creditsBtn', 'creditsScreen', 'Credits');
+        await ensureScreen('#backToMenuFromCredits', 'mainMenu', 'Back to Menu from Credits');
+        await ensureScreen('#startGameBtn', 'habitatSelect', 'Start Adventure');
         
         // Test habitat selection
         await page.waitForSelector('.habitat-card', { timeout: 3000 });

@@ -7,6 +7,7 @@
     "test": "node tests/automated-game-tests.js",
     "test:install": "npm install puppeteer",
     "test:quick": "node tests/quick-test.js",
+    "test:menu": "node tests/menu-smoke-test.js",
     "serve": "python -m http.server 8080 2>/dev/null || python3 -m http.server 8080 2>/dev/null || echo 'Python not found. Open index.html in browser manually.'",
     "deploy:test": "npm run test && npm run deploy:check && echo 'All tests passed! Ready for deployment.'",
     "deploy:check": "node tests/deployment-check.js"
@@ -22,6 +23,7 @@
   "author": "Times Table Animals Team",
   "license": "MIT",
   "devDependencies": {
+    "happy-dom": "^20.8.9",
     "puppeteer": "^21.0.0"
   },
   "engines": {

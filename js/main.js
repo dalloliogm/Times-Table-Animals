@@ -3,6 +3,7 @@
 
 class GameController {
     constructor() {
+        window.gameController = this;
         this.currentScreen = 'loadingScreen';
         this.isSubmittingAnswer = false; // Flag to prevent double submission
         this.gameState = {
@@ -62,9 +63,6 @@ class GameController {
             // Set initial language and difficulty for MathEngine
             this.mathEngine.setLanguage(this.gameState.settings.language);
             this.mathEngine.setDifficulty(this.gameState.settings.difficulty);
-            
-            // Make gameController available globally for MathEngine
-            window.gameController = this;
             
             // Listen for language changes
             document.addEventListener('languageChanged', (e) => {
@@ -331,7 +329,11 @@ class GameController {
         document.body.classList.remove('habitat-select-mode', 'credits-mode');
         
         this.switchScreen('settingsMenu');
-        this.updateSettingsUI();
+        try {
+            this.updateSettingsUI();
+        } catch (error) {
+            console.error('Failed to update settings UI:', error);
+        }
     }
 
     showAchievements() {
@@ -348,7 +350,13 @@ class GameController {
         document.body.classList.add('credits-mode');
         
         this.switchScreen('creditsScreen');
-        this.audioManager.playBackgroundMusic('menu');
+        if (this.audioManager) {
+            try {
+                this.audioManager.playBackgroundMusic('menu');
+            } catch (error) {
+                console.error('Failed to start credits music:', error);
+            }
+        }
     }
 
     updateSettingsUI() {

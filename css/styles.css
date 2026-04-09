@@ -38,12 +38,15 @@ body.habitat-select-mode {
     align-items: center;
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;
     transition: all 0.3s ease-in-out;
 }
 
 .screen.active {
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
+    z-index: 1;
 }
 
 /* Special handling for habitat selection screen */
