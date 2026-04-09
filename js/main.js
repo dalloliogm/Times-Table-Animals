@@ -46,51 +46,105 @@ class GameController {
     }
 
     init() {
-        // Load saved game state
-        this.loadGameState();
-        
-        // Initialize event listeners
-        this.setupEventListeners();
-        
-        // Initialize managers
-        this.languageManager = new LanguageManager();
-        this.audioManager = new AudioManager(this.gameState.settings);
-        this.mathEngine = new MathEngine();
-        this.gameEngine = new GameEngine();
-        this.timerManager = new TimerManager(this, this.audioManager);
-        this.sceneManager = new SceneManager();
-        
-        // Set initial language
-        this.languageManager.setLanguage(this.gameState.settings.language);
-        
-        // Set initial language and difficulty for MathEngine
-        this.mathEngine.setLanguage(this.gameState.settings.language);
-        this.mathEngine.setDifficulty(this.gameState.settings.difficulty);
-        
-        // Make gameController available globally for MathEngine
-        window.gameController = this;
-        
-        // Listen for language changes
-        document.addEventListener('languageChanged', (e) => {
-            this.onLanguageChanged(e.detail.language);
-        });
-        
-        // Set up timer callbacks
-        this.setupTimerCallbacks();
-
-        // Initialize Leo mascot messages
-        this.initializeLeoMascot();
-        
-        // Start timer update loop
-        this.startTimerUpdateLoop();
-        
-        // Start loading sequence
+        // Show the loading screen immediately.
         this.showLoadingScreen();
-        
-        // Simulate loading time
+        this.setupLoadingScreenControls();
+        this.restoreOpeningScreenState();
+
+        try {
+            // Load saved game state
+            this.loadGameState();
+            
+            // Initialize event listeners
+            this.setupEventListeners();
+            
+            // Initialize managers
+            this.languageManager = new LanguageManager();
+            this.audioManager = new AudioManager(this.gameState.settings);
+            this.mathEngine = new MathEngine();
+            this.gameEngine = new GameEngine();
+            this.timerManager = new TimerManager(this, this.audioManager);
+            this.sceneManager = new SceneManager();
+            
+            // Set initial language
+            this.languageManager.setLanguage(this.gameState.settings.language);
+            
+            // Set initial language and difficulty for MathEngine
+            this.mathEngine.setLanguage(this.gameState.settings.language);
+            this.mathEngine.setDifficulty(this.gameState.settings.difficulty);
+            
+            // Make gameController available globally for MathEngine
+            window.gameController = this;
+            
+            // Listen for language changes
+            document.addEventListener('languageChanged', (e) => {
+                this.onLanguageChanged(e.detail.language);
+            });
+            
+            // Set up timer callbacks
+            this.setupTimerCallbacks();
+
+            // Initialize Leo mascot messages
+            this.initializeLeoMascot();
+            
+            // Start timer update loop
+            this.startTimerUpdateLoop();
+        } catch (error) {
+            console.error('GameController init failed:', error);
+        }
+    }
+
+    scheduleInitialMenuTransition() {
+        if (this.initialMenuTransitionScheduled) return;
+
+        this.initialMenuTransitionScheduled = true;
+        this.showLoadingStatus('loading');
+        this.rememberOpeningScreenState('loading');
         setTimeout(() => {
-            this.showMainMenu();
+            this.forceOpenMainMenu();
         }, 2000);
+    }
+
+    setupLoadingScreenControls() {
+        const notInHurryBtn = document.getElementById('notInHurryBtn');
+        if (notInHurryBtn && !notInHurryBtn.dataset.bound) {
+            notInHurryBtn.addEventListener('click', () => {
+                this.scheduleInitialMenuTransition();
+            });
+            notInHurryBtn.dataset.bound = 'true';
+        }
+
+        const inHurryBtn = document.getElementById('inHurryBtn');
+        if (inHurryBtn && !inHurryBtn.dataset.bound) {
+            inHurryBtn.addEventListener('click', () => {
+                this.showLoadingStatus('quick');
+                this.rememberOpeningScreenState('quick');
+            });
+            inHurryBtn.dataset.bound = 'true';
+        }
+
+        const quickStartBtn = document.getElementById('quickStartBtn');
+        if (quickStartBtn && !quickStartBtn.dataset.bound) {
+            quickStartBtn.addEventListener('click', () => {
+                this.forceOpenMainMenu();
+            });
+            quickStartBtn.dataset.bound = 'true';
+        }
+    }
+
+    forceOpenMainMenu() {
+        try {
+            this.clearOpeningScreenState();
+            this.switchScreen('mainMenu');
+            this.updateLeoHomeMessage('mainMenu');
+            document.body.classList.remove('habitat-select-mode', 'credits-mode');
+
+            if (this.audioManager) {
+                this.audioManager.playBackgroundMusic('menu');
+            }
+        } catch (error) {
+            console.error('Force opening main menu failed:', error);
+        }
     }
 
     setupEventListeners() {
@@ -192,6 +246,10 @@ class GameController {
             this.showMainMenu();
         });
 
+        document.getElementById('backToMenuFromAchievements').addEventListener('click', () => {
+            this.showMainMenu();
+        });
+
         // Game UI Events
         document.getElementById('pauseBtn').addEventListener('click', () => {
             this.pauseGame();
@@ -260,6 +318,7 @@ class GameController {
     showLoadingScreen() {
         this.switchScreen('loadingScreen');
         this.updateLeoHomeMessage('loadingScreen');
+        this.showLoadingChoice();
     }
 
     showMainMenu() {
@@ -268,7 +327,9 @@ class GameController {
         
         this.switchScreen('mainMenu');
         this.updateLeoHomeMessage('mainMenu');
-        this.audioManager.playBackgroundMusic('menu');
+        if (this.audioManager) {
+            this.audioManager.playBackgroundMusic('menu');
+        }
     }
 
     showSettings() {
@@ -280,14 +341,9 @@ class GameController {
     }
 
     showAchievements() {
-        const progressEntries = Object.entries(this.gameState.habitatProgress);
-        const completedHabitats = progressEntries.filter(([, progress]) => progress.completed >= progress.total).length;
-        const unlockedHabitats = progressEntries.filter(([, progress]) => progress.unlocked).length;
-        const totalProblemsSolved = progressEntries.reduce((sum, [, progress]) => sum + progress.completed, 0);
-
-        this.showTemporaryMessage(
-            `Achievements: ${this.gameState.badgeCount} badges, ${completedHabitats} habitats completed, ${unlockedHabitats} unlocked, ${totalProblemsSolved} problems solved.`
-        );
+        document.body.classList.remove('habitat-select-mode', 'credits-mode');
+        this.updateAchievementsUI();
+        this.switchScreen('achievementsScreen');
     }
 
     showCredits() {
@@ -314,18 +370,87 @@ class GameController {
         this.updateDifficultySelectorUI();
     }
 
+    updateAchievementsUI() {
+        const progressEntries = Object.entries(this.gameState.habitatProgress);
+        const completedHabitats = progressEntries.filter(([, progress]) => progress.completed >= progress.total).length;
+        const unlockedHabitats = progressEntries.filter(([, progress]) => progress.unlocked).length;
+        const totalProblemsSolved = progressEntries.reduce((sum, [, progress]) => sum + progress.completed, 0);
+
+        const badgeCountEl = document.getElementById('achievementBadgeCount');
+        const completedHabitatsEl = document.getElementById('achievementCompletedHabitats');
+        const unlockedHabitatsEl = document.getElementById('achievementUnlockedHabitats');
+        const problemsSolvedEl = document.getElementById('achievementProblemsSolved');
+        const habitatListEl = document.getElementById('achievementsHabitatList');
+
+        if (badgeCountEl) {
+            badgeCountEl.textContent = this.gameState.badgeCount;
+        }
+        if (completedHabitatsEl) {
+            completedHabitatsEl.textContent = `${completedHabitats}/${progressEntries.length}`;
+        }
+        if (unlockedHabitatsEl) {
+            unlockedHabitatsEl.textContent = `${unlockedHabitats}/${progressEntries.length}`;
+        }
+        if (problemsSolvedEl) {
+            problemsSolvedEl.textContent = totalProblemsSolved;
+        }
+
+        if (habitatListEl) {
+            habitatListEl.innerHTML = progressEntries.map(([habitatName, progress]) => {
+                const percentage = Math.round((progress.completed / progress.total) * 100);
+                const status = progress.completed >= progress.total
+                    ? 'Completed'
+                    : progress.unlocked
+                        ? 'In Progress'
+                        : 'Locked';
+
+                return `
+                    <div class="achievement-habitat-item ${progress.unlocked ? 'unlocked' : 'locked'}">
+                        <div class="achievement-habitat-header">
+                            <span class="achievement-habitat-name">${this.getHabitatDisplayName(habitatName)}</span>
+                            <span class="achievement-habitat-status">${status}</span>
+                        </div>
+                        <div class="achievement-habitat-progress">
+                            <div class="achievement-habitat-progress-bar">
+                                <div class="achievement-habitat-progress-fill" style="width: ${progress.unlocked ? percentage : 0}%"></div>
+                            </div>
+                            <span class="achievement-habitat-count">${progress.completed}/${progress.total}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    }
+
     startGame() {
         this.showHabitatSelection();
     }
 
     showHabitatSelection() {
-        // Cleanup any current habitat
-        this.cleanupCurrentHabitat();
-        
+        try {
+            // Cleanup any current habitat
+            this.cleanupCurrentHabitat();
+        } catch (error) {
+            console.error('Failed to clean up current habitat before showing habitat selection:', error);
+        }
+
+        document.body.classList.remove('credits-mode');
         this.switchScreen('habitatSelect');
         this.updateLeoHomeMessage('habitatSelect');
-        this.updateHabitatCards();
-        this.audioManager.playBackgroundMusic('habitat-selection');
+
+        try {
+            this.updateHabitatCards();
+        } catch (error) {
+            console.error('Failed to update habitat cards:', error);
+        }
+
+        if (this.audioManager) {
+            try {
+                this.audioManager.playBackgroundMusic('habitat-selection');
+            } catch (error) {
+                console.error('Failed to start habitat selection music:', error);
+            }
+        }
         
         // Enable scrolling for mobile habitat selection
         document.body.classList.add('habitat-select-mode');
@@ -336,6 +461,11 @@ class GameController {
         habitatCards.forEach(card => {
             const habitat = card.dataset.habitat;
             const progress = this.gameState.habitatProgress[habitat];
+
+            if (!progress) {
+                console.warn(`No habitat progress found for ${habitat}`);
+                return;
+            }
             
             if (progress.unlocked) {
                 card.classList.remove('locked');
@@ -1080,7 +1210,13 @@ class GameController {
         });
         
         // Show new screen
-        document.getElementById(screenName).classList.add('active');
+        const nextScreen = document.getElementById(screenName);
+        if (!nextScreen) {
+            console.error(`Screen not found: ${screenName}`);
+            return;
+        }
+
+        nextScreen.classList.add('active');
         this.currentScreen = screenName;
     }
 
@@ -1088,6 +1224,108 @@ class GameController {
         this.updateLeoHomeMessage('loadingScreen');
         this.updateLeoHomeMessage('mainMenu');
         this.updateLeoHomeMessage('habitatSelect');
+    }
+
+    showLoadingChoice() {
+        const choice = document.querySelector('.loading-choice');
+        const status = document.getElementById('loadingStatus');
+        const quickStartBtn = document.getElementById('quickStartBtn');
+        const statusText = document.getElementById('loadingStatusText');
+        const spinner = document.getElementById('loadingSpinner');
+
+        if (choice) {
+            choice.classList.remove('hidden');
+        }
+        if (status) {
+            status.classList.add('hidden');
+        }
+        if (quickStartBtn) {
+            quickStartBtn.classList.add('hidden');
+        }
+        if (statusText) {
+            statusText.textContent = 'Loading your animal adventure...';
+        }
+        if (spinner) {
+            spinner.classList.remove('hidden');
+        }
+
+        this.rememberOpeningScreenState('choice');
+    }
+
+    showLoadingStatus(mode) {
+        const choice = document.querySelector('.loading-choice');
+        const status = document.getElementById('loadingStatus');
+        const quickStartBtn = document.getElementById('quickStartBtn');
+        const statusText = document.getElementById('loadingStatusText');
+        const spinner = document.getElementById('loadingSpinner');
+
+        if (choice) {
+            choice.classList.add('hidden');
+        }
+        if (status) {
+            status.classList.remove('hidden');
+        }
+
+        if (mode === 'quick') {
+            if (statusText) {
+                statusText.textContent = 'Ready to start right away?';
+            }
+            if (quickStartBtn) {
+                quickStartBtn.classList.remove('hidden');
+            }
+            if (spinner) {
+                spinner.classList.add('hidden');
+            }
+            this.rememberOpeningScreenState('quick');
+            return;
+        }
+
+        if (statusText) {
+            statusText.textContent = 'Loading your animal adventure...';
+        }
+        if (quickStartBtn) {
+            quickStartBtn.classList.add('hidden');
+        }
+        if (spinner) {
+            spinner.classList.remove('hidden');
+        }
+
+        this.rememberOpeningScreenState('loading');
+    }
+
+    rememberOpeningScreenState(state) {
+        try {
+            localStorage.setItem('openingScreenState', state);
+        } catch (error) {
+            console.warn('Could not save opening screen state:', error);
+        }
+    }
+
+    restoreOpeningScreenState() {
+        try {
+            const savedState = localStorage.getItem('openingScreenState');
+            if (savedState === 'quick') {
+                this.showLoadingStatus('quick');
+            } else if (savedState === 'loading') {
+                this.showLoadingStatus('loading');
+                if (!this.initialMenuTransitionScheduled) {
+                    this.scheduleInitialMenuTransition();
+                }
+            } else {
+                this.showLoadingChoice();
+            }
+        } catch (error) {
+            console.warn('Could not restore opening screen state:', error);
+            this.showLoadingChoice();
+        }
+    }
+
+    clearOpeningScreenState() {
+        try {
+            localStorage.removeItem('openingScreenState');
+        } catch (error) {
+            console.warn('Could not clear opening screen state:', error);
+        }
     }
 
     updateLeoHomeMessage(screenName) {

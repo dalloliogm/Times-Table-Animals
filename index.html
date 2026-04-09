@@ -25,8 +25,18 @@
                         <p class="leo-message">" Hi, I'm Leo. I'm getting your animal adventure ready! "</p>
                     </div>
                 </div>
-                <div class="loading-spinner"></div>
-                <p>Loading your animal adventure...</p>
+                <div class="loading-choice">
+                    <p class="loading-question">Are you in a hurry?</p>
+                    <div class="loading-choice-buttons">
+                        <button id="notInHurryBtn" class="menu-btn secondary" onclick="window.handleOpeningChoice && window.handleOpeningChoice('loading')">No, load the adventure</button>
+                        <button id="inHurryBtn" class="menu-btn primary" onclick="window.handleOpeningChoice && window.handleOpeningChoice('quick')">Yes, quick start</button>
+                    </div>
+                </div>
+                <div id="loadingStatus" class="loading-status hidden">
+                    <div id="loadingSpinner" class="loading-spinner"></div>
+                    <p id="loadingStatusText">Loading your animal adventure...</p>
+                    <button id="quickStartBtn" class="menu-btn primary hidden" onclick="window.startFromOpeningScreen && window.startFromOpeningScreen()">Start</button>
+                </div>
             </div>
         </div>
 
@@ -133,6 +143,46 @@
                 <div class="settings-actions">
                     <button id="resetProgressBtn" class="menu-btn danger" data-translate="settings.reset">Reset Progress</button>
                     <button id="backToMenuBtn" class="menu-btn primary" data-translate="settings.back">Back to Menu</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Achievements Screen -->
+        <div id="achievementsScreen" class="screen">
+            <div class="achievements-content">
+                <h2>Achievements</h2>
+                <p class="achievements-summary">Track your badges, habitats, and solved problems.</p>
+
+                <div class="achievements-grid">
+                    <div class="achievement-stat-card">
+                        <span class="achievement-stat-icon">🏆</span>
+                        <span class="achievement-stat-label">Badges Earned</span>
+                        <span id="achievementBadgeCount" class="achievement-stat-value">0</span>
+                    </div>
+                    <div class="achievement-stat-card">
+                        <span class="achievement-stat-icon">✅</span>
+                        <span class="achievement-stat-label">Habitats Completed</span>
+                        <span id="achievementCompletedHabitats" class="achievement-stat-value">0</span>
+                    </div>
+                    <div class="achievement-stat-card">
+                        <span class="achievement-stat-icon">🗺️</span>
+                        <span class="achievement-stat-label">Habitats Unlocked</span>
+                        <span id="achievementUnlockedHabitats" class="achievement-stat-value">0</span>
+                    </div>
+                    <div class="achievement-stat-card">
+                        <span class="achievement-stat-icon">➕</span>
+                        <span class="achievement-stat-label">Problems Solved</span>
+                        <span id="achievementProblemsSolved" class="achievement-stat-value">0</span>
+                    </div>
+                </div>
+
+                <div class="achievement-progress-section">
+                    <h3>Habitat Progress</h3>
+                    <div id="achievementsHabitatList" class="achievement-habitat-list"></div>
+                </div>
+
+                <div class="achievements-actions">
+                    <button id="backToMenuFromAchievements" class="menu-btn primary">Back to Menu</button>
                 </div>
             </div>
         </div>
@@ -422,6 +472,55 @@
     <script src="js/main.js"></script>
     
     <script>
+        window.handleOpeningChoice = (mode) => {
+            if (window.gameController) {
+                if (mode === 'quick') {
+                    window.gameController.showLoadingStatus('quick');
+                } else {
+                    window.gameController.scheduleInitialMenuTransition();
+                }
+                return;
+            }
+
+            const choice = document.querySelector('.loading-choice');
+            const status = document.getElementById('loadingStatus');
+            const spinner = document.getElementById('loadingSpinner');
+            const statusText = document.getElementById('loadingStatusText');
+            const quickStartBtn = document.getElementById('quickStartBtn');
+
+            if (choice) choice.classList.add('hidden');
+            if (status) status.classList.remove('hidden');
+
+            if (mode === 'quick') {
+                if (spinner) spinner.classList.add('hidden');
+                if (statusText) statusText.textContent = 'Ready to start right away?';
+                if (quickStartBtn) quickStartBtn.classList.remove('hidden');
+                return;
+            }
+
+            if (spinner) spinner.classList.remove('hidden');
+            if (statusText) statusText.textContent = 'Loading your animal adventure...';
+            if (quickStartBtn) quickStartBtn.classList.add('hidden');
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loadingScreen');
+                const mainMenu = document.getElementById('mainMenu');
+                if (loadingScreen) loadingScreen.classList.remove('active');
+                if (mainMenu) mainMenu.classList.add('active');
+            }, 2000);
+        };
+
+        window.startFromOpeningScreen = () => {
+            if (window.gameController) {
+                window.gameController.forceOpenMainMenu();
+                return;
+            }
+
+            const loadingScreen = document.getElementById('loadingScreen');
+            const mainMenu = document.getElementById('mainMenu');
+            if (loadingScreen) loadingScreen.classList.remove('active');
+            if (mainMenu) mainMenu.classList.add('active');
+        };
+
         window.addEventListener('load', () => {
             const analyticsScript = document.createElement('script');
             analyticsScript.src = 'https://codice.shinystat.com/cgi-bin/getcod.cgi?USER=SS-53592477-9f378';
