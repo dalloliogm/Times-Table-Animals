@@ -257,6 +257,13 @@ class GameController {
         });
 
         // Home Button Event
+        const goBackBtn = document.getElementById('goBackBtn');
+        if (goBackBtn) {
+            goBackBtn.addEventListener('click', () => {
+                this.showHabitatSelection();
+            });
+        }
+
         const homeBtn = document.getElementById('homeBtn');
         if (homeBtn) {
             homeBtn.addEventListener('click', () => {

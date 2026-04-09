@@ -46,6 +46,7 @@ class LanguageManager {
                     'habitat.back': 'Back',
                     
                     // Game UI
+                    'game.go_back': 'Go Back',
                     'game.home': '🏠',
                     'game.pause': '⏸️',
                     'game.settings': '⚙️',
@@ -177,6 +178,7 @@ class LanguageManager {
                     'habitat.back': 'Atrás',
                     
                     // Game UI
+                    'game.go_back': 'Volver',
                     'game.home': '🏠',
                     'game.pause': '⏸️',
                     'game.settings': '⚙️',
@@ -308,6 +310,7 @@ class LanguageManager {
                     'habitat.back': 'Indietro',
                     
                     // Game UI
+                    'game.go_back': 'Indietro',
                     'game.home': '🏠',
                     'game.pause': '⏸️',
                     'game.settings': '⚙️',
