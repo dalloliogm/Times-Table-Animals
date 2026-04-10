@@ -47,6 +47,7 @@ class LanguageManager {
                     
                     // Game UI
                     'game.go_back': 'Go Back',
+                    'game.start_again': 'Start Again',
                     'game.home': '🏠',
                     'game.pause': '⏸️',
                     'game.settings': '⚙️',
@@ -179,6 +180,7 @@ class LanguageManager {
                     
                     // Game UI
                     'game.go_back': 'Volver',
+                    'game.start_again': 'Empezar de Nuevo',
                     'game.home': '🏠',
                     'game.pause': '⏸️',
                     'game.settings': '⚙️',
@@ -311,6 +313,7 @@ class LanguageManager {
                     
                     // Game UI
                     'game.go_back': 'Indietro',
+                    'game.start_again': 'Ricomincia',
                     'game.home': '🏠',
                     'game.pause': '⏸️',
                     'game.settings': '⚙️',
@@ -423,7 +426,7 @@ class LanguageManager {
             const savedState = localStorage.getItem('timesTableAnimalsGame');
             if (savedState) {
                 const parsed = JSON.parse(savedState);
-                if (parsed.settings && parsed.settings.language) {
+                if (parsed.settings && typeof parsed.settings.language === 'string' && this.languages[parsed.settings.language]) {
                     this.currentLanguage = parsed.settings.language;
                 }
             }

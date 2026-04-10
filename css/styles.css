@@ -717,6 +717,21 @@ input[type="range"]::-webkit-slider-thumb {
     background: linear-gradient(135deg, #dffff8, #8ad8cd);
 }
 
+#startAgainBtn.game-restart-btn {
+    border-radius: 999px;
+    padding: 0.55rem 1rem;
+    min-width: 118px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #6f2f11;
+    background: linear-gradient(135deg, rgba(255, 239, 213, 0.98), rgba(255, 190, 120, 0.98));
+}
+
+#startAgainBtn.game-restart-btn:hover {
+    transform: translateY(-1px) scale(1.03);
+    background: linear-gradient(135deg, #fff4dc, #ffb56d);
+}
+
 /* Math Problem UI */
 #mathProblem {
     position: absolute;

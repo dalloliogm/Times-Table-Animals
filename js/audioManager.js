@@ -259,17 +259,21 @@ class AudioManager {
 
     playSFX(soundName) {
         if (!this.settings.sfxEnabled) return;
-        
-        const track = this.ensureSFXTrack(soundName);
-        
-        if (this.useHTML5Audio) {
-            this.playHTML5Audio(track);
-        } else {
-            this.playWebAudio(track, this.sfxGain);
+
+        try {
+            const track = this.ensureSFXTrack(soundName);
+
+            if (this.useHTML5Audio) {
+                this.playHTML5Audio(track);
+            } else {
+                this.playWebAudio(track, this.sfxGain);
+            }
+
+            // Generate synthesized sound effect for demo
+            this.generateSFX(soundName);
+        } catch (error) {
+            console.warn(`Failed to play SFX '${soundName}':`, error);
         }
-        
-        // Generate synthesized sound effect for demo
-        this.generateSFX(soundName);
     }
 
     playVoice(voiceName) {
@@ -279,20 +283,24 @@ class AudioManager {
             return;
         }
         
-        const track = this.voiceTracks[voiceName];
-        if (!track) {
-            console.warn(`Voice track '${voiceName}' not found`);
-            return;
+        try {
+            const track = this.voiceTracks[voiceName];
+            if (!track) {
+                console.warn(`Voice track '${voiceName}' not found`);
+                return;
+            }
+
+            if (this.useHTML5Audio) {
+                this.playHTML5Audio(track);
+            } else {
+                this.playWebAudio(track, this.voiceGain);
+            }
+
+            // For now, we'll use text-to-speech API if available
+            this.speakText(this.getVoiceText(voiceName));
+        } catch (error) {
+            console.warn(`Failed to play voice '${voiceName}':`, error);
         }
-        
-        if (this.useHTML5Audio) {
-            this.playHTML5Audio(track);
-        } else {
-            this.playWebAudio(track, this.voiceGain);
-        }
-        
-        // For now, we'll use text-to-speech API if available
-        this.speakText(this.getVoiceText(voiceName));
     }
 
     shouldPlayVoice(voiceName) {

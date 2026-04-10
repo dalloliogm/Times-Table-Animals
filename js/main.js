@@ -6,7 +6,12 @@ class GameController {
         window.gameController = this;
         this.currentScreen = 'loadingScreen';
         this.isSubmittingAnswer = false; // Flag to prevent double submission
-        this.gameState = {
+        this.gameState = this.createDefaultGameState();
+        this.init();
+    }
+
+    createDefaultGameState() {
+        return {
             playerName: 'Junior Caretaker',
             badgeCount: 0,
             currentHabitat: null,
@@ -33,7 +38,77 @@ class GameController {
                 difficulty: 'medium'
             }
         };
-        this.init();
+    }
+
+    normalizeGameState(savedState) {
+        const defaults = this.createDefaultGameState();
+        const parsedState = savedState && typeof savedState === 'object' ? savedState : {};
+        const savedSettings = parsedState.settings && typeof parsedState.settings === 'object'
+            ? parsedState.settings
+            : {};
+        const savedHabitatProgress = parsedState.habitatProgress && typeof parsedState.habitatProgress === 'object'
+            ? parsedState.habitatProgress
+            : {};
+
+        const habitatProgress = Object.fromEntries(
+            Object.entries(defaults.habitatProgress).map(([habitatName, defaultProgress]) => {
+                const savedProgress = savedHabitatProgress[habitatName] && typeof savedHabitatProgress[habitatName] === 'object'
+                    ? savedHabitatProgress[habitatName]
+                    : {};
+
+                const completed = Number.isFinite(Number(savedProgress.completed))
+                    ? Math.max(0, Number(savedProgress.completed))
+                    : defaultProgress.completed;
+                const total = Number.isFinite(Number(savedProgress.total)) && Number(savedProgress.total) > 0
+                    ? Number(savedProgress.total)
+                    : defaultProgress.total;
+
+                return [habitatName, {
+                    completed: Math.min(completed, total),
+                    total,
+                    unlocked: typeof savedProgress.unlocked === 'boolean'
+                        ? savedProgress.unlocked
+                        : defaultProgress.unlocked
+                }];
+            })
+        );
+
+        return {
+            ...defaults,
+            ...parsedState,
+            playerName: typeof parsedState.playerName === 'string' && parsedState.playerName.trim()
+                ? parsedState.playerName
+                : defaults.playerName,
+            badgeCount: Number.isFinite(Number(parsedState.badgeCount))
+                ? Math.max(0, Number(parsedState.badgeCount))
+                : defaults.badgeCount,
+            currentHabitat: typeof parsedState.currentHabitat === 'string'
+                ? parsedState.currentHabitat
+                : defaults.currentHabitat,
+            settings: {
+                ...defaults.settings,
+                ...savedSettings,
+                musicEnabled: typeof savedSettings.musicEnabled === 'boolean'
+                    ? savedSettings.musicEnabled
+                    : defaults.settings.musicEnabled,
+                sfxEnabled: typeof savedSettings.sfxEnabled === 'boolean'
+                    ? savedSettings.sfxEnabled
+                    : defaults.settings.sfxEnabled,
+                voiceEnabled: typeof savedSettings.voiceEnabled === 'boolean'
+                    ? savedSettings.voiceEnabled
+                    : defaults.settings.voiceEnabled,
+                masterVolume: Number.isFinite(Number(savedSettings.masterVolume))
+                    ? Math.min(100, Math.max(0, Number(savedSettings.masterVolume)))
+                    : defaults.settings.masterVolume,
+                language: typeof savedSettings.language === 'string' && savedSettings.language.trim()
+                    ? savedSettings.language
+                    : defaults.settings.language,
+                difficulty: typeof savedSettings.difficulty === 'string' && savedSettings.difficulty.trim()
+                    ? savedSettings.difficulty
+                    : defaults.settings.difficulty
+            },
+            habitatProgress
+        };
     }
 
     init() {
@@ -241,6 +316,10 @@ class GameController {
         // Game UI Events
         document.getElementById('helpBtn').addEventListener('click', () => {
             this.showLeoHelp();
+        });
+
+        document.getElementById('startAgainBtn').addEventListener('click', () => {
+            this.startCurrentHabitatAgain();
         });
 
         document.getElementById('pauseBtn').addEventListener('click', () => {
@@ -558,6 +637,8 @@ class GameController {
             if (this.currentHabitat.setAudioManager && this.audioManager) {
                 this.currentHabitat.setAudioManager(this.audioManager);
             }
+
+            this.syncCurrentHabitatProgress();
             
             // Finalize habitat entry
             this.finalizeHabitatEntry(habitatName);
@@ -604,6 +685,31 @@ class GameController {
         };
         
         return habitatNames[habitatName] || 'Unknown Habitat';
+    }
+
+    syncCurrentHabitatProgress() {
+        const habitatName = this.gameState.currentHabitat;
+        const savedProgress = habitatName && this.gameState.habitatProgress[habitatName]
+            ? this.gameState.habitatProgress[habitatName]
+            : null;
+
+        if (!this.currentHabitat || !savedProgress) {
+            return;
+        }
+
+        const completed = Number.isFinite(Number(savedProgress.completed))
+            ? Math.max(0, Math.min(Number(savedProgress.completed), this.currentHabitat.totalProblems || Number(savedProgress.completed)))
+            : 0;
+
+        this.currentHabitat.problemsSolved = completed;
+
+        if (this.currentHabitat.updateProgressIndicator) {
+            this.currentHabitat.updateProgressIndicator();
+        }
+
+        if (completed > 0 && this.currentHabitat.startNextProblem) {
+            this.currentHabitat.startNextProblem();
+        }
     }
     
     finalizeHabitatEntry(habitatName) {
@@ -730,6 +836,18 @@ class GameController {
         this.showSettings();
     }
 
+    getActiveProblem() {
+        if (this.currentHabitat && this.currentHabitat.currentProblem) {
+            return this.currentHabitat.currentProblem;
+        }
+
+        if (this.mathEngine && this.mathEngine.getCurrentProblem) {
+            return this.mathEngine.getCurrentProblem();
+        }
+
+        return null;
+    }
+
     selectAnswer(optionNumber) {
         // Prevent selection during submission
         if (this.isSubmittingAnswer) {
@@ -741,7 +859,7 @@ class GameController {
         this.highlightSelectedOption(optionNumber);
         
         // Get the selected answer value
-        const currentProblem = this.mathEngine.getCurrentProblem();
+        const currentProblem = this.getActiveProblem();
         if (!currentProblem || !currentProblem.options) {
             console.error('GameController: No current problem or options available');
             return;
@@ -777,45 +895,50 @@ class GameController {
         this.isSubmittingAnswer = true;
         console.log('GameController: Setting isSubmittingAnswer to true');
         console.log(`GameController: Submitting selected answer ${selectedAnswer}`);
-        
-        // Let the habitat handle the answer checking
-        if (this.currentHabitat && this.currentHabitat.checkAnswer) {
-            const isCorrect = this.currentHabitat.checkAnswer(selectedAnswer);
-            const feedbackMessage = isCorrect ?
-                this.languageManager.translate('feedback.correct') :
-                this.languageManager.translate('feedback.incorrect');
-            this.showFeedback(feedbackMessage, isCorrect);
-            
-            // Visual feedback on options
-            this.showAnswerFeedback(selectedAnswer, isCorrect);
-        } else {
-            // Fallback to mathEngine for habitats that don't have checkAnswer
-            const isCorrect = this.mathEngine.checkAnswer(selectedAnswer);
-            const feedbackMessage = isCorrect ?
-                this.languageManager.translate('feedback.correct') :
-                this.languageManager.translate('feedback.incorrect');
-            this.showFeedback(feedbackMessage, isCorrect);
-            
-            // Visual feedback on options
-            this.showAnswerFeedback(selectedAnswer, isCorrect);
-            
-            if (isCorrect) {
-                this.audioManager.playSFX('correct');
-                this.updateProgress();
+
+        try {
+            // Let the habitat handle the answer checking
+            if (this.currentHabitat && this.currentHabitat.checkAnswer) {
+                const isCorrect = this.currentHabitat.checkAnswer(selectedAnswer);
+                const feedbackMessage = isCorrect ?
+                    this.languageManager.translate('feedback.correct') :
+                    this.languageManager.translate('feedback.incorrect');
+                this.showFeedback(feedbackMessage, isCorrect);
+
+                // Visual feedback on options
+                this.showAnswerFeedback(selectedAnswer, isCorrect);
             } else {
-                this.audioManager.playSFX('incorrect');
+                // Fallback to mathEngine for habitats that don't have checkAnswer
+                const isCorrect = this.mathEngine.checkAnswer(selectedAnswer);
+                const feedbackMessage = isCorrect ?
+                    this.languageManager.translate('feedback.correct') :
+                    this.languageManager.translate('feedback.incorrect');
+                this.showFeedback(feedbackMessage, isCorrect);
+
+                // Visual feedback on options
+                this.showAnswerFeedback(selectedAnswer, isCorrect);
+
+                if (isCorrect) {
+                    this.audioManager.playSFX('correct');
+                    this.updateProgress();
+                } else {
+                    this.audioManager.playSFX('incorrect');
+                }
             }
+        } catch (error) {
+            console.error('GameController: Answer submission failed:', error);
+            this.showTemporaryMessage('Answer check failed. Please try again.');
+        } finally {
+            // Reset flag after processing, with a small delay to prevent rapid re-submission
+            setTimeout(() => {
+                this.isSubmittingAnswer = false;
+                console.log('GameController: Reset isSubmittingAnswer to false (after timeout)');
+            }, 100);
         }
-        
-        // Reset flag after processing, with a small delay to prevent rapid re-submission
-        setTimeout(() => {
-            this.isSubmittingAnswer = false;
-            console.log('GameController: Reset isSubmittingAnswer to false (after timeout)');
-        }, 100);
     }
 
     showAnswerFeedback(selectedAnswer, isCorrect) {
-        const currentProblem = this.mathEngine.getCurrentProblem();
+        const currentProblem = this.getActiveProblem();
         if (!currentProblem || !currentProblem.options) return;
         
         const correctAnswer = currentProblem.answer;
@@ -860,9 +983,7 @@ class GameController {
     }
 
     showLeoHelp() {
-        const currentProblem = this.mathEngine && this.mathEngine.getCurrentProblem
-            ? this.mathEngine.getCurrentProblem()
-            : null;
+        const currentProblem = this.getActiveProblem();
         const leoAdvice = document.getElementById('leoAdvice');
 
         if (!currentProblem || !leoAdvice) {
@@ -902,7 +1023,11 @@ class GameController {
     }
 
     updateProblemUI() {
-        const problem = this.mathEngine.getCurrentProblem();
+        const problem = this.getActiveProblem();
+        if (!problem) {
+            return;
+        }
+
         document.getElementById('problemTitle').textContent = problem.title;
         
         // Use innerHTML with highlighted numbers for problem text
@@ -920,7 +1045,7 @@ class GameController {
     }
 
     updateAnswerOptions() {
-        const currentProblem = this.mathEngine.getCurrentProblem();
+        const currentProblem = this.getActiveProblem();
         if (!currentProblem || !currentProblem.options) return;
         
         currentProblem.options.forEach((option, index) => {
@@ -1382,9 +1507,170 @@ class GameController {
     }
 
     getLeoAdvice() {
-        const hint = this.mathEngine && this.mathEngine.getHint ? this.mathEngine.getHint() : 'Take it one step at a time.';
+        const problem = this.getActiveProblem();
+        const hint = this.getLeoAdviceHint(problem);
         const starter = this.translate('leo.help.starter', 'Leo says');
         return `${starter}: ${hint}`;
+    }
+
+    getLeoAdviceHint(problem) {
+        if (!problem) {
+            return this.translate('leo.help.ready', 'Leo is ready to help when a problem appears.');
+        }
+
+        if (!this.leoHintIndexes) {
+            this.leoHintIndexes = {};
+        }
+
+        const hints = this.getLeoAdviceOptions(problem);
+        if (!hints.length) {
+            return this.mathEngine && this.mathEngine.getHint
+                ? this.mathEngine.getHint()
+                : 'Take it one step at a time.';
+        }
+
+        const hintKey = problem.type || 'default';
+        const nextIndex = this.leoHintIndexes[hintKey] || 0;
+        const hint = hints[nextIndex % hints.length];
+        this.leoHintIndexes[hintKey] = nextIndex + 1;
+        return hint;
+    }
+
+    getLeoAdviceOptions(problem) {
+        const fallbackHint = this.mathEngine && this.mathEngine.getHint
+            ? this.mathEngine.getHint()
+            : 'Take it one step at a time.';
+        const numbers = Array.isArray(problem?.operation?.match(/\d+/g))
+            ? problem.operation.match(/\d+/g).map(Number)
+            : [];
+        const first = numbers[0];
+        const second = numbers[1];
+        const baseNumber = problem?.baseNumber;
+
+        const adviceByType = {
+            addition: [
+                fallbackHint,
+                'Start with the bigger number, then count on the smaller one.',
+                'Break the second number into smaller jumps if that feels easier.',
+                'Use the picture and join the two groups instead of recounting from zero.'
+            ],
+            subtraction: [
+                fallbackHint,
+                'Start with the whole group, then count backwards by the number being taken away.',
+                'Cover or cross out the items that leave, then count what is still there.',
+                'Think of subtraction as finding how many stay, not how many disappear.'
+            ],
+            doubles: [
+                fallbackHint,
+                `If you know ${baseNumber || 'the number'} once, just add it again for the double.`,
+                'Count by twos instead of counting every penguin one by one.',
+                'Picture equal pairs: each pair adds 2 more.'
+            ],
+            doubles_word_problems: [
+                fallbackHint,
+                'Find the number of groups first, then give each group 2.',
+                'When every group has 2, skip-count by twos to the total.',
+                'You can add the group number to itself to get the same answer.'
+            ],
+            multiplication: [
+                fallbackHint,
+                'Think of multiplication as equal groups, not one giant count.',
+                `Try repeated addition: ${first || 'one group'} added ${second || 'a few'} times.`,
+                'Use rows or groups in the picture to keep your counting tidy.'
+            ],
+            division: [
+                fallbackHint,
+                'Share the total into equal groups one piece at a time.',
+                'Ask yourself how many items belong in each group when everything is fair.',
+                'You can check a division answer by multiplying back.'
+            ],
+            simple_division: [
+                fallbackHint,
+                'Split the total into equal groups and keep the groups balanced.',
+                'Think: how many in each group so none are left over?',
+                'Multiply your guess by the number of groups to check it.'
+            ],
+            fractions: [
+                fallbackHint,
+                'Look for the whole first, then split it into equal parts.',
+                'The bottom number tells how many equal parts there are.',
+                'The top number tells how many of those parts you need.'
+            ],
+            equations: [
+                fallbackHint,
+                'Treat the missing number like a box you need to figure out.',
+                'Undo the operation step by step to isolate the unknown.',
+                'Plug your answer back in to see if the equation becomes true.'
+            ],
+            decimals: [
+                fallbackHint,
+                'Line up place values carefully when you think about the numbers.',
+                'Whole numbers and decimal parts should each make sense on their own.',
+                'Estimate first so you know whether your answer feels reasonable.'
+            ],
+            measurement: [
+                fallbackHint,
+                'Notice the units first so you know what the answer is measuring.',
+                'Draw or imagine the lengths, groups, or spaces in the problem.',
+                'Estimate before calculating to catch answers that look too big or too small.'
+            ],
+            geometry: [
+                fallbackHint,
+                'Look at the shape properties before you calculate anything.',
+                'Count sides, corners, or equal parts carefully.',
+                'Sketching the shape in your head can make the numbers easier to use.'
+            ],
+            exponentials: [
+                fallbackHint,
+                'An exponent means repeated multiplication, not repeated addition.',
+                'Square means multiply the number by itself once.',
+                'Write out the repeated factors if the shortcut feels confusing.'
+            ],
+            mixed_operations: [
+                fallbackHint,
+                'Do one small step at a time so the whole problem feels easier.',
+                'Remember the order of operations before combining everything.',
+                'Rewrite the problem in smaller chunks if it looks crowded.'
+            ],
+            word_problems: [
+                fallbackHint,
+                'Find the important numbers and what the question is really asking.',
+                'Turn the story into a math sentence before solving.',
+                'Ignore extra words and focus on the action in the problem.'
+            ],
+            advanced_multiplication: [
+                fallbackHint,
+                'Break big multiplication into smaller facts you already know.',
+                'Use place value to keep track of each part of the product.',
+                'Estimate first so you know the answer range you expect.'
+            ],
+            patterns: [
+                fallbackHint,
+                'Look for what changes each time before guessing the next value.',
+                'Check whether the pattern adds, subtracts, multiplies, or repeats.',
+                'Say the rule out loud to see if it fits every term.'
+            ],
+            advanced_equations: [
+                fallbackHint,
+                'Undo the equation in the reverse order it was built.',
+                'Keep the two sides balanced after every step.',
+                'Substitute your answer back in to prove it works.'
+            ],
+            all_concepts: [
+                fallbackHint,
+                'Decide which math skill this question is testing before you start.',
+                'Solve in stages instead of trying to do everything at once.',
+                'Use estimation to make sure the final answer feels sensible.'
+            ],
+            challenge_problems: [
+                fallbackHint,
+                'This one is easier if you break it into smaller pieces first.',
+                'Solve the safest part first, then build the rest around it.',
+                'Check each step before moving on so small mistakes do not grow.'
+            ]
+        };
+
+        return adviceByType[problem.type] || [fallbackHint];
     }
 
     translate(key, fallback = key) {
@@ -1408,11 +1694,11 @@ class GameController {
             const savedState = localStorage.getItem('timesTableAnimalsGame');
             if (savedState) {
                 const parsed = JSON.parse(savedState);
-                // Merge with default state to ensure new properties are included
-                this.gameState = { ...this.gameState, ...parsed };
+                this.gameState = this.normalizeGameState(parsed);
             }
         } catch (error) {
             console.warn('Could not load game state:', error);
+            this.gameState = this.createDefaultGameState();
         }
     }
 
@@ -1562,6 +1848,22 @@ class GameController {
         if (habitatName) {
             this.enterHabitat(habitatName);
         }
+    }
+
+    startCurrentHabitatAgain() {
+        const habitatName = this.gameState.currentHabitat;
+        if (!habitatName || !this.gameState.habitatProgress[habitatName]) {
+            return;
+        }
+
+        const currentProgress = this.gameState.habitatProgress[habitatName];
+        this.gameState.habitatProgress[habitatName] = {
+            ...currentProgress,
+            completed: 0,
+            unlocked: true
+        };
+        this.saveGameState();
+        this.enterHabitat(habitatName);
     }
 
     cleanupCurrentHabitat() {

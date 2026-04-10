@@ -145,7 +145,7 @@ function assert(condition, message) {
     }
 }
 
-async function run() {
+async function runScenario({ label, savedState, rawSavedState }) {
     const rootDir = path.join(__dirname, '..');
     const htmlPath = path.join(rootDir, 'index.html');
     const html = fs.readFileSync(htmlPath, 'utf8');
@@ -165,6 +165,12 @@ async function run() {
     window.console = console;
     window.innerWidth = 1200;
     window.innerHeight = 800;
+
+    if (typeof rawSavedState === 'string') {
+        window.localStorage.setItem('timesTableAnimalsGame', rawSavedState);
+    } else if (savedState !== undefined) {
+        window.localStorage.setItem('timesTableAnimalsGame', JSON.stringify(savedState));
+    }
 
     const unhandledErrors = [];
     window.addEventListener('error', (event) => {
@@ -200,7 +206,47 @@ async function run() {
         throw unhandledErrors[0];
     }
 
-    console.log('Menu smoke test passed.');
+    console.log(`Menu smoke test passed: ${label}`);
+}
+
+async function run() {
+    const scenarios = [
+        { label: 'clean state' },
+        {
+            label: 'invalid JSON save',
+            rawSavedState: '{"settings":'
+        },
+        {
+            label: 'partial save with null branches',
+            savedState: {
+                playerName: 'Test Player',
+                settings: null,
+                habitatProgress: null
+            }
+        },
+        {
+            label: 'mixed malformed progress values',
+            savedState: {
+                badgeCount: '7',
+                settings: {
+                    musicEnabled: 'yes',
+                    masterVolume: 125,
+                    language: 'es',
+                    difficulty: 'hard'
+                },
+                habitatProgress: {
+                    bunnyMeadow: { completed: 999, total: 0, unlocked: 'sometimes' },
+                    penguinPairsArctic: { completed: '5', total: '12', unlocked: true }
+                }
+            }
+        }
+    ];
+
+    for (const scenario of scenarios) {
+        await runScenario(scenario);
+    }
+
+    console.log('Menu smoke test suite passed.');
     process.exit(0);
 }
 

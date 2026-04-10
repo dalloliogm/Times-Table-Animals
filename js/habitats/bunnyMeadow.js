@@ -424,6 +424,9 @@ class BunnyMeadow {
         
         // Generate new problem
         this.currentProblem = this.mathEngine.generateProblem();
+        if (this.gameController && this.gameController.mathEngine) {
+            this.gameController.mathEngine.currentProblem = this.currentProblem;
+        }
         this.problemStartTime = Date.now();
         
         // Update UI
@@ -437,13 +440,9 @@ class BunnyMeadow {
             this.audioManager.playSFX('problem-appear');
         }
         
-        // Ensure GameController has the same problem reference and updates UI
-        if (this.gameController && this.gameController.mathEngine) {
-            this.gameController.mathEngine.currentProblem = this.currentProblem;
-            // Also call GameController's updateProblemUI to ensure everything is synced
-            if (this.gameController.updateProblemUI) {
-                this.gameController.updateProblemUI();
-            }
+        // Ensure any shared DOM helpers stay aligned with the habitat's live problem
+        if (this.gameController && this.gameController.updateProblemUI) {
+            this.gameController.updateProblemUI();
         }
     }
 

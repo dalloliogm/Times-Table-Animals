@@ -25,7 +25,7 @@ const QuestionTemplates = {
 
         // Doubles Questions
         doubles: [
-            'Each penguin needs a partner for the ice parade. If there are {n} penguins, how many penguins total?',
+            'Each penguin needs a partner for the ice parade. If there are {n} penguin pairs, how many penguins total?',
             'The penguins slide down the ice slide in pairs. How many penguins in {n} pairs?',
             'Each penguin catches {n} fish. How many fish do 2 penguins catch?',
             'There are {n} penguin pairs playing together. How many penguins are playing?',
@@ -187,7 +187,7 @@ const QuestionTemplates = {
 
         // Preguntas de Dobles
         doubles: [
-            'Cada pingüino necesita una pareja para el desfile de hielo. Si hay {n} pingüinos, ¿cuántos pingüinos en total?',
+            'Cada pingüino necesita una pareja para el desfile de hielo. Si hay {n} parejas de pingüinos, ¿cuántos pingüinos en total?',
             'Los pingüinos se deslizan por el tobogán de hielo en parejas. ¿Cuántos pingüinos en {n} parejas?',
             'Cada pingüino atrapa {n} peces. ¿Cuántos peces atrapan 2 pingüinos?',
             'Hay {n} parejas de pingüinos jugando juntas. ¿Cuántos pingüinos están jugando?',
@@ -349,7 +349,7 @@ const QuestionTemplates = {
 
         // Domande sui Doppi
         doubles: [
-            'Ogni pinguino ha bisogno di un partner per la parata sul ghiaccio. Se ci sono {n} pinguini, quanti pinguini in totale?',
+            'Ogni pinguino ha bisogno di un partner per la parata sul ghiaccio. Se ci sono {n} coppie di pinguini, quanti pinguini in totale?',
             'I pinguini scivolano giù per lo scivolo di ghiaccio in coppie. Quanti pinguini in {n} coppie?',
             'Ogni pinguino cattura {n} pesci. Quanti pesci catturano 2 pinguini?',
             'Ci sono {n} coppie di pinguini che giocano insieme. Quanti pinguini stanno giocando?',
