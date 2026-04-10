@@ -468,7 +468,10 @@ class GameController {
         const completedHabitatsEl = document.getElementById('achievementCompletedHabitats');
         const unlockedHabitatsEl = document.getElementById('achievementUnlockedHabitats');
         const problemsSolvedEl = document.getElementById('achievementProblemsSolved');
+        const penguinPairsProgressEl = document.getElementById('achievementPenguinPairsProgress');
         const habitatListEl = document.getElementById('achievementsHabitatList');
+        const unlockedHabitatChipsEl = document.getElementById('achievementUnlockedHabitatChips');
+        const starterHabitatsEl = document.getElementById('achievementStarterHabitats');
 
         if (badgeCountEl) {
             badgeCountEl.textContent = this.gameState.badgeCount;
@@ -481,6 +484,25 @@ class GameController {
         }
         if (problemsSolvedEl) {
             problemsSolvedEl.textContent = totalProblemsSolved;
+        }
+        if (penguinPairsProgressEl) {
+            const penguinPairsProgress = this.gameState.habitatProgress.penguinPairsArctic;
+            penguinPairsProgressEl.textContent = `${penguinPairsProgress.completed}/${penguinPairsProgress.total}`;
+        }
+        if (starterHabitatsEl) {
+            const starterHabitats = ['bunnyMeadow', 'penguinPairsArctic']
+                .map((habitatName) => this.getHabitatDisplayName(habitatName))
+                .join(' and ');
+            starterHabitatsEl.textContent = `Starter habitats: ${starterHabitats}.`;
+        }
+        if (unlockedHabitatChipsEl) {
+            const unlockedNames = progressEntries
+                .filter(([, progress]) => progress.unlocked)
+                .map(([habitatName]) => this.getHabitatDisplayName(habitatName));
+
+            unlockedHabitatChipsEl.innerHTML = unlockedNames
+                .map((habitatName) => `<span class="achievement-unlocked-chip">${habitatName}</span>`)
+                .join('');
         }
 
         if (habitatListEl) {
@@ -495,7 +517,13 @@ class GameController {
                 return `
                     <div class="achievement-habitat-item ${progress.unlocked ? 'unlocked' : 'locked'}">
                         <div class="achievement-habitat-header">
-                            <span class="achievement-habitat-name">${this.getHabitatDisplayName(habitatName)}</span>
+                            <div class="achievement-habitat-title">
+                                <div class="achievement-habitat-name-row">
+                                    <span class="achievement-habitat-icon">${this.getHabitatAchievementIcon(habitatName)}</span>
+                                    <span class="achievement-habitat-name">${this.getHabitatDisplayName(habitatName)}</span>
+                                </div>
+                                <span class="achievement-habitat-subtitle">${this.getHabitatAchievementSubtitle(habitatName)}</span>
+                            </div>
                             <span class="achievement-habitat-status">${status}</span>
                         </div>
                         <div class="achievement-habitat-progress">
@@ -685,6 +713,44 @@ class GameController {
         };
         
         return habitatNames[habitatName] || 'Unknown Habitat';
+    }
+
+    getHabitatAchievementSubtitle(habitatName) {
+        const subtitles = {
+            bunnyMeadow: 'Addition & Subtraction',
+            penguinPairsArctic: 'Doubles (2x Tables)',
+            penguinArctic: 'Multiplication & Simple Division',
+            elephantSavanna: 'Division & Multiplication',
+            monkeyJungle: 'Fractions & Mixed Operations',
+            lionPride: 'Equations & Word Problems',
+            dolphinCove: 'Decimals & Measurement',
+            bearForest: 'Mixed Operations',
+            giraffePlains: 'Measurement & Geometry',
+            owlObservatory: 'Advanced Multiplication & Patterns',
+            dragonSanctuary: 'Exponents & Advanced Equations',
+            rainbowReserve: 'Ultimate Challenge'
+        };
+
+        return subtitles[habitatName] || 'Habitat Progress';
+    }
+
+    getHabitatAchievementIcon(habitatName) {
+        const icons = {
+            bunnyMeadow: '🐰',
+            penguinPairsArctic: '🐧🐧',
+            penguinArctic: '🐧',
+            elephantSavanna: '🐘',
+            monkeyJungle: '🐵',
+            lionPride: '🦁',
+            dolphinCove: '🐬',
+            bearForest: '🐻',
+            giraffePlains: '🦒',
+            owlObservatory: '🦉',
+            dragonSanctuary: '🐉',
+            rainbowReserve: '🌈'
+        };
+
+        return icons[habitatName] || '⭐';
     }
 
     syncCurrentHabitatProgress() {

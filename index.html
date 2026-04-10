@@ -152,8 +152,14 @@
             <div class="achievements-content">
                 <h2>Achievements</h2>
                 <p class="achievements-summary">Track your badges, habitats, and solved problems.</p>
+                <p id="achievementStarterHabitats" class="achievement-starter-note"></p>
 
                 <div class="achievements-grid">
+                    <div class="achievement-stat-card achievement-featured-card">
+                        <span class="achievement-stat-icon">🐧🐧</span>
+                        <span class="achievement-stat-label">Penguin Pairs Arctic</span>
+                        <span id="achievementPenguinPairsProgress" class="achievement-stat-value">0/12</span>
+                    </div>
                     <div class="achievement-stat-card">
                         <span class="achievement-stat-icon">🏆</span>
                         <span class="achievement-stat-label">Badges Earned</span>
@@ -174,6 +180,11 @@
                         <span class="achievement-stat-label">Problems Solved</span>
                         <span id="achievementProblemsSolved" class="achievement-stat-value">0</span>
                     </div>
+                </div>
+
+                <div class="achievement-unlocked-section">
+                    <h3>Unlocked Habitats</h3>
+                    <div id="achievementUnlockedHabitatChips" class="achievement-unlocked-chips"></div>
                 </div>
 
                 <div class="achievement-progress-section">

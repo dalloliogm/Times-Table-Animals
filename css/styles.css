@@ -1384,7 +1384,15 @@ body.habitat-select-mode .habitat-content {
     text-align: center;
     color: #6b4f00;
     font-size: 1.05rem;
-    margin-bottom: 1.75rem;
+    margin-bottom: 0.55rem;
+}
+
+.achievement-starter-note {
+    text-align: center;
+    color: #0f766e;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 1.35rem;
 }
 
 .achievements-grid {
@@ -1405,6 +1413,11 @@ body.habitat-select-mode .habitat-content {
     gap: 0.5rem;
 }
 
+.achievement-featured-card {
+    background: linear-gradient(135deg, rgba(219, 244, 255, 0.96), rgba(255, 255, 255, 0.98));
+    border-color: rgba(14, 165, 233, 0.3);
+}
+
 .achievement-stat-icon {
     font-size: 2rem;
 }
@@ -1418,6 +1431,40 @@ body.habitat-select-mode .habitat-content {
     font-size: 1.7rem;
     color: #0f766e;
     font-weight: bold;
+}
+
+.achievement-unlocked-section {
+    background: rgba(245, 158, 11, 0.08);
+    border-radius: 18px;
+    padding: 1.1rem 1.25rem;
+    margin-bottom: 1.25rem;
+}
+
+.achievement-unlocked-section h3 {
+    color: #b45309;
+    margin-bottom: 0.85rem;
+    text-align: center;
+    font-size: 1.2rem;
+}
+
+.achievement-unlocked-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    justify-content: center;
+}
+
+.achievement-unlocked-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0.9rem;
+    border-radius: 999px;
+    background: white;
+    border: 2px solid rgba(245, 158, 11, 0.2);
+    color: #7c2d12;
+    font-weight: 700;
+    text-align: center;
 }
 
 .achievement-progress-section {
@@ -1462,9 +1509,37 @@ body.habitat-select-mode .habitat-content {
     margin-bottom: 0.65rem;
 }
 
+.achievement-habitat-title {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+}
+
+.achievement-habitat-name-row {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-width: 0;
+}
+
+.achievement-habitat-icon {
+    flex-shrink: 0;
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
 .achievement-habitat-name {
     color: #1f2937;
     font-weight: bold;
+    overflow-wrap: anywhere;
+}
+
+.achievement-habitat-subtitle {
+    color: #0f766e;
+    font-size: 0.9rem;
+    font-weight: 600;
+    overflow-wrap: anywhere;
 }
 
 .achievement-habitat-status,
