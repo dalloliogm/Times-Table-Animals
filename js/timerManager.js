@@ -9,7 +9,7 @@ class TimerManager {
         // Timer configuration
         this.config = {
             levelDuration: 300000, 
-            warningThresholds: [175_000, 165_000, 160_000, 140_000, 100_000, 80_000, 60_000, 40_000, 20_000], // Warning every 2 seconds
+            warningThresholds: [60_000, 45_000, 30_000, 20_000, 10_000, 5_000],
             urgencyThreshold: 120_000, // When to start urgency effects
             criticalThreshold: 80_000, // When to start critical effects
             emergencyThreshold: 40_000, // When to start emergency effects
@@ -20,6 +20,7 @@ class TimerManager {
                 extreme: 16
             }
         };
+        this.currentStyle = 'gentle';
         
         // Timer state
         this.isActive = false;
@@ -89,6 +90,16 @@ class TimerManager {
 
     startTimer(habitat) {
         console.log(`TimerManager: Starting timer for habitat ${habitat}`);
+
+        const settings = this.gameController?.gameState?.settings || {};
+        const habitatProgress = this.gameController?.gameState?.habitatProgress || {};
+        this.applyProfile({
+            habitat,
+            habitatProgress,
+            difficulty: settings.difficulty,
+            pace: settings.timerPace,
+            style: settings.timerStyle
+        });
         
         this.currentHabitat = habitat;
         this.catastrophicEventActive = false;
@@ -167,6 +178,7 @@ class TimerManager {
         if (!this.timerBar) return;
 
         const progress = this.timeRemaining / this.config.levelDuration;
+        const isDramatic = this.currentStyle === 'dramatic';
         
         // Color transitions based on time remaining
         if (progress > 0.5) {
@@ -188,15 +200,27 @@ class TimerManager {
         if (timerContainer) {
             if (this.timeRemaining <= this.config.emergencyThreshold) {
                 timerContainer.classList.add('pulsing', 'emergency');
-                this.startScreenShake('extreme');
-                this.startRedFlash();
+                this.startScreenShake(isDramatic ? 'extreme' : 'moderate');
+                if (isDramatic) {
+                    this.startRedFlash();
+                } else {
+                    this.stopFlash();
+                }
             } else if (this.timeRemaining <= this.config.criticalThreshold) {
                 timerContainer.classList.add('pulsing', 'critical');
-                this.startScreenShake('intense');
-                this.startWarningFlash();
+                this.startScreenShake(isDramatic ? 'intense' : 'mild');
+                if (isDramatic) {
+                    this.startWarningFlash();
+                } else {
+                    this.stopFlash();
+                }
             } else if (this.timeRemaining <= this.config.urgencyThreshold) {
                 timerContainer.classList.add('pulsing', 'urgent');
-                this.startScreenShake('moderate');
+                if (isDramatic) {
+                    this.startScreenShake('moderate');
+                } else {
+                    this.stopScreenShake();
+                }
             } else {
                 timerContainer.classList.remove('pulsing', 'emergency', 'critical', 'urgent');
                 this.stopScreenShake();
@@ -205,8 +229,11 @@ class TimerManager {
         }
         
         // Add particle effects for critical moments
-        if (this.timeRemaining <= this.config.emergencyThreshold) {
+        if (isDramatic && this.timeRemaining <= this.config.emergencyThreshold) {
             this.createEmberParticles();
+        } else if (!isDramatic && this.effectsState.particleInterval) {
+            clearInterval(this.effectsState.particleInterval);
+            this.effectsState.particleInterval = null;
         }
     }
 
@@ -221,19 +248,20 @@ class TimerManager {
 
     showWarning(threshold) {
         console.log(`TimerManager: Showing warning for ${threshold}ms remaining`);
+        const warningSeconds = Math.ceil(threshold / 1000);
         
         // Play enhanced warning sounds based on urgency
         if (this.audioManager) {
-            if (threshold <= 5000) {
+            if (warningSeconds <= 5) {
                 this.audioManager.playSFX('timer-warning-emergency');
                 this.audioManager.playSFX('danger-siren');
-            } else if (threshold <= 10000) {
+            } else if (warningSeconds <= 10) {
                 this.audioManager.playSFX('timer-warning-critical');
                 this.audioManager.playSFX('volcano-rumble');
-            } else if (threshold <= 20000) {
+            } else if (warningSeconds <= 20) {
                 this.audioManager.playSFX('timer-warning-urgent');
                 this.audioManager.playSFX('ground-shake');
-            } else if (threshold <= 30000) {
+            } else if (warningSeconds <= 30) {
                 this.audioManager.playSFX('timer-warning');
                 this.audioManager.playSFX('earthquake');
             } else {
@@ -242,25 +270,25 @@ class TimerManager {
         }
 
         // Show visual warning
-        this.createWarningEffect(threshold);
+        this.createWarningEffect(warningSeconds);
         
         // Add screen shake for more dramatic effect
-        this.triggerWarningShake(threshold);
+        this.triggerWarningShake(warningSeconds);
     }
 
-    createWarningEffect(threshold) {
+    createWarningEffect(remainingSeconds) {
         // Enhanced volcanic-themed warning messages
         const warningMessages = {
-            60000: { text: `The volcano is rumbling! 1 ${this.translate('timer.warning')}`, icon: '<img src="assets/volcano.jpg" alt="Volcano" class="warning-volcano-image">', class: 'warning-mild' },
-            45000: { text: 'Smoke rising from the crater! 45 seconds!', icon: '💨', class: 'warning-moderate' },
-            30000: { text: 'Lava bubbling! 30 seconds left!', icon: '🔥', class: 'warning-urgent' },
-            20000: { text: 'Ground shaking! 20 seconds!', icon: '⚡', class: 'warning-critical' },
-            10000: { text: 'VOLCANO ABOUT TO ERUPT! 10 seconds!', icon: '<img src="assets/volcano.jpg" alt="Volcano" class="warning-volcano-image">', class: 'warning-emergency' },
-            5000: { text: 'ERUPTION IMMINENT! 5 SECONDS!', icon: '💥', class: 'warning-panic' }
+            60: { text: `1 minute left. ${this.translate('timer.warning')}`, icon: '⏰', class: 'warning-mild' },
+            45: { text: '45 seconds left. Keep going!', icon: '⏳', class: 'warning-moderate' },
+            30: { text: '30 seconds left. You can do it!', icon: '🔥', class: 'warning-urgent' },
+            20: { text: '20 seconds left. Quick thinking time!', icon: '⚡', class: 'warning-critical' },
+            10: { text: '10 seconds left. Almost there!', icon: '🚀', class: 'warning-emergency' },
+            5: { text: '5 seconds left. Final push!', icon: '💥', class: 'warning-panic' }
         };
 
-        const warningData = warningMessages[threshold] || {
-            text: 'A Volcano is erupting! Solve maths problems to save the animals!',
+        const warningData = warningMessages[remainingSeconds] || {
+            text: `${remainingSeconds} seconds left. Keep helping the animals!`,
             icon: '⚠️',
             class: 'warning-default'
         };
@@ -295,7 +323,7 @@ class TimerManager {
         warning.classList.add('show');
 
         // Keep emergency warnings visible longer
-        const displayTime = threshold <= 4000 ? 3000 : 2000;
+        const displayTime = remainingSeconds <= 5 ? 3000 : 2000;
         setTimeout(() => {
             warning.classList.remove('show');
             // Clean up classes after animation
@@ -317,9 +345,14 @@ class TimerManager {
         
         // Play enhanced catastrophic sounds sequence
         if (this.audioManager) {
-            this.audioManager.playSFX('volcanic-explosion');
-            setTimeout(() => this.audioManager.playSFX('catastrophic-event'), 500);
-            setTimeout(() => this.audioManager.playSFX('earthquake'), 1000);
+            if (this.currentStyle === 'dramatic') {
+                this.audioManager.playSFX('volcanic-explosion');
+                setTimeout(() => this.audioManager.playSFX('catastrophic-event'), 500);
+                setTimeout(() => this.audioManager.playSFX('earthquake'), 1000);
+            } else {
+                this.audioManager.playSFX('timer-warning-critical');
+                setTimeout(() => this.audioManager.playSFX('catastrophic-event'), 400);
+            }
         }
 
         // Dramatic screen shake before showing overlay
@@ -342,8 +375,9 @@ class TimerManager {
         if (!gameContainer) return;
         
         let shakeCount = 0;
-        const maxShakes = 30; // Longer shake sequence
-        let currentIntensity = 20; // Start with intense shake
+        const dramatic = this.currentStyle === 'dramatic';
+        const maxShakes = dramatic ? 30 : 16;
+        let currentIntensity = dramatic ? 20 : 8;
         
         const shakeInterval = setInterval(() => {
             if (shakeCount >= maxShakes) {
@@ -398,7 +432,14 @@ class TimerManager {
             }
         };
 
-        const theme = themes[habitat] || themes.bunnyMeadow;
+        const dramaticTheme = themes[habitat] || themes.bunnyMeadow;
+        const theme = this.currentStyle === 'dramatic'
+            ? dramaticTheme
+            : {
+                icon: '⏰',
+                title: 'Time Is Up!',
+                message: 'No worries. Let\'s try that habitat again with a fresh timer!'
+            };
         
         if (this.catastrophicOverlay) {
             const icon = this.catastrophicOverlay.querySelector('.catastrophic-icon');
@@ -593,10 +634,17 @@ class TimerManager {
         // Trigger a quick shake effect for warnings
         const gameContainer = document.getElementById('gameContainer');
         if (!gameContainer) return;
+
+          const adjustedThreshold = threshold * 1000;
+          const dramatic = this.currentStyle === 'dramatic';
         
-        const shakeIntensity = threshold <= 5000 ? 12 :
-                              threshold <= 10000 ? 8 :
-                              threshold <= 20000 ? 6 : 4;
+          const shakeIntensity = dramatic
+                ? (adjustedThreshold <= 5000 ? 12 :
+                    adjustedThreshold <= 10000 ? 8 :
+                    adjustedThreshold <= 20000 ? 6 : 4)
+                : (adjustedThreshold <= 5000 ? 5 :
+                    adjustedThreshold <= 10000 ? 4 :
+                    adjustedThreshold <= 20000 ? 3 : 2);
         
         let shakeCount = 0;
         const maxShakes = 6;
@@ -628,6 +676,49 @@ class TimerManager {
         if (this.effectsState.particleInterval) {
             clearInterval(this.effectsState.particleInterval);
             this.effectsState.particleInterval = null;
+        }
+    }
+
+    applyProfile({ habitat, habitatProgress = {}, difficulty = 'medium', pace = 'balanced', style = 'gentle' } = {}) {
+        const habitatTotal = habitat && habitatProgress[habitat]?.total
+            ? Number(habitatProgress[habitat].total)
+            : 12;
+        const paceMultipliers = {
+            relaxed: 1.25,
+            balanced: 1.0,
+            speedy: 0.85
+        };
+        const difficultyMultipliers = {
+            easy: 1.15,
+            medium: 1.0,
+            hard: 0.9
+        };
+
+        const oldDuration = this.config.levelDuration;
+        const oldRemaining = this.timeRemaining;
+        const paceMultiplier = paceMultipliers[pace] || 1.0;
+        const difficultyMultiplier = difficultyMultipliers[difficulty] || 1.0;
+
+        // About 18 seconds per expected problem, then adjusted by pace+difficulty.
+        const computedDuration = Math.round(habitatTotal * 18_000 * paceMultiplier * difficultyMultiplier);
+        const levelDuration = Math.min(420_000, Math.max(150_000, computedDuration));
+
+        const durationSeconds = Math.floor(levelDuration / 1000);
+        const warningSeconds = [60, 45, 30, 20, 10, 5].filter((seconds) => seconds < durationSeconds);
+
+        this.config.levelDuration = levelDuration;
+        this.config.warningThresholds = warningSeconds.map((seconds) => seconds * 1000);
+        this.config.urgencyThreshold = Math.max(30_000, Math.round(levelDuration * 0.45));
+        this.config.criticalThreshold = Math.max(20_000, Math.round(levelDuration * 0.25));
+        this.config.emergencyThreshold = Math.max(10_000, Math.round(levelDuration * 0.12));
+        this.currentStyle = style === 'dramatic' ? 'dramatic' : 'gentle';
+
+        if (this.isActive && oldDuration > 0) {
+            const remainingRatio = Math.max(0, Math.min(1, oldRemaining / oldDuration));
+            this.timeRemaining = Math.round(levelDuration * remainingRatio);
+            this.startTime = Date.now() - (levelDuration - this.timeRemaining);
+            this.warningsShown = [];
+            this.updateTimerDisplay();
         }
     }
 }

@@ -6,6 +6,7 @@ class GameController {
         window.gameController = this;
         this.currentScreen = 'loadingScreen';
         this.isSubmittingAnswer = false; // Flag to prevent double submission
+        this.isGamePaused = false;
         this.gameState = this.createDefaultGameState();
         this.init();
     }
@@ -35,7 +36,9 @@ class GameController {
                 voiceEnabled: true,
                 masterVolume: 75,
                 language: 'en',
-                difficulty: 'medium'
+                difficulty: 'medium',
+                timerPace: 'balanced',
+                timerStyle: 'gentle'
             }
         };
     }
@@ -105,7 +108,13 @@ class GameController {
                     : defaults.settings.language,
                 difficulty: typeof savedSettings.difficulty === 'string' && savedSettings.difficulty.trim()
                     ? savedSettings.difficulty
-                    : defaults.settings.difficulty
+                    : defaults.settings.difficulty,
+                timerPace: ['relaxed', 'balanced', 'speedy'].includes(savedSettings.timerPace)
+                    ? savedSettings.timerPace
+                    : defaults.settings.timerPace,
+                timerStyle: ['gentle', 'dramatic'].includes(savedSettings.timerStyle)
+                    ? savedSettings.timerStyle
+                    : defaults.settings.timerStyle
             },
             habitatProgress
         };
@@ -131,6 +140,7 @@ class GameController {
             this.gameEngine = new GameEngine();
             this.timerManager = new TimerManager(this, this.audioManager);
             this.sceneManager = new SceneManager();
+            this.applyTimerSettings();
             
             // Set initial language
             this.languageManager.setLanguage(this.gameState.settings.language);
@@ -257,6 +267,18 @@ class GameController {
             this.saveGameState();
         });
 
+        document.getElementById('timerPaceSelect').addEventListener('change', (e) => {
+            this.gameState.settings.timerPace = e.target.value;
+            this.applyTimerSettings();
+            this.saveGameState();
+        });
+
+        document.getElementById('timerStyleSelect').addEventListener('change', (e) => {
+            this.gameState.settings.timerStyle = e.target.value;
+            this.applyTimerSettings();
+            this.saveGameState();
+        });
+
         // Language Selector Events
         document.getElementById('languageSelectorBtn').addEventListener('click', (e) => {
             e.preventDefault();
@@ -323,6 +345,10 @@ class GameController {
         });
 
         document.getElementById('pauseBtn').addEventListener('click', () => {
+            if (this.isGamePaused) {
+                this.resumeGame();
+                return;
+            }
             this.pauseGame();
         });
 
@@ -381,6 +407,16 @@ class GameController {
             this.exitToHabitats();
         });
 
+        document.getElementById('resumeGameBtn').addEventListener('click', () => {
+            this.resumeGame();
+        });
+
+        document.getElementById('pauseBackToHabitatsBtn').addEventListener('click', () => {
+            this.hidePauseOverlay();
+            this.isGamePaused = false;
+            this.showHabitatSelection();
+        });
+
         // Habitat Card Events
         document.addEventListener('click', (e) => {
             if (e.target.closest('.habitat-card')) {
@@ -402,6 +438,8 @@ class GameController {
     showMainMenu() {
         // Remove scrolling modes
         document.body.classList.remove('habitat-select-mode', 'credits-mode');
+        this.isGamePaused = false;
+        this.hidePauseOverlay();
         
         this.switchScreen('mainMenu');
         this.updateLeoHomeMessage('mainMenu');
@@ -450,6 +488,8 @@ class GameController {
         document.getElementById('sfxToggle').checked = this.gameState.settings.sfxEnabled;
         document.getElementById('voiceToggle').checked = this.gameState.settings.voiceEnabled;
         document.getElementById('volumeSlider').value = this.gameState.settings.masterVolume;
+        document.getElementById('timerPaceSelect').value = this.gameState.settings.timerPace;
+        document.getElementById('timerStyleSelect').value = this.gameState.settings.timerStyle;
         
         // Update language selector
         this.updateLanguageSelectorUI();
@@ -549,6 +589,9 @@ class GameController {
         } catch (error) {
             console.error('Failed to clean up current habitat before showing habitat selection:', error);
         }
+
+        this.isGamePaused = false;
+        this.hidePauseOverlay();
 
         document.body.classList.remove('credits-mode');
         this.switchScreen('habitatSelect');
@@ -781,6 +824,9 @@ class GameController {
     finalizeHabitatEntry(habitatName) {
         try {
             console.log(`GameController: Finalizing habitat entry for ${habitatName}`);
+            this.hidePauseOverlay();
+            this.isGamePaused = false;
+            this.applyTimerSettings();
             
             // Start timer for the level
             if (this.timerManager) {
@@ -891,10 +937,46 @@ class GameController {
     }
 
     pauseGame() {
+        if (this.currentScreen !== 'gameScreen') {
+            return;
+        }
+        this.isGamePaused = true;
         this.gameEngine.pauseGame();
         this.audioManager.pauseAll();
         this.timerManager.pauseTimer();
-        // TODO: Show pause menu
+        this.showPauseOverlay();
+    }
+
+    resumeGame() {
+        if (!this.isGamePaused || this.currentScreen !== 'gameScreen') {
+            return;
+        }
+
+        this.isGamePaused = false;
+        this.hidePauseOverlay();
+        if (this.gameEngine) {
+            this.gameEngine.resumeGame();
+        }
+        if (this.audioManager && this.gameState.currentHabitat) {
+            this.audioManager.playBackgroundMusic(this.gameState.currentHabitat);
+        }
+        if (this.timerManager) {
+            this.timerManager.resumeTimer();
+        }
+    }
+
+    showPauseOverlay() {
+        const pauseOverlay = document.getElementById('pauseOverlay');
+        if (pauseOverlay) {
+            pauseOverlay.classList.remove('hidden');
+        }
+    }
+
+    hidePauseOverlay() {
+        const pauseOverlay = document.getElementById('pauseOverlay');
+        if (pauseOverlay) {
+            pauseOverlay.classList.add('hidden');
+        }
     }
 
     showGameSettings() {
@@ -915,6 +997,10 @@ class GameController {
     }
 
     selectAnswer(optionNumber) {
+        if (this.isGamePaused) {
+            return;
+        }
+
         // Prevent selection during submission
         if (this.isSubmittingAnswer) {
             console.log('GameController: Answer submission already in progress, ignoring selection');
@@ -1870,6 +1956,7 @@ class GameController {
 
         return this.currentScreen === 'gameScreen' &&
             Boolean(this.gameState.currentHabitat) &&
+            !this.isGamePaused &&
             !completionOverlayVisible &&
             !this.timerManager.isCatastrophicEventActive();
     }
@@ -1922,14 +2009,25 @@ class GameController {
             return;
         }
 
-        const currentProgress = this.gameState.habitatProgress[habitatName];
-        this.gameState.habitatProgress[habitatName] = {
-            ...currentProgress,
-            completed: 0,
-            unlocked: true
-        };
-        this.saveGameState();
-        this.enterHabitat(habitatName);
+        const solvedCount = this.gameState.habitatProgress[habitatName].completed;
+        this.showConfirmationDialog(
+            'Start Habitat Again?',
+            `You have solved ${solvedCount} problem(s) here. Starting again resets this habitat progress to 0.`,
+            () => {
+                const currentProgress = this.gameState.habitatProgress[habitatName];
+                this.gameState.habitatProgress[habitatName] = {
+                    ...currentProgress,
+                    completed: 0,
+                    unlocked: true
+                };
+                this.saveGameState();
+                this.enterHabitat(habitatName);
+            },
+            {
+                confirmLabel: 'Start Again',
+                cancelLabel: 'Keep Progress'
+            }
+        );
     }
 
     cleanupCurrentHabitat() {
@@ -1937,6 +2035,9 @@ class GameController {
         if (this.timerManager) {
             this.timerManager.stopTimer();
         }
+
+        this.isGamePaused = false;
+        this.hidePauseOverlay();
         
         // Hide math problem UI
         const mathProblem = document.getElementById('mathProblem');
@@ -2008,11 +2109,22 @@ class GameController {
                 
                 // Show temporary success message
                 this.showTemporaryMessage('Progress has been reset! All habitats except Bunny Meadow are now locked.');
+            },
+            {
+                confirmLabel: 'Reset Progress',
+                cancelLabel: 'Cancel',
+                confirmColor: '#4CAF50',
+                cancelColor: '#f44336'
             }
         );
     }
 
-    showConfirmationDialog(title, message, onConfirm) {
+    showConfirmationDialog(title, message, onConfirm, options = {}) {
+        const confirmLabel = options.confirmLabel || 'Confirm';
+        const cancelLabel = options.cancelLabel || 'Cancel';
+        const confirmColor = options.confirmColor || '#4CAF50';
+        const cancelColor = options.cancelColor || '#f44336';
+
         // Create modal overlay
         const overlay = document.createElement('div');
         overlay.className = 'modal-overlay';
@@ -2051,7 +2163,7 @@ class GameController {
             <p style="margin: 0 0 24px 0; color: #666; font-size: 16px; line-height: 1.4;">${message}</p>
             <div style="display: flex; gap: 12px; justify-content: center;">
                 <button class="modal-btn cancel" style="
-                    background: #f44336;
+                    background: ${cancelColor};
                     color: white;
                     border: none;
                     padding: 12px 24px;
@@ -2059,9 +2171,9 @@ class GameController {
                     font-size: 16px;
                     cursor: pointer;
                     transition: background 0.2s ease;
-                ">Cancel</button>
+                ">${cancelLabel}</button>
                 <button class="modal-btn confirm" style="
-                    background: #4CAF50;
+                    background: ${confirmColor};
                     color: white;
                     border: none;
                     padding: 12px 24px;
@@ -2069,7 +2181,7 @@ class GameController {
                     font-size: 16px;
                     cursor: pointer;
                     transition: background 0.2s ease;
-                ">Reset Progress</button>
+                ">${confirmLabel}</button>
             </div>
         `;
         
@@ -2107,6 +2219,20 @@ class GameController {
             if (e.target === overlay) {
                 closeModal();
             }
+        });
+    }
+
+    applyTimerSettings() {
+        if (!this.timerManager) {
+            return;
+        }
+
+        this.timerManager.applyProfile({
+            habitat: this.gameState.currentHabitat,
+            habitatProgress: this.gameState.habitatProgress,
+            difficulty: this.gameState.settings.difficulty,
+            pace: this.gameState.settings.timerPace,
+            style: this.gameState.settings.timerStyle
         });
     }
 

@@ -121,6 +121,21 @@
                 
                 <div class="settings-options">
                     <div class="setting-item">
+                        <label for="timerPaceSelect">Timer Pace</label>
+                        <select id="timerPaceSelect" class="setting-select">
+                            <option value="relaxed">Relaxed</option>
+                            <option value="balanced">Balanced</option>
+                            <option value="speedy">Speedy</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label for="timerStyleSelect">Timer Style</label>
+                        <select id="timerStyleSelect" class="setting-select">
+                            <option value="gentle">Gentle</option>
+                            <option value="dramatic">Dramatic</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
                         <label data-translate="settings.music">Background Music</label>
                         <input type="checkbox" id="musicToggle" checked>
                         <span class="toggle-slider"></span>
@@ -345,6 +360,17 @@
                         <div class="catastrophic-buttons">
                             <button class="catastrophic-btn primary" id="retryLevelBtn">Try Again</button>
                             <button class="catastrophic-btn secondary" id="backToHabitatsBtn">Choose Different Habitat</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pause-overlay hidden" id="pauseOverlay">
+                    <div class="pause-content">
+                        <h2>Paused</h2>
+                        <p>Take your time. Press resume when you are ready.</p>
+                        <div class="pause-actions">
+                            <button id="resumeGameBtn" class="menu-btn primary">Resume</button>
+                            <button id="pauseBackToHabitatsBtn" class="menu-btn secondary">Back to Habitats</button>
                         </div>
                     </div>
                 </div>
