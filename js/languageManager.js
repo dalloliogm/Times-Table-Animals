@@ -64,6 +64,10 @@ class LanguageManager {
                     'habitat.giraffePlains': 'Giraffe Plains',
                     'habitat.owlObservatory': 'Owl Observatory',
                     'habitat.dragonSanctuary': 'Dragon Sanctuary',
+                    'habitat.earthwormSoil': 'Earthworm Soil',
+                    'habitat.caterpillarNursery': 'Caterpillar Nursery',
+                    'habitat.butterflyVivarium': 'Butterfly Vivarium',
+                    'habitat.frogPond': 'Frog Pond',
                     'habitat.rainbowReserve': 'Rainbow Reserve',
                     
                     // Habitat Descriptions
@@ -197,6 +201,10 @@ class LanguageManager {
                     'habitat.giraffePlains': 'Llanuras de Jirafas',
                     'habitat.owlObservatory': 'Observatorio de Búhos',
                     'habitat.dragonSanctuary': 'Santuario de Dragones',
+                    'habitat.earthwormSoil': 'Suelo de Lombrices',
+                    'habitat.caterpillarNursery': 'Vivero de Orugas',
+                    'habitat.butterflyVivarium': 'Vivarium de Mariposas',
+                    'habitat.frogPond': 'Estanque de Ranas',
                     'habitat.rainbowReserve': 'Reserva del Arcoíris',
                     
                     // Habitat Descriptions
@@ -330,6 +338,10 @@ class LanguageManager {
                     'habitat.giraffePlains': 'Pianure delle Giraffe',
                     'habitat.owlObservatory': 'Osservatorio dei Gufi',
                     'habitat.dragonSanctuary': 'Santuario dei Draghi',
+                    'habitat.earthwormSoil': 'Terreno dei Lombrichi',
+                    'habitat.caterpillarNursery': 'Vivaio dei Bruchi',
+                    'habitat.butterflyVivarium': 'Vivarium delle Farfalle',
+                    'habitat.frogPond': 'Stagno delle Rane',
                     'habitat.rainbowReserve': 'Riserva dell\'Arcobaleno',
                     
                     // Habitat Descriptions

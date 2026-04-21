@@ -28,6 +28,10 @@ class GameController {
                 giraffePlains: { completed: 0, total: 13, unlocked: false },
                 owlObservatory: { completed: 0, total: 16, unlocked: false },
                 dragonSanctuary: { completed: 0, total: 20, unlocked: false },
+                earthwormSoil: { completed: 0, total: 20, unlocked: false },
+                caterpillarNursery: { completed: 0, total: 20, unlocked: false },
+                butterflyVivarium: { completed: 0, total: 20, unlocked: false },
+                frogPond: { completed: 0, total: 20, unlocked: false },
                 rainbowReserve: { completed: 0, total: 25, unlocked: false }
             },
             settings: {
@@ -733,6 +737,10 @@ class GameController {
             'giraffePlains': GiraffePlains,
             'owlObservatory': OwlObservatory,
             'dragonSanctuary': DragonSanctuary,
+            'earthwormSoil': EarthwormSoil,
+            'caterpillarNursery': CaterpillarNursery,
+            'butterflyVivarium': ButterflyVivarium,
+            'frogPond': FrogPond,
             'rainbowReserve': RainbowReserve
         };
         
@@ -752,6 +760,10 @@ class GameController {
             giraffePlains: 'Giraffe Plains',
             owlObservatory: 'Owl Observatory',
             dragonSanctuary: 'Dragon Sanctuary',
+            earthwormSoil: 'Earthworm Soil',
+            caterpillarNursery: 'Caterpillar Nursery',
+            butterflyVivarium: 'Butterfly Vivarium',
+            frogPond: 'Frog Pond',
             rainbowReserve: 'Rainbow Reserve'
         };
         
@@ -771,6 +783,10 @@ class GameController {
             giraffePlains: 'Measurement & Geometry',
             owlObservatory: 'Advanced Multiplication & Patterns',
             dragonSanctuary: 'Exponents & Advanced Equations',
+            earthwormSoil: 'Cube Roots',
+            caterpillarNursery: 'Square Roots',
+            butterflyVivarium: 'Squaring',
+            frogPond: 'Cubing',
             rainbowReserve: 'Ultimate Challenge'
         };
 
@@ -790,6 +806,10 @@ class GameController {
             giraffePlains: '🦒',
             owlObservatory: '🦉',
             dragonSanctuary: '🐉',
+            earthwormSoil: '🪱',
+            caterpillarNursery: '🐛',
+            butterflyVivarium: '🦋',
+            frogPond: '🐸',
             rainbowReserve: '🌈'
         };
 
@@ -1265,7 +1285,7 @@ class GameController {
         const habitatOrder = [
             'bunnyMeadow', 'penguinPairsArctic', 'penguinArctic', 'elephantSavanna', 'monkeyJungle',
             'lionPride', 'dolphinCove', 'bearForest', 'giraffePlains',
-            'owlObservatory', 'dragonSanctuary', 'rainbowReserve'
+            'owlObservatory', 'dragonSanctuary', 'earthwormSoil', 'caterpillarNursery', 'butterflyVivarium', 'frogPond', 'rainbowReserve'
         ];
         
         const currentIndex = habitatOrder.indexOf(currentHabitat);
@@ -1302,6 +1322,10 @@ class GameController {
             giraffePlains: 'Giraffe Plains',
             owlObservatory: 'Owl Observatory',
             dragonSanctuary: 'Dragon Sanctuary',
+            earthwormSoil: 'Earthworm Soil',
+            caterpillarNursery: 'Caterpillar Nursery',
+            butterflyVivarium: 'Butterfly Vivarium',
+            frogPond: 'Frog Pond',
             rainbowReserve: 'Rainbow Reserve'
         };
         
@@ -1454,7 +1478,7 @@ class GameController {
         const habitatOrder = [
             'bunnyMeadow', 'penguinPairsArctic', 'penguinArctic', 'elephantSavanna', 'monkeyJungle',
             'lionPride', 'dolphinCove', 'bearForest', 'giraffePlains',
-            'owlObservatory', 'dragonSanctuary', 'rainbowReserve'
+            'owlObservatory', 'dragonSanctuary', 'earthwormSoil', 'caterpillarNursery', 'butterflyVivarium', 'frogPond', 'rainbowReserve'
         ];
         
         const currentIndex = habitatOrder.indexOf(currentHabitat);
