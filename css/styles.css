@@ -732,14 +732,27 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 #gameControls {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 30;
+}
+
+.control-group {
+    position: absolute;
+    top: 180px;
     display: flex;
-    gap: 0.5rem;
-    align-items: center;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    margin-left: auto;
-    flex: 1 1 320px;
-    min-width: 240px;
+    flex-direction: column;
+    gap: 0.65rem;
+    pointer-events: all;
+}
+
+#controlGroupLeft {
+    left: 14px;
+}
+
+#controlGroupRight {
+    right: 14px;
 }
 
 #gameControls button {
@@ -818,8 +831,28 @@ input[type="range"]::-webkit-slider-thumb {
     }
 
     #gameControls {
-        flex: 1 1 100%;
-        justify-content: flex-start;
+        position: absolute;
+        left: 10px;
+        right: 10px;
+        top: auto;
+        bottom: 14px;
+        inset: auto 10px 14px 10px;
+    }
+
+    .control-group {
+        position: static;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    #controlGroupLeft,
+    #controlGroupRight {
+        justify-content: center;
+    }
+
+    #controlGroupLeft {
+        margin-bottom: 0.5rem;
     }
 }
 
