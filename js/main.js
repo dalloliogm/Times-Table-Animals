@@ -949,6 +949,10 @@ class GameController {
             giraffePlains: 'Giraffe Plains',
             owlObservatory: 'Owl Observatory',
             dragonSanctuary: 'Dragon Sanctuary',
+            earthwormSoil: 'Earthworm Soil',
+            caterpillarNursery: 'Caterpillar Nursery',
+            butterflyVivarium: 'Butterfly Vivarium',
+            frogPond: 'Frog Pond',
             rainbowReserve: 'Rainbow Reserve'
         };
         
