@@ -12,6 +12,7 @@ class CaterpillarNursery {
         this.problemsSolved = 0;
         this.totalProblems = 20;
         this.nextProblemTimer = null;
+        this.fixedProblemsQueue = [];
 
         this.caterpillars = [];
         this.leaves = [];
@@ -27,8 +28,43 @@ class CaterpillarNursery {
     init() {
         this.mathEngine.setHabitat('caterpillarNursery');
         this.gameEngine.setBackground('caterpillarNursery');
+        this.fixedProblemsQueue = this.createFixedProblemsQueue();
         this.createEnvironment();
         this.startNextProblem();
+    }
+
+    createFixedProblemsQueue() {
+        return [
+            this.buildFixedProblem(
+                'Find the square root of 65,536.',
+                '√65,536 = ?',
+                256,
+                [256, 128, 216, 196],
+                'square_roots'
+            ),
+            this.buildFixedProblem(
+                'Find the square root of 256.',
+                '√256 = ?',
+                16,
+                [16, 14, 18, 12],
+                'square_roots'
+            )
+        ];
+    }
+
+    buildFixedProblem(text, operation, answer, options, type) {
+        return {
+            type: type,
+            title: this.mathEngine.translate('problem.challenge'),
+            text: text,
+            answer: answer,
+            visual: ['🐛', '🍃', '√'],
+            operation: operation,
+            explanation: `${operation.replace('?', answer)}`,
+            options: this.mathEngine.shuffleArray([...options]),
+            habitat: 'caterpillarNursery',
+            difficulty: this.mathEngine.difficultyLevel
+        };
     }
 
     setAudioManager(audioManager) {
@@ -93,7 +129,11 @@ class CaterpillarNursery {
 
     startNextProblem() {
         if (this.nextProblemTimer) { clearTimeout(this.nextProblemTimer); this.nextProblemTimer = null; }
-        this.currentProblem = this.mathEngine.generateProblem();
+        if (this.fixedProblemsQueue.length > 0) {
+            this.currentProblem = this.fixedProblemsQueue.shift();
+        } else {
+            this.currentProblem = this.mathEngine.generateProblem();
+        }
         this.problemStartTime = Date.now();
         this.updateProblemDisplay();
         this.addProblemVisuals();
