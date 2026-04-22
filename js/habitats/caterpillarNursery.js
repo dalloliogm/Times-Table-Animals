@@ -12,7 +12,8 @@ class CaterpillarNursery {
         this.problemsSolved = 0;
         this.totalProblems = 20;
         this.nextProblemTimer = null;
-        this.fixedProblemsQueue = [];
+        this.requiredProblems = [];
+        this.requiredProblemIndex = 0;
 
         this.caterpillars = [];
         this.leaves = [];
@@ -28,7 +29,8 @@ class CaterpillarNursery {
     init() {
         this.mathEngine.setHabitat('caterpillarNursery');
         this.gameEngine.setBackground('caterpillarNursery');
-        this.fixedProblemsQueue = this.createFixedProblemsQueue();
+        this.requiredProblems = this.createFixedProblemsQueue();
+        this.requiredProblemIndex = 0;
         this.createEnvironment();
         this.startNextProblem();
     }
@@ -62,6 +64,7 @@ class CaterpillarNursery {
             operation: operation,
             explanation: `${operation.replace('?', answer)}`,
             options: this.mathEngine.shuffleArray([...options]),
+            isRequiredProblem: true,
             habitat: 'caterpillarNursery',
             difficulty: this.mathEngine.difficultyLevel
         };
@@ -129,8 +132,8 @@ class CaterpillarNursery {
 
     startNextProblem() {
         if (this.nextProblemTimer) { clearTimeout(this.nextProblemTimer); this.nextProblemTimer = null; }
-        if (this.fixedProblemsQueue.length > 0) {
-            this.currentProblem = this.fixedProblemsQueue.shift();
+        if (this.requiredProblemIndex < this.requiredProblems.length) {
+            this.currentProblem = this.requiredProblems[this.requiredProblemIndex];
         } else {
             this.currentProblem = this.mathEngine.generateProblem();
         }
@@ -218,6 +221,9 @@ class CaterpillarNursery {
     }
 
     onCorrectAnswer() {
+        if (this.currentProblem && this.currentProblem.isRequiredProblem && this.requiredProblemIndex < this.requiredProblems.length) {
+            this.requiredProblemIndex++;
+        }
         this.problemsSolved++;
         if (this.gameController) this.gameController.updateProgress();
         if (this.audioManager) { this.audioManager.playSFX('correct'); this.audioManager.playVoice('celebration'); }
