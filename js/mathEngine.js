@@ -24,6 +24,10 @@ class MathEngine {
             giraffePlains: ['measurement', 'geometry'],
             owlObservatory: ['advanced_multiplication', 'patterns'],
             dragonSanctuary: ['exponentials', 'advanced_equations'],
+            earthwormSoil: ['cube_roots'],
+            caterpillarNursery: ['equations'],
+            butterflyVivarium: ['exponentials'],
+            frogPond: ['mixed_operations'],
             rainbowReserve: ['all_concepts', 'challenge_problems']
         };
         
@@ -144,7 +148,7 @@ class MathEngine {
 
     selectLevelQuestionTemplate() {
         // Get problem types for current habitat
-        const problemTypes = this.problemTypes[this.currentHabitat];
+        const problemTypes = this.problemTypes[this.currentHabitat] || ['addition'];
         
         // Randomly select one problem type for the entire level
         this.selectedQuestionType = problemTypes[Math.floor(Math.random() * problemTypes.length)];
@@ -247,6 +251,9 @@ class MathEngine {
                 case 'exponentials':
                     problem = this.generateExponentialProblem();
                     break;
+                case 'cube_roots':
+                    problem = this.generateCubeRootProblem();
+                    break;
                 case 'mixed_operations':
                     problem = this.generateMixedOperationProblem();
                     break;
@@ -326,6 +333,9 @@ class MathEngine {
                 distractors = this.generateEquationDistractors(problem, correctAnswer);
                 break;
             case 'exponentials':
+                distractors = this.generateExponentialDistractors(problem, correctAnswer);
+                break;
+            case 'cube_roots':
                 distractors = this.generateExponentialDistractors(problem, correctAnswer);
                 break;
             case 'measurement':
@@ -936,6 +946,45 @@ class MathEngine {
         };
     }
 
+    generateCubeRootProblem() {
+        const cubeRootPairs = [
+            { root: 2, cube: 8 },
+            { root: 3, cube: 27 },
+            { root: 4, cube: 64 },
+            { root: 5, cube: 125 },
+            { root: 6, cube: 216 },
+            { root: 7, cube: 343 },
+            { root: 8, cube: 512 },
+            { root: 9, cube: 729 },
+            { root: 10, cube: 1000 },
+            { root: 12, cube: 1728 },
+            { root: 16, cube: 4096 },
+            { root: 100, cube: 1000000 }
+        ];
+
+        const selected = cubeRootPairs[Math.floor(Math.random() * cubeRootPairs.length)];
+        const questionTemplates = this.getQuestionTemplates();
+        const templates = questionTemplates.cube_roots || [
+            'Find the cube root of {cube}.',
+            'Which number multiplied by itself three times gives {cube}?',
+            'Solve: ∛{cube} = ?'
+        ];
+        const template = this.selectedQuestionTemplate || templates[Math.floor(Math.random() * templates.length)];
+        const text = template.replace(/{cube}/g, selected.cube.toLocaleString('en-US'));
+
+        return {
+            type: 'cube_roots',
+            title: this.translate('problem.challenge'),
+            text: text,
+            answer: selected.root,
+            visual: ['🪱', '🌱', '🟫'],
+            operation: `∛${selected.cube.toLocaleString('en-US')} = ?`,
+            explanation: `${selected.root} × ${selected.root} × ${selected.root} = ${selected.cube.toLocaleString('en-US')}`,
+            habitat: this.currentHabitat,
+            difficulty: this.difficultyLevel
+        };
+    }
+
     generateMixedOperationProblem() {
         // Generate a problem that combines multiple operations
         const a = Math.floor(Math.random() * 10) + 1;
@@ -1283,6 +1332,7 @@ class MathEngine {
             fractions: 'hint.fractions',
             equations: 'hint.equations',
             exponentials: 'hint.exponentials',
+            cube_roots: 'hint.exponentials',
             mixed_operations: 'hint.mixed_operations',
             word_problems: 'hint.word_problems'
         };

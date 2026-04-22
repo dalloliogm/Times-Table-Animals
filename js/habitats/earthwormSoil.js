@@ -47,8 +47,8 @@ class EarthwormSoil {
 
     createEarthworms() {
         const positions = [
-            { x: 150, y: 400 }, { x: 300, y: 350 }, { x: 500, y: 420 },
-            { x: 700, y: 380 }, { x: 900, y: 410 }, { x: 1050, y: 360 }
+            { x: 140, y: 430 }, { x: 290, y: 500 }, { x: 470, y: 570 },
+            { x: 680, y: 470 }, { x: 880, y: 545 }, { x: 1040, y: 430 }
         ];
         positions.forEach((pos, index) => {
             const worm = this.gameEngine.createSprite('earthworm', pos.x, pos.y);
@@ -79,27 +79,66 @@ class EarthwormSoil {
         const soil = {
             x: 0, y: 0,
             render: function(ctx) {
-                // Sky
-                ctx.fillStyle = '#87CEEB';
-                ctx.fillRect(0, 0, 1200, 300);
-                // Ground
-                ctx.fillStyle = '#8B4513';
-                ctx.fillRect(0, 300, 1200, 500);
-                // Grass line
-                ctx.fillStyle = '#228B22';
-                ctx.fillRect(0, 295, 1200, 15);
-                // Soil texture
-                ctx.fillStyle = '#A0522D';
-                for (let i = 0; i < 30; i++) {
+                // Full underground soil background
+                const soilGradient = ctx.createLinearGradient(0, 0, 0, 800);
+                soilGradient.addColorStop(0, '#8B5A2B');
+                soilGradient.addColorStop(0.45, '#6F451F');
+                soilGradient.addColorStop(1, '#4A2C14');
+                ctx.fillStyle = soilGradient;
+                ctx.fillRect(0, 0, 1200, 800);
+
+                // Top grass strip to indicate surface
+                ctx.fillStyle = '#2E8B57';
+                ctx.fillRect(0, 0, 1200, 40);
+
+                // Soil texture pebbles
+                ctx.fillStyle = '#A66A3F';
+                for (let i = 0; i < 44; i++) {
                     ctx.beginPath();
-                    ctx.arc(80 + i * 38, 380 + (i % 4) * 50, 12, 0, Math.PI * 2);
+                    ctx.arc(40 + i * 28, 90 + (i % 8) * 82, 9 + (i % 3), 0, Math.PI * 2);
                     ctx.fill();
                 }
+
+                // Curvy soil tunnels
+                const drawTunnel = (startX, startY, c1x, c1y, c2x, c2y, endX, endY) => {
+                    ctx.strokeStyle = 'rgba(92, 56, 24, 0.8)';
+                    ctx.lineWidth = 22;
+                    ctx.lineCap = 'round';
+                    ctx.beginPath();
+                    ctx.moveTo(startX, startY);
+                    ctx.bezierCurveTo(c1x, c1y, c2x, c2y, endX, endY);
+                    ctx.stroke();
+
+                    ctx.strokeStyle = 'rgba(140, 90, 45, 0.35)';
+                    ctx.lineWidth = 12;
+                    ctx.beginPath();
+                    ctx.moveTo(startX, startY);
+                    ctx.bezierCurveTo(c1x, c1y, c2x, c2y, endX, endY);
+                    ctx.stroke();
+                };
+
+                drawTunnel(80, 200, 260, 110, 420, 250, 610, 210);
+                drawTunnel(200, 560, 420, 640, 650, 470, 940, 560);
+                drawTunnel(540, 120, 680, 190, 860, 90, 1100, 180);
+
+                // Static earthworms in tunnels to reinforce habitat theme
+                ctx.font = '28px serif';
+                ctx.textAlign = 'center';
+                const staticWorms = [
+                    { x: 170, y: 210 },
+                    { x: 420, y: 235 },
+                    { x: 715, y: 190 },
+                    { x: 325, y: 565 },
+                    { x: 760, y: 535 },
+                    { x: 1035, y: 180 }
+                ];
+                staticWorms.forEach((worm) => ctx.fillText('🪱', worm.x, worm.y));
+
                 // Cube root sign
                 ctx.fillStyle = '#FFD700';
                 ctx.font = 'bold 36px "Comic Sans MS", cursive';
                 ctx.textAlign = 'center';
-                ctx.fillText('∛ Cube Root Soil', 600, 260);
+                ctx.fillText('∛ Earthworm Soil - Cube Roots', 600, 70);
             }
         };
         this.gameEngine.addSprite(soil);
