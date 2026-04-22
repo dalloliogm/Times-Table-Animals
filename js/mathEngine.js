@@ -25,9 +25,9 @@ class MathEngine {
             owlObservatory: ['advanced_multiplication', 'patterns'],
             dragonSanctuary: ['exponentials', 'advanced_equations'],
             earthwormSoil: ['cube_roots'],
-            caterpillarNursery: ['equations'],
-            butterflyVivarium: ['exponentials'],
-            frogPond: ['mixed_operations'],
+            caterpillarNursery: ['square_roots'],
+            butterflyVivarium: ['squaring'],
+            frogPond: ['cubing'],
             rainbowReserve: ['all_concepts', 'challenge_problems']
         };
         
@@ -187,7 +187,11 @@ class MathEngine {
             giraffePlains: 9,
             owlObservatory: 10,
             dragonSanctuary: 11,
-            rainbowReserve: 12
+            earthwormSoil: 12,
+            caterpillarNursery: 13,
+            butterflyVivarium: 14,
+            frogPond: 15,
+            rainbowReserve: 16
         };
         return difficultyMap[habitat] || 1;
     }
@@ -253,6 +257,15 @@ class MathEngine {
                     break;
                 case 'cube_roots':
                     problem = this.generateCubeRootProblem();
+                    break;
+                case 'square_roots':
+                    problem = this.generateSquareRootProblem();
+                    break;
+                case 'squaring':
+                    problem = this.generateSquaringProblem();
+                    break;
+                case 'cubing':
+                    problem = this.generateCubingProblem();
                     break;
                 case 'mixed_operations':
                     problem = this.generateMixedOperationProblem();
@@ -336,6 +349,9 @@ class MathEngine {
                 distractors = this.generateExponentialDistractors(problem, correctAnswer);
                 break;
             case 'cube_roots':
+            case 'square_roots':
+            case 'squaring':
+            case 'cubing':
                 distractors = this.generateExponentialDistractors(problem, correctAnswer);
                 break;
             case 'measurement':
@@ -985,6 +1001,86 @@ class MathEngine {
         };
     }
 
+    generateSquareRootProblem() {
+        const sqrtPairs = [
+            { root: 2, square: 4 }, { root: 3, square: 9 }, { root: 4, square: 16 },
+            { root: 5, square: 25 }, { root: 6, square: 36 }, { root: 7, square: 49 },
+            { root: 8, square: 64 }, { root: 9, square: 81 }, { root: 10, square: 100 },
+            { root: 11, square: 121 }, { root: 12, square: 144 }, { root: 13, square: 169 },
+            { root: 14, square: 196 }, { root: 15, square: 225 }, { root: 16, square: 256 }
+        ];
+        const selected = sqrtPairs[Math.floor(Math.random() * sqrtPairs.length)];
+        const questionTemplates = this.getQuestionTemplates();
+        const templates = questionTemplates.square_roots || [
+            'Find the square root of {square}.',
+            'Which number multiplied by itself gives {square}?',
+            'Solve: √{square} = ?'
+        ];
+        const template = this.selectedQuestionTemplate || templates[Math.floor(Math.random() * templates.length)];
+        const text = template.replace(/{square}/g, selected.square);
+        return {
+            type: 'square_roots',
+            title: this.translate('problem.challenge'),
+            text: text,
+            answer: selected.root,
+            visual: ['🐛', '🍃', '√'],
+            operation: `√${selected.square} = ?`,
+            explanation: `${selected.root} × ${selected.root} = ${selected.square}`,
+            habitat: this.currentHabitat,
+            difficulty: this.difficultyLevel
+        };
+    }
+
+    generateSquaringProblem() {
+        const bases = [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,256];
+        const base = bases[Math.floor(Math.random() * bases.length)];
+        const answer = base * base;
+        const questionTemplates = this.getQuestionTemplates();
+        const templates = questionTemplates.squaring || [
+            'What is {base} squared?',
+            'Calculate {base} × {base}.',
+            'What is {base}²?'
+        ];
+        const template = this.selectedQuestionTemplate || templates[Math.floor(Math.random() * templates.length)];
+        const text = template.replace(/{base}/g, base);
+        return {
+            type: 'squaring',
+            title: this.translate('problem.challenge'),
+            text: text,
+            answer: answer,
+            visual: ['🦋', '²', '🌸'],
+            operation: `${base}² = ${base} × ${base}`,
+            explanation: `${base} × ${base} = ${answer}`,
+            habitat: this.currentHabitat,
+            difficulty: this.difficultyLevel
+        };
+    }
+
+    generateCubingProblem() {
+        const bases = [2,3,4,5,6,7,8,9,10,100];
+        const base = bases[Math.floor(Math.random() * bases.length)];
+        const answer = base * base * base;
+        const questionTemplates = this.getQuestionTemplates();
+        const templates = questionTemplates.cubing || [
+            'What is {base} cubed?',
+            'Calculate {base} × {base} × {base}.',
+            'What is {base}³?'
+        ];
+        const template = this.selectedQuestionTemplate || templates[Math.floor(Math.random() * templates.length)];
+        const text = template.replace(/{base}/g, base);
+        return {
+            type: 'cubing',
+            title: this.translate('problem.challenge'),
+            text: text,
+            answer: answer,
+            visual: ['🐸', '³', '💧'],
+            operation: `${base}³ = ${base} × ${base} × ${base}`,
+            explanation: `${base} × ${base} × ${base} = ${answer}`,
+            habitat: this.currentHabitat,
+            difficulty: this.difficultyLevel
+        };
+    }
+
     generateMixedOperationProblem() {
         // Generate a problem that combines multiple operations
         const a = Math.floor(Math.random() * 10) + 1;
@@ -1333,6 +1429,9 @@ class MathEngine {
             equations: 'hint.equations',
             exponentials: 'hint.exponentials',
             cube_roots: 'hint.exponentials',
+            square_roots: 'hint.exponentials',
+            squaring: 'hint.exponentials',
+            cubing: 'hint.exponentials',
             mixed_operations: 'hint.mixed_operations',
             word_problems: 'hint.word_problems'
         };
