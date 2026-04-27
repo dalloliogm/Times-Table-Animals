@@ -99,7 +99,7 @@ class GameEngine {
     }
 
     preloadAssets() {
-        // Create sprite assets using canvas
+        // Create stylized sprite assets using canvas paths.
         this.assets = {
             bunny: this.createBunnySprite(),
             penguin: this.createPenguinSprite(),
@@ -111,6 +111,10 @@ class GameEngine {
             bear: this.createBearSprite(),
             owl: this.createOwlSprite(),
             dragon: this.createDragonSprite(),
+            earthworm: this.createEarthwormSprite(),
+            caterpillar: this.createCaterpillarSprite(),
+            butterfly: this.createButterflySprite(),
+            frog: this.createFrogSprite(),
             carrot: this.createCarrotSprite(),
             fish: this.createFishSprite(),
             peanut: this.createPeanutSprite(),
@@ -121,92 +125,47 @@ class GameEngine {
 
     createBunnySprite() {
         const canvas = document.createElement('canvas');
-        canvas.width = 60;
-        canvas.height = 70;
+        canvas.width = 72;
+        canvas.height = 72;
         const ctx = canvas.getContext('2d');
 
-        // Tail
-        ctx.fillStyle = '#EEE8D5';
+        ctx.fillStyle = '#f3efe7';
         ctx.beginPath();
-        ctx.arc(42, 52, 7, 0, Math.PI * 2);
+        ctx.ellipse(36, 46, 17, 14, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // Body (oval)
-        ctx.fillStyle = '#F5F5DC';
+        ctx.fillStyle = '#f6f1ea';
         ctx.beginPath();
-        ctx.ellipse(26, 50, 17, 20, 0, 0, Math.PI * 2);
+        ctx.ellipse(30, 15, 6, 13, -0.1, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(42, 15, 6, 13, 0.1, 0, Math.PI * 2);
         ctx.fill();
 
-        // Left ear
-        ctx.fillStyle = '#F5F5DC';
+        ctx.fillStyle = '#ffd7e5';
         ctx.beginPath();
-        ctx.ellipse(18, 15, 5, 14, -0.2, 0, Math.PI * 2);
+        ctx.ellipse(30, 15, 2.5, 8, -0.1, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = '#FFB6C1';
         ctx.beginPath();
-        ctx.ellipse(18, 15, 3, 10, -0.2, 0, Math.PI * 2);
+        ctx.ellipse(42, 15, 2.5, 8, 0.1, 0, Math.PI * 2);
         ctx.fill();
 
-        // Right ear
-        ctx.fillStyle = '#F5F5DC';
+        ctx.fillStyle = '#f3efe7';
         ctx.beginPath();
-        ctx.ellipse(30, 13, 5, 14, 0.2, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#FFB6C1';
-        ctx.beginPath();
-        ctx.ellipse(30, 13, 3, 10, 0.2, 0, Math.PI * 2);
+        ctx.arc(36, 28, 14, 0, Math.PI * 2);
         ctx.fill();
 
-        // Head
-        ctx.fillStyle = '#F5F5DC';
+        ctx.fillStyle = '#1f1f1f';
         ctx.beginPath();
-        ctx.arc(24, 32, 12, 0, Math.PI * 2);
+        ctx.arc(31, 26, 2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(41, 26, 2, 0, Math.PI * 2);
         ctx.fill();
 
-        // Eyes
-        ctx.fillStyle = '#CC3366';
+        ctx.fillStyle = '#eaa3b9';
         ctx.beginPath();
-        ctx.arc(20, 29, 3, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(29, 29, 3, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#000';
-        ctx.beginPath();
-        ctx.arc(20, 29, 1.5, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(29, 29, 1.5, 0, Math.PI * 2);
-        ctx.fill();
-        // Eye shine
-        ctx.fillStyle = '#FFF';
-        ctx.beginPath();
-        ctx.arc(21, 28, 0.8, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(30, 28, 0.8, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Nose
-        ctx.fillStyle = '#FF8C94';
-        ctx.beginPath();
-        ctx.ellipse(24, 34, 3, 2, 0, 0, Math.PI * 2);
-        ctx.fill();
-        // Mouth
-        ctx.strokeStyle = '#CC6677';
-        ctx.lineWidth = 1.2;
-        ctx.beginPath();
-        ctx.moveTo(22, 36);
-        ctx.quadraticCurveTo(24, 38, 26, 36);
-        ctx.stroke();
-
-        // Front legs
-        ctx.fillStyle = '#F0EDD5';
-        ctx.beginPath();
-        ctx.ellipse(18, 62, 5, 8, -0.2, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.ellipse(34, 62, 5, 8, 0.2, 0, Math.PI * 2);
+        ctx.arc(36, 31, 2.5, 0, Math.PI * 2);
         ctx.fill();
 
         return canvas;
@@ -214,76 +173,47 @@ class GameEngine {
 
     createPenguinSprite() {
         const canvas = document.createElement('canvas');
-        canvas.width = 56;
-        canvas.height = 72;
+        canvas.width = 64;
+        canvas.height = 80;
         const ctx = canvas.getContext('2d');
 
-        // Body
-        ctx.fillStyle = '#1a1a2e';
+        ctx.fillStyle = '#1b2638';
         ctx.beginPath();
-        ctx.ellipse(28, 46, 18, 24, 0, 0, Math.PI * 2);
+        ctx.ellipse(32, 44, 18, 24, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // White belly
-        ctx.fillStyle = '#f8f8f8';
+        ctx.fillStyle = '#f2f6fb';
         ctx.beginPath();
-        ctx.ellipse(28, 48, 12, 18, 0, 0, Math.PI * 2);
+        ctx.ellipse(32, 48, 10, 14, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // Head
-        ctx.fillStyle = '#1a1a2e';
+        ctx.fillStyle = '#1b2638';
         ctx.beginPath();
-        ctx.arc(28, 20, 14, 0, Math.PI * 2);
+        ctx.arc(32, 22, 12, 0, Math.PI * 2);
         ctx.fill();
 
-        // White face patch
-        ctx.fillStyle = '#f8f8f8';
+        ctx.fillStyle = '#f6c451';
         ctx.beginPath();
-        ctx.ellipse(28, 22, 9, 10, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Eyes
-        ctx.fillStyle = '#1a1a2e';
-        ctx.beginPath();
-        ctx.arc(24, 17, 3.5, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(32, 17, 3.5, 0, Math.PI * 2);
-        ctx.fill();
-        // Eye shine
-        ctx.fillStyle = '#fff';
-        ctx.beginPath();
-        ctx.arc(25, 16, 1.2, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(33, 16, 1.2, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Beak
-        ctx.fillStyle = '#FF8C00';
-        ctx.beginPath();
-        ctx.moveTo(25, 23);
-        ctx.lineTo(31, 23);
-        ctx.lineTo(28, 28);
+        ctx.moveTo(32, 25);
+        ctx.lineTo(26, 29);
+        ctx.lineTo(38, 29);
         ctx.closePath();
         ctx.fill();
 
-        // Wings
-        ctx.fillStyle = '#1a1a2e';
+        ctx.fillStyle = '#fff';
         ctx.beginPath();
-        ctx.ellipse(10, 46, 7, 16, -0.3, 0, Math.PI * 2);
+        ctx.arc(28, 20, 2.2, 0, Math.PI * 2);
         ctx.fill();
         ctx.beginPath();
-        ctx.ellipse(46, 46, 7, 16, 0.3, 0, Math.PI * 2);
+        ctx.arc(36, 20, 2.2, 0, Math.PI * 2);
         ctx.fill();
 
-        // Feet
-        ctx.fillStyle = '#FF8C00';
+        ctx.fillStyle = '#f6c451';
         ctx.beginPath();
-        ctx.ellipse(21, 68, 7, 4, -0.3, 0, Math.PI * 2);
+        ctx.ellipse(25, 69, 6, 3.5, 0, 0, Math.PI * 2);
         ctx.fill();
         ctx.beginPath();
-        ctx.ellipse(35, 68, 7, 4, 0.3, 0, Math.PI * 2);
+        ctx.ellipse(39, 69, 6, 3.5, 0, 0, Math.PI * 2);
         ctx.fill();
 
         return canvas;
@@ -291,164 +221,96 @@ class GameEngine {
 
     createElephantSprite() {
         const canvas = document.createElement('canvas');
-        canvas.width = 100;
-        canvas.height = 90;
+        canvas.width = 110;
+        canvas.height = 86;
         const ctx = canvas.getContext('2d');
 
-        // Body
-        ctx.fillStyle = '#9E9E9E';
+        ctx.fillStyle = '#7f8995';
         ctx.beginPath();
-        ctx.ellipse(55, 55, 35, 28, 0, 0, Math.PI * 2);
+        ctx.ellipse(62, 48, 33, 22, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // Large ear (left)
-        ctx.fillStyle = '#BDBDBD';
         ctx.beginPath();
-        ctx.ellipse(22, 38, 18, 22, -0.3, 0, Math.PI * 2);
+        ctx.ellipse(32, 34, 16, 14, -0.2, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = '#E9C3B0';
         ctx.beginPath();
-        ctx.ellipse(22, 38, 12, 15, -0.3, 0, Math.PI * 2);
+        ctx.ellipse(48, 32, 13, 12, 0.2, 0, Math.PI * 2);
         ctx.fill();
 
-        // Head
-        ctx.fillStyle = '#9E9E9E';
         ctx.beginPath();
-        ctx.ellipse(38, 34, 20, 18, 0, 0, Math.PI * 2);
+        ctx.ellipse(40, 40, 13, 12, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // Trunk
-        ctx.strokeStyle = '#9E9E9E';
-        ctx.lineWidth = 10;
-        ctx.lineCap = 'round';
         ctx.beginPath();
-        ctx.moveTo(28, 42);
-        ctx.bezierCurveTo(14, 50, 10, 65, 22, 72);
-        ctx.stroke();
-        // Trunk tip
-        ctx.fillStyle = '#9E9E9E';
-        ctx.beginPath();
-        ctx.arc(22, 72, 5, 0, Math.PI * 2);
+        ctx.moveTo(26, 42);
+        ctx.quadraticCurveTo(12, 55, 20, 72);
+        ctx.lineTo(30, 72);
+        ctx.quadraticCurveTo(22, 59, 34, 47);
+        ctx.closePath();
         ctx.fill();
 
-        // Tusk
-        ctx.strokeStyle = '#FFFDE7';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(26, 48);
-        ctx.quadraticCurveTo(14, 58, 18, 66);
-        ctx.stroke();
+        [43, 58, 72, 86].forEach((x) => {
+            ctx.beginPath();
+            ctx.roundRect(x, 64, 10, 18, 4);
+            ctx.fill();
+        });
 
-        // Eyes
-        ctx.fillStyle = '#333';
+        ctx.fillStyle = '#f4f7fb';
         ctx.beginPath();
-        ctx.arc(33, 27, 4, 0, Math.PI * 2);
+        ctx.arc(36, 38, 2, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = '#fff';
-        ctx.beginPath();
-        ctx.arc(34, 26, 1.5, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Legs
-        ctx.fillStyle = '#8E8E8E';
-        ctx.beginPath(); ctx.ellipse(36, 78, 8, 10, 0, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.ellipse(50, 80, 8, 10, 0, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.ellipse(64, 80, 8, 10, 0, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.ellipse(78, 78, 8, 10, 0, 0, Math.PI * 2); ctx.fill();
-
-        // Tail
-        ctx.strokeStyle = '#8E8E8E';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(88, 50);
-        ctx.quadraticCurveTo(96, 56, 90, 64);
-        ctx.stroke();
 
         return canvas;
     }
 
     createMonkeySprite() {
         const canvas = document.createElement('canvas');
-        canvas.width = 64;
-        canvas.height = 80;
+        canvas.width = 74;
+        canvas.height = 86;
         const ctx = canvas.getContext('2d');
 
-        // Tail
-        ctx.strokeStyle = '#6B3A2A';
-        ctx.lineWidth = 4;
-        ctx.lineCap = 'round';
+        ctx.fillStyle = '#7a4a2a';
         ctx.beginPath();
-        ctx.moveTo(44, 60);
-        ctx.bezierCurveTo(60, 55, 62, 38, 50, 30);
-        ctx.stroke();
-
-        // Body
-        ctx.fillStyle = '#7B4A30';
-        ctx.beginPath();
-        ctx.ellipse(28, 55, 16, 20, 0, 0, Math.PI * 2);
+        ctx.ellipse(37, 50, 16, 20, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // Arms
-        ctx.strokeStyle = '#7B4A30';
-        ctx.lineWidth = 7;
-        ctx.lineCap = 'round';
+        ctx.fillStyle = '#7a4a2a';
         ctx.beginPath();
-        ctx.moveTo(14, 48);
-        ctx.bezierCurveTo(4, 52, 2, 62, 8, 68);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(42, 48);
-        ctx.bezierCurveTo(54, 50, 56, 60, 52, 66);
-        ctx.stroke();
-        // Hands
-        ctx.fillStyle = '#C4956A';
-        ctx.beginPath(); ctx.arc(8, 68, 5, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(52, 66, 5, 0, Math.PI * 2); ctx.fill();
-
-        // Head
-        ctx.fillStyle = '#7B4A30';
-        ctx.beginPath();
-        ctx.arc(28, 28, 16, 0, Math.PI * 2);
+        ctx.arc(37, 28, 13, 0, Math.PI * 2);
         ctx.fill();
 
-        // Ears
-        ctx.beginPath(); ctx.arc(13, 28, 7, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(43, 28, 7, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#C4956A';
-        ctx.beginPath(); ctx.arc(13, 28, 4, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(43, 28, 4, 0, Math.PI * 2); ctx.fill();
-
-        // Face disc
-        ctx.fillStyle = '#C4956A';
+        ctx.fillStyle = '#d8b28a';
         ctx.beginPath();
-        ctx.ellipse(28, 30, 10, 12, 0, 0, Math.PI * 2);
+        ctx.ellipse(37, 31, 8, 7, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // Eyes
-        ctx.fillStyle = '#222';
-        ctx.beginPath(); ctx.arc(23, 24, 3, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(33, 24, 3, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#fff';
-        ctx.beginPath(); ctx.arc(24, 23, 1, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(34, 23, 1, 0, Math.PI * 2); ctx.fill();
-
-        // Nose & mouth
-        ctx.fillStyle = '#A0714F';
-        ctx.beginPath(); ctx.ellipse(28, 31, 4, 3, 0, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#333';
-        ctx.beginPath(); ctx.arc(26, 31, 1, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(30, 31, 1, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = '#7B4A30';
-        ctx.lineWidth = 1.5;
+        ctx.fillStyle = '#7a4a2a';
         ctx.beginPath();
-        ctx.moveTo(25, 35);
-        ctx.quadraticCurveTo(28, 38, 31, 35);
-        ctx.stroke();
+        ctx.ellipse(21, 30, 6, 7, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(53, 30, 6, 7, 0, 0, Math.PI * 2);
+        ctx.fill();
 
-        // Legs
-        ctx.fillStyle = '#7B4A30';
-        ctx.beginPath(); ctx.ellipse(20, 72, 7, 10, -0.1, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.ellipse(36, 72, 7, 10, 0.1, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath();
+        ctx.roundRect(19, 46, 8, 20, 4);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.roundRect(47, 46, 8, 20, 4);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.roundRect(29, 66, 7, 14, 3);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.roundRect(38, 66, 7, 14, 3);
+        ctx.fill();
+
+        ctx.strokeStyle = '#7a4a2a';
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.moveTo(55, 54);
+        ctx.quadraticCurveTo(68, 38, 61, 24);
+        ctx.stroke();
 
         return canvas;
     }
@@ -456,697 +318,479 @@ class GameEngine {
     createLionSprite() {
         const canvas = document.createElement('canvas');
         canvas.width = 90;
-        canvas.height = 80;
+        canvas.height = 78;
         const ctx = canvas.getContext('2d');
 
-        // Body
-        ctx.fillStyle = '#D4A843';
+        ctx.fillStyle = '#c27f38';
         ctx.beginPath();
-        ctx.ellipse(55, 52, 28, 20, 0, 0, Math.PI * 2);
+        ctx.arc(32, 30, 17, 0, Math.PI * 2);
         ctx.fill();
 
-        // Tail
-        ctx.strokeStyle = '#C49020';
-        ctx.lineWidth = 4;
-        ctx.lineCap = 'round';
+        ctx.fillStyle = '#d8a653';
         ctx.beginPath();
-        ctx.moveTo(82, 48);
-        ctx.bezierCurveTo(92, 42, 94, 32, 86, 28);
-        ctx.stroke();
-        // Tail tuft
-        ctx.fillStyle = '#8B6010';
-        ctx.beginPath();
-        ctx.arc(86, 26, 6, 0, Math.PI * 2);
+        ctx.arc(32, 30, 11, 0, Math.PI * 2);
         ctx.fill();
 
-        // Mane (layered circles for fluffy effect)
-        const maneColor = '#B8751A';
-        ctx.fillStyle = maneColor;
-        for (let a = 0; a < Math.PI * 2; a += Math.PI / 6) {
+        ctx.beginPath();
+        ctx.ellipse(55, 47, 26, 14, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        [42, 53, 63, 74].forEach((x) => {
             ctx.beginPath();
-            ctx.arc(32 + Math.cos(a) * 18, 34 + Math.sin(a) * 18, 10, 0, Math.PI * 2);
+            ctx.roundRect(x, 56, 7, 15, 3);
             ctx.fill();
-        }
-        // Inner mane
-        ctx.fillStyle = '#CD9030';
+        });
+
+        ctx.strokeStyle = '#d8a653';
+        ctx.lineWidth = 4.5;
         ctx.beginPath();
-        ctx.arc(32, 34, 17, 0, Math.PI * 2);
+        ctx.moveTo(78, 47);
+        ctx.quadraticCurveTo(90, 40, 86, 27);
+        ctx.stroke();
+
+        ctx.fillStyle = '#d39a45';
+        ctx.beginPath();
+        ctx.arc(86, 27, 4, 0, Math.PI * 2);
         ctx.fill();
 
-        // Head
-        ctx.fillStyle = '#E8BC50';
+        ctx.fillStyle = '#1f1f1f';
         ctx.beginPath();
-        ctx.arc(32, 34, 14, 0, Math.PI * 2);
+        ctx.arc(28, 28, 1.8, 0, Math.PI * 2);
         ctx.fill();
-
-        // Eyes
-        ctx.fillStyle = '#4A3000';
-        ctx.beginPath(); ctx.arc(26, 30, 3.5, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(38, 30, 3.5, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#DAA520';
-        ctx.beginPath(); ctx.arc(26, 30, 2, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(38, 30, 2, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#111';
-        ctx.beginPath(); ctx.arc(26, 30, 1, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(38, 30, 1, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#fff';
-        ctx.beginPath(); ctx.arc(26.5, 29.3, 0.7, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(38.5, 29.3, 0.7, 0, Math.PI * 2); ctx.fill();
-
-        // Nose
-        ctx.fillStyle = '#C06060';
         ctx.beginPath();
-        ctx.moveTo(28, 37);
-        ctx.lineTo(36, 37);
-        ctx.lineTo(32, 41);
-        ctx.closePath();
+        ctx.arc(36, 28, 1.8, 0, Math.PI * 2);
         ctx.fill();
-        // Mouth whiskers area
-        ctx.fillStyle = '#F0D070';
-        ctx.beginPath(); ctx.ellipse(32, 40, 7, 5, 0, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = '#AAA';
-        ctx.lineWidth = 1;
-        for (let wx of [-10, -6, 6, 10]) {
-            ctx.beginPath();
-            ctx.moveTo(32, 40);
-            ctx.lineTo(32 + wx, 38 + (wx < 0 ? -2 : -2));
-            ctx.stroke();
-        }
-
-        // Legs
-        ctx.fillStyle = '#C8A030';
-        ctx.beginPath(); ctx.ellipse(36, 68, 7, 10, 0, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.ellipse(50, 68, 7, 10, 0, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.ellipse(62, 68, 7, 10, 0, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.ellipse(74, 68, 7, 10, 0, 0, Math.PI * 2); ctx.fill();
-
+        
         return canvas;
     }
 
     createDolphinSprite() {
         const canvas = document.createElement('canvas');
-        canvas.width = 90;
-        canvas.height = 60;
+        canvas.width = 92;
+        canvas.height = 58;
         const ctx = canvas.getContext('2d');
 
-        // Main body
-        ctx.fillStyle = '#4A90C4';
+        ctx.fillStyle = '#8fb8da';
         ctx.beginPath();
-        ctx.moveTo(10, 30);
-        ctx.bezierCurveTo(20, 14, 68, 14, 80, 30);
-        ctx.bezierCurveTo(68, 46, 20, 46, 10, 30);
-        ctx.fill();
-
-        // White belly
-        ctx.fillStyle = '#E8F4FD';
-        ctx.beginPath();
-        ctx.ellipse(42, 32, 28, 12, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Tail flukes
-        ctx.fillStyle = '#3A7AB4';
-        ctx.beginPath();
-        ctx.moveTo(78, 30);
-        ctx.bezierCurveTo(82, 20, 90, 16, 88, 22);
-        ctx.bezierCurveTo(86, 27, 84, 28, 84, 30);
-        ctx.bezierCurveTo(84, 32, 86, 33, 88, 38);
-        ctx.bezierCurveTo(90, 44, 82, 40, 78, 30);
-        ctx.fill();
-
-        // Dorsal fin
-        ctx.fillStyle = '#3A7AB4';
-        ctx.beginPath();
-        ctx.moveTo(46, 17);
-        ctx.bezierCurveTo(50, 8, 58, 6, 58, 18);
+        ctx.moveTo(10, 32);
+        ctx.quadraticCurveTo(36, 12, 64, 24);
+        ctx.quadraticCurveTo(74, 30, 82, 27);
+        ctx.quadraticCurveTo(78, 34, 82, 42);
+        ctx.quadraticCurveTo(72, 39, 62, 44);
+        ctx.quadraticCurveTo(35, 53, 10, 34);
         ctx.closePath();
         ctx.fill();
 
-        // Pectoral fin
-        ctx.fillStyle = '#3A7AB4';
         ctx.beginPath();
-        ctx.moveTo(30, 30);
-        ctx.bezierCurveTo(26, 38, 20, 44, 24, 44);
-        ctx.bezierCurveTo(30, 44, 34, 36, 36, 30);
-        ctx.fill();
-
-        // Snout/beak
-        ctx.fillStyle = '#4A90C4';
-        ctx.beginPath();
-        ctx.moveTo(12, 28);
-        ctx.bezierCurveTo(2, 26, 0, 30, 2, 32);
-        ctx.bezierCurveTo(4, 34, 12, 32, 12, 30);
+        ctx.moveTo(48, 22);
+        ctx.lineTo(58, 8);
+        ctx.lineTo(66, 23);
         ctx.closePath();
         ctx.fill();
 
-        // Eye
-        ctx.fillStyle = '#1A2A3A';
         ctx.beginPath();
-        ctx.arc(18, 24, 4, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#fff';
-        ctx.beginPath();
-        ctx.arc(19, 23, 1.5, 0, Math.PI * 2);
+        ctx.moveTo(30, 38);
+        ctx.lineTo(21, 48);
+        ctx.lineTo(43, 43);
+        ctx.closePath();
         ctx.fill();
 
-        // Smile
-        ctx.strokeStyle = '#2A6A9A';
-        ctx.lineWidth = 1.5;
+        ctx.fillStyle = '#f4fbff';
         ctx.beginPath();
-        ctx.moveTo(6, 31);
-        ctx.quadraticCurveTo(10, 34, 14, 31);
-        ctx.stroke();
+        ctx.ellipse(40, 34, 16, 6, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#1c3147';
+        ctx.beginPath();
+        ctx.arc(25, 26, 2, 0, Math.PI * 2);
+        ctx.fill();
 
         return canvas;
     }
 
     createGiraffeSprite() {
         const canvas = document.createElement('canvas');
-        canvas.width = 70;
-        canvas.height = 110;
+        canvas.width = 74;
+        canvas.height = 126;
         const ctx = canvas.getContext('2d');
 
-        // Legs
-        ctx.fillStyle = '#C8900A';
-        ctx.beginPath(); ctx.ellipse(28, 90, 6, 18, -0.05, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.ellipse(42, 90, 6, 18, 0.05, 0, Math.PI * 2); ctx.fill();
-        // Back legs slightly behind
-        ctx.fillStyle = '#B8800A';
-        ctx.beginPath(); ctx.ellipse(22, 92, 5, 16, 0.1, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.ellipse(48, 92, 5, 16, -0.1, 0, Math.PI * 2); ctx.fill();
-        // Hooves
-        ctx.fillStyle = '#3A2000';
-        for (const hx of [22, 28, 42, 48]) {
-            ctx.beginPath(); ctx.ellipse(hx, 105, 5, 3, 0, 0, Math.PI * 2); ctx.fill();
-        }
-
-        // Body
-        ctx.fillStyle = '#E8A820';
+        ctx.fillStyle = '#e0aa54';
         ctx.beginPath();
-        ctx.ellipse(35, 72, 22, 18, 0, 0, Math.PI * 2);
+        ctx.ellipse(37, 86, 19, 22, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // Neck
-        ctx.fillStyle = '#E8A820';
         ctx.beginPath();
-        ctx.moveTo(28, 60);
-        ctx.lineTo(32, 20);
-        ctx.lineTo(42, 20);
-        ctx.lineTo(44, 60);
-        ctx.closePath();
+        ctx.roundRect(32, 25, 10, 54, 5);
         ctx.fill();
 
-        // Spots on body and neck
-        ctx.fillStyle = '#9A5500';
-        const spots = [[30,68,7,5],[46,74,6,4],[35,82,5,4],[20,74,5,4],[33,44,5,4],[38,34,4,3],[30,55,4,3]];
-        for (const [sx,sy,rx,ry] of spots) {
+        ctx.beginPath();
+        ctx.ellipse(37, 18, 14, 11, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        [22, 31, 43, 52].forEach((x) => {
             ctx.beginPath();
-            ctx.ellipse(sx, sy, rx, ry, Math.random(), 0, Math.PI * 2);
+            ctx.roundRect(x, 102, 7, 20, 3);
             ctx.fill();
-        }
+        });
 
-        // Head
-        ctx.fillStyle = '#E8A820';
+        ctx.fillStyle = '#9a632b';
+        [[28, 88], [45, 76], [34, 66], [40, 49], [33, 33], [25, 80]].forEach((spot) => {
+            ctx.beginPath();
+            ctx.ellipse(spot[0], spot[1], 4, 3, 0, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        ctx.fillStyle = '#1f1f1f';
         ctx.beginPath();
-        ctx.ellipse(38, 14, 12, 10, 0.2, 0, Math.PI * 2);
+        ctx.arc(33, 17, 1.7, 0, Math.PI * 2);
         ctx.fill();
-
-        // Ossicones (horns)
-        ctx.fillStyle = '#9A5500';
-        ctx.beginPath(); ctx.ellipse(33, 7, 2.5, 6, -0.1, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.ellipse(43, 6, 2.5, 6, 0.1, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#4A2800';
-        ctx.beginPath(); ctx.arc(33, 4, 3, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(43, 3, 3, 0, Math.PI * 2); ctx.fill();
-
-        // Eye
-        ctx.fillStyle = '#222';
-        ctx.beginPath(); ctx.arc(33, 12, 3.5, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#fff';
-        ctx.beginPath(); ctx.arc(34, 11, 1.2, 0, Math.PI * 2); ctx.fill();
-
-        // Nostril
-        ctx.fillStyle = '#C07010';
-        ctx.beginPath(); ctx.ellipse(43, 17, 2, 1.5, 0.3, 0, Math.PI * 2); ctx.fill();
-
-        // Ear
-        ctx.fillStyle = '#E8A820';
-        ctx.beginPath(); ctx.ellipse(28, 12, 4, 7, -0.5, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#F0C060';
-        ctx.beginPath(); ctx.ellipse(28, 12, 2.5, 5, -0.5, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath();
+        ctx.arc(41, 17, 1.7, 0, Math.PI * 2);
+        ctx.fill();
 
         return canvas;
     }
 
     createBearSprite() {
         const canvas = document.createElement('canvas');
-        canvas.width = 72;
-        canvas.height = 80;
+        canvas.width = 88;
+        canvas.height = 82;
         const ctx = canvas.getContext('2d');
 
-        // Body
-        ctx.fillStyle = '#6B3A2A';
+        ctx.fillStyle = '#7a4a2a';
         ctx.beginPath();
-        ctx.ellipse(36, 54, 26, 22, 0, 0, Math.PI * 2);
+        ctx.ellipse(44, 50, 25, 21, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // Legs
-        ctx.beginPath(); ctx.ellipse(22, 70, 9, 10, -0.1, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.ellipse(50, 70, 9, 10, 0.1, 0, Math.PI * 2); ctx.fill();
-
-        // Arms
-        ctx.beginPath(); ctx.ellipse(12, 52, 8, 12, -0.3, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.ellipse(60, 52, 8, 12, 0.3, 0, Math.PI * 2); ctx.fill();
-        // Paws
-        ctx.fillStyle = '#4A2818';
-        ctx.beginPath(); ctx.arc(10, 62, 6, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(62, 62, 6, 0, Math.PI * 2); ctx.fill();
-
-        // Head
-        ctx.fillStyle = '#6B3A2A';
         ctx.beginPath();
-        ctx.arc(36, 28, 20, 0, Math.PI * 2);
+        ctx.arc(44, 27, 16, 0, Math.PI * 2);
         ctx.fill();
 
-        // Ears
-        ctx.beginPath(); ctx.arc(18, 12, 9, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(54, 12, 9, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#8B5040';
-        ctx.beginPath(); ctx.arc(18, 12, 5, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(54, 12, 5, 0, Math.PI * 2); ctx.fill();
-
-        // Snout
-        ctx.fillStyle = '#8B5040';
         ctx.beginPath();
-        ctx.ellipse(36, 34, 12, 8, 0, 0, Math.PI * 2);
+        ctx.arc(34, 16, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(54, 16, 6, 0, Math.PI * 2);
         ctx.fill();
 
-        // Nose
-        ctx.fillStyle = '#1A0A00';
+        ctx.fillStyle = '#d5ab7d';
         ctx.beginPath();
-        ctx.ellipse(36, 29, 6, 4, 0, 0, Math.PI * 2);
+        ctx.ellipse(44, 33, 8, 6, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // Eyes
-        ctx.fillStyle = '#1A0A00';
-        ctx.beginPath(); ctx.arc(28, 22, 4, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(44, 22, 4, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#fff';
-        ctx.beginPath(); ctx.arc(29, 21, 1.5, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(45, 21, 1.5, 0, Math.PI * 2); ctx.fill();
-
-        // Mouth
-        ctx.strokeStyle = '#4A1808';
-        ctx.lineWidth = 1.5;
+        ctx.fillStyle = '#1f1f1f';
         ctx.beginPath();
-        ctx.moveTo(30, 36);
-        ctx.quadraticCurveTo(36, 40, 42, 36);
-        ctx.stroke();
-
-        // Belly patch
-        ctx.fillStyle = '#9B6050';
-        ctx.beginPath();
-        ctx.ellipse(36, 56, 14, 12, 0, 0, Math.PI * 2);
+        ctx.arc(40, 26, 1.8, 0, Math.PI * 2);
         ctx.fill();
+        ctx.beginPath();
+        ctx.arc(48, 26, 1.8, 0, Math.PI * 2);
+        ctx.fill();
+
+        [30, 41, 52].forEach((x) => {
+            ctx.fillStyle = '#7a4a2a';
+            ctx.beginPath();
+            ctx.roundRect(x, 63, 8, 15, 3);
+            ctx.fill();
+        });
 
         return canvas;
     }
 
     createOwlSprite() {
         const canvas = document.createElement('canvas');
-        canvas.width = 64;
-        canvas.height = 80;
+        canvas.width = 82;
+        canvas.height = 92;
         const ctx = canvas.getContext('2d');
 
-        // Body (rounded)
-        ctx.fillStyle = '#7B5A2A';
+        ctx.fillStyle = '#8a5d3a';
         ctx.beginPath();
-        ctx.ellipse(32, 52, 22, 26, 0, 0, Math.PI * 2);
+        ctx.ellipse(41, 53, 21, 27, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // Wing texture lines
-        ctx.strokeStyle = '#5A3A10';
-        ctx.lineWidth = 1.2;
-        for (let wy = 36; wy < 72; wy += 5) {
-            ctx.beginPath();
-            ctx.moveTo(10, wy);
-            ctx.quadraticCurveTo(32, wy - 3, 54, wy);
-            ctx.stroke();
-        }
-
-        // Belly
-        ctx.fillStyle = '#D4AA70';
         ctx.beginPath();
-        ctx.ellipse(32, 55, 14, 18, 0, 0, Math.PI * 2);
-        ctx.fill();
-        // Belly chevron pattern
-        ctx.strokeStyle = '#AA8848';
-        ctx.lineWidth = 1.2;
-        for (let cy = 44; cy < 70; cy += 5) {
-            ctx.beginPath();
-            ctx.moveTo(24, cy);
-            ctx.lineTo(32, cy - 3);
-            ctx.lineTo(40, cy);
-            ctx.stroke();
-        }
-
-        // Head
-        ctx.fillStyle = '#7B5A2A';
-        ctx.beginPath();
-        ctx.arc(32, 24, 20, 0, Math.PI * 2);
+        ctx.arc(41, 30, 18, 0, Math.PI * 2);
         ctx.fill();
 
-        // Ear tufts
-        ctx.fillStyle = '#5A3A10';
+        ctx.fillStyle = '#f4e7cd';
         ctx.beginPath();
-        ctx.moveTo(18, 8);
-        ctx.lineTo(14, 0);
-        ctx.lineTo(22, 6);
-        ctx.closePath();
+        ctx.arc(33, 29, 7, 0, Math.PI * 2);
         ctx.fill();
         ctx.beginPath();
-        ctx.moveTo(46, 8);
-        ctx.lineTo(50, 0);
-        ctx.lineTo(42, 6);
+        ctx.arc(49, 29, 7, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#1f1f1f';
+        ctx.beginPath();
+        ctx.arc(33, 29, 2.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(49, 29, 2.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#f4c34f';
+        ctx.beginPath();
+        ctx.moveTo(41, 36);
+        ctx.lineTo(35, 41);
+        ctx.lineTo(47, 41);
         ctx.closePath();
         ctx.fill();
 
-        // Facial disc
-        ctx.fillStyle = '#D4AA70';
+        ctx.fillStyle = '#6b4328';
         ctx.beginPath();
-        ctx.arc(32, 26, 15, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = '#AA8848';
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.arc(32, 26, 14, 0, Math.PI * 2);
-        ctx.stroke();
-
-        // Large eyes
-        ctx.fillStyle = '#FFF8DC';
-        ctx.beginPath(); ctx.arc(24, 24, 8, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(40, 24, 8, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#F5A000';
-        ctx.beginPath(); ctx.arc(24, 24, 6, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(40, 24, 6, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#1A0A00';
-        ctx.beginPath(); ctx.arc(24, 24, 4, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(40, 24, 4, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#fff';
-        ctx.beginPath(); ctx.arc(25.5, 22.5, 1.5, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(41.5, 22.5, 1.5, 0, Math.PI * 2); ctx.fill();
-
-        // Beak
-        ctx.fillStyle = '#C8820A';
-        ctx.beginPath();
-        ctx.moveTo(28, 30);
-        ctx.lineTo(36, 30);
-        ctx.lineTo(32, 36);
+        ctx.moveTo(25, 51);
+        ctx.lineTo(16, 60);
+        ctx.lineTo(28, 64);
         ctx.closePath();
         ctx.fill();
-
-        // Talons
-        ctx.strokeStyle = '#4A2808';
-        ctx.lineWidth = 2.5;
-        ctx.lineCap = 'round';
-        for (let tx of [-10, -4, 4, 10]) {
-            ctx.beginPath();
-            ctx.moveTo(32 + tx * 0.5, 76);
-            ctx.lineTo(32 + tx, 80);
-            ctx.stroke();
-        }
+        ctx.beginPath();
+        ctx.moveTo(57, 51);
+        ctx.lineTo(66, 60);
+        ctx.lineTo(54, 64);
+        ctx.closePath();
+        ctx.fill();
 
         return canvas;
     }
 
     createDragonSprite() {
         const canvas = document.createElement('canvas');
-        canvas.width = 90;
+        canvas.width = 118;
         canvas.height = 90;
         const ctx = canvas.getContext('2d');
 
-        // Tail
-        ctx.strokeStyle = '#2E7D32';
-        ctx.lineWidth = 8;
+        ctx.fillStyle = '#5f6f7f';
+        ctx.beginPath();
+        ctx.moveTo(18, 56);
+        ctx.quadraticCurveTo(42, 35, 73, 42);
+        ctx.quadraticCurveTo(89, 45, 99, 59);
+        ctx.quadraticCurveTo(81, 64, 70, 74);
+        ctx.quadraticCurveTo(41, 81, 18, 58);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(62, 40);
+        ctx.lineTo(52, 16);
+        ctx.lineTo(73, 30);
+        ctx.closePath();
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(78, 43);
+        ctx.lineTo(72, 20);
+        ctx.lineTo(92, 34);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(21, 55);
+        ctx.quadraticCurveTo(5, 47, 11, 35);
+        ctx.quadraticCurveTo(18, 44, 28, 45);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = '#7a8a99';
+        ctx.beginPath();
+        ctx.ellipse(86, 56, 15, 11, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#f4cf66';
+        ctx.beginPath();
+        ctx.arc(90, 53, 2.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        return canvas;
+    }
+
+    createEarthwormSprite() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 64;
+        canvas.height = 28;
+        const ctx = canvas.getContext('2d');
+
+        ctx.strokeStyle = '#b56576';
+        ctx.lineWidth = 9;
         ctx.lineCap = 'round';
         ctx.beginPath();
-        ctx.moveTo(72, 60);
-        ctx.bezierCurveTo(86, 56, 90, 44, 82, 36);
+        ctx.moveTo(8, 18);
+        ctx.bezierCurveTo(20, 8, 44, 26, 56, 14);
         ctx.stroke();
-        // Tail spikes
-        ctx.fillStyle = '#1B5E20';
-        ctx.beginPath(); ctx.moveTo(84, 40); ctx.lineTo(90, 34); ctx.lineTo(88, 44); ctx.fill();
-        ctx.beginPath(); ctx.moveTo(86, 50); ctx.lineTo(92, 46); ctx.lineTo(90, 56); ctx.fill();
 
-        // Body
-        ctx.fillStyle = '#388E3C';
+        return canvas;
+    }
+
+    createCaterpillarSprite() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 70;
+        canvas.height = 34;
+        const ctx = canvas.getContext('2d');
+
+        const colors = ['#7fbf49', '#74b141', '#6aa73a', '#5f9c34', '#558f2d'];
+        colors.forEach((color, i) => {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(14 + i * 11, 20, 8, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        ctx.fillStyle = '#1f1f1f';
         ctx.beginPath();
-        ctx.ellipse(46, 58, 26, 22, 0, 0, Math.PI * 2);
+        ctx.arc(12, 18, 1.2, 0, Math.PI * 2);
         ctx.fill();
 
-        // Belly scales
-        ctx.fillStyle = '#81C784';
+        return canvas;
+    }
+
+    createButterflySprite() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 66;
+        canvas.height = 56;
+        const ctx = canvas.getContext('2d');
+
+        ctx.fillStyle = '#fd84a6';
         ctx.beginPath();
-        ctx.ellipse(46, 60, 16, 14, 0, 0, Math.PI * 2);
+        ctx.ellipse(20, 18, 11, 14, -0.3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(46, 18, 11, 14, 0.3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#f9b74e';
+        ctx.beginPath();
+        ctx.ellipse(18, 37, 10, 11, 0.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(48, 37, 10, 11, -0.2, 0, Math.PI * 2);
         ctx.fill();
 
-        // Wing (left, back)
-        ctx.fillStyle = '#1B5E20';
+        ctx.fillStyle = '#3a3a3a';
         ctx.beginPath();
-        ctx.moveTo(30, 50);
-        ctx.bezierCurveTo(14, 30, 4, 20, 16, 16);
-        ctx.bezierCurveTo(22, 14, 26, 28, 30, 40);
-        ctx.closePath();
-        ctx.fill();
-        // Wing membrane lines
-        ctx.strokeStyle = '#2E7D32';
-        ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.moveTo(30, 46); ctx.lineTo(10, 22); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(30, 42); ctx.lineTo(18, 18); ctx.stroke();
-
-        // Wing (right, front)
-        ctx.fillStyle = '#2E7D32';
-        ctx.beginPath();
-        ctx.moveTo(62, 50);
-        ctx.bezierCurveTo(78, 28, 88, 16, 76, 14);
-        ctx.bezierCurveTo(70, 12, 64, 28, 62, 42);
-        ctx.closePath();
-        ctx.fill();
-        ctx.strokeStyle = '#1B5E20';
-        ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.moveTo(62, 46); ctx.lineTo(82, 22); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(62, 42); ctx.lineTo(74, 18); ctx.stroke();
-
-        // Neck
-        ctx.fillStyle = '#388E3C';
-        ctx.beginPath();
-        ctx.moveTo(30, 44);
-        ctx.lineTo(24, 26);
-        ctx.lineTo(36, 24);
-        ctx.lineTo(40, 44);
-        ctx.closePath();
+        ctx.roundRect(30, 14, 6, 27, 3);
         ctx.fill();
 
-        // Head
-        ctx.fillStyle = '#388E3C';
+        return canvas;
+    }
+
+    createFrogSprite() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 70;
+        canvas.height = 58;
+        const ctx = canvas.getContext('2d');
+
+        ctx.fillStyle = '#66b34f';
         ctx.beginPath();
-        ctx.ellipse(30, 20, 16, 12, -0.2, 0, Math.PI * 2);
+        ctx.ellipse(35, 35, 19, 14, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // Snout
         ctx.beginPath();
-        ctx.ellipse(18, 22, 9, 7, -0.3, 0, Math.PI * 2);
+        ctx.arc(25, 22, 8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(45, 22, 8, 0, Math.PI * 2);
         ctx.fill();
 
-        // Horns
-        ctx.fillStyle = '#1B5E20';
-        ctx.beginPath(); ctx.moveTo(26, 10); ctx.lineTo(20, 2); ctx.lineTo(30, 8); ctx.fill();
-        ctx.beginPath(); ctx.moveTo(36, 9); ctx.lineTo(34, 1); ctx.lineTo(42, 8); ctx.fill();
-
-        // Nostril
-        ctx.fillStyle = '#FF6600';
-        ctx.beginPath(); ctx.arc(14, 22, 3, 0, Math.PI * 2); ctx.fill();
-        // Fire breath hint
-        ctx.fillStyle = 'rgba(255,100,0,0.6)';
-        ctx.beginPath(); ctx.arc(8, 22, 5, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = 'rgba(255,220,0,0.6)';
-        ctx.beginPath(); ctx.arc(4, 21, 3, 0, Math.PI * 2); ctx.fill();
-
-        // Eye
-        ctx.fillStyle = '#FFEE00';
-        ctx.beginPath(); ctx.arc(28, 16, 5, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#1A0A00';
+        ctx.fillStyle = '#f5f8f5';
         ctx.beginPath();
-        ctx.ellipse(28, 16, 2, 4, 0, 0, Math.PI * 2); // slit pupil
+        ctx.arc(25, 22, 3, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = '#fff';
-        ctx.beginPath(); ctx.arc(29.5, 14.5, 1.2, 0, Math.PI * 2); ctx.fill();
-
-        // Teeth
-        ctx.fillStyle = '#fff';
-        ctx.beginPath(); ctx.moveTo(14, 24); ctx.lineTo(12, 28); ctx.lineTo(16, 26); ctx.fill();
-        ctx.beginPath(); ctx.moveTo(18, 25); ctx.lineTo(17, 29); ctx.lineTo(21, 27); ctx.fill();
-
-        // Legs
-        ctx.fillStyle = '#2E7D32';
-        ctx.beginPath(); ctx.ellipse(34, 74, 7, 10, -0.1, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.ellipse(58, 74, 7, 10, 0.1, 0, Math.PI * 2); ctx.fill();
-        // Claws
-        ctx.strokeStyle = '#1B5E20';
-        ctx.lineWidth = 2;
-        ctx.lineCap = 'round';
-        for (let cx of [-6, -2, 2, 6]) {
-            ctx.beginPath(); ctx.moveTo(34 + cx * 0.5, 82); ctx.lineTo(34 + cx, 87); ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(58 + cx * 0.5, 82); ctx.lineTo(58 + cx, 87); ctx.stroke();
-        }
+        ctx.beginPath();
+        ctx.arc(45, 22, 3, 0, Math.PI * 2);
+        ctx.fill();
 
         return canvas;
     }
 
     createCarrotSprite() {
         const canvas = document.createElement('canvas');
-        canvas.width = 24;
-        canvas.height = 44;
+        canvas.width = 20;
+        canvas.height = 40;
         const ctx = canvas.getContext('2d');
-
-        // Carrot body
-        ctx.fillStyle = '#FF8C00';
+        
+        // Draw carrot
+        ctx.fillStyle = '#FFA500';
         ctx.beginPath();
-        ctx.moveTo(12, 40);
-        ctx.bezierCurveTo(6, 38, 4, 24, 6, 14);
-        ctx.lineTo(18, 14);
-        ctx.bezierCurveTo(20, 24, 18, 38, 12, 40);
+        ctx.moveTo(10, 35);
+        ctx.lineTo(5, 15);
+        ctx.lineTo(15, 15);
+        ctx.closePath();
         ctx.fill();
-        // Carrot lines
-        ctx.strokeStyle = '#E07000';
-        ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.moveTo(10, 18); ctx.quadraticCurveTo(12, 30, 10, 38); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(14, 18); ctx.quadraticCurveTo(15, 28, 14, 36); ctx.stroke();
-
-        // Leafy top
-        ctx.fillStyle = '#2E8B0A';
-        ctx.beginPath();
-        ctx.moveTo(12, 14);
-        ctx.bezierCurveTo(8, 6, 2, 4, 6, 2);
-        ctx.bezierCurveTo(9, 0, 12, 8, 12, 12);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.moveTo(12, 14);
-        ctx.bezierCurveTo(12, 6, 18, 2, 20, 4);
-        ctx.bezierCurveTo(22, 6, 16, 10, 12, 14);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.moveTo(12, 14);
-        ctx.bezierCurveTo(8, 8, 6, 2, 10, 4);
-        ctx.bezierCurveTo(12, 5, 12, 10, 12, 14);
-        ctx.fill();
-
+        
+        // Draw carrot top
+        ctx.fillStyle = '#228B22';
+        ctx.fillRect(8, 10, 4, 8);
+        ctx.fillRect(6, 8, 8, 4);
+        
         return canvas;
     }
 
     createFishSprite() {
         const canvas = document.createElement('canvas');
-        canvas.width = 36;
-        canvas.height = 24;
+        canvas.width = 30;
+        canvas.height = 20;
         const ctx = canvas.getContext('2d');
-
-        // Tail
-        ctx.fillStyle = '#2255CC';
+        
+        // Draw fish body
+        ctx.fillStyle = '#4169E1';
         ctx.beginPath();
-        ctx.moveTo(26, 12);
-        ctx.lineTo(36, 4);
-        ctx.lineTo(36, 20);
+        ctx.ellipse(15, 10, 10, 6, 0, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Draw tail
+        ctx.fillStyle = '#4169E1';
+        ctx.beginPath();
+        ctx.moveTo(25, 10);
+        ctx.lineTo(30, 5);
+        ctx.lineTo(30, 15);
         ctx.closePath();
         ctx.fill();
-
-        // Body
-        ctx.fillStyle = '#4488EE';
+        
+        // Draw eye
+        ctx.fillStyle = '#000';
         ctx.beginPath();
-        ctx.ellipse(15, 12, 13, 8, 0, 0, Math.PI * 2);
+        ctx.arc(12, 8, 2, 0, Math.PI * 2);
         ctx.fill();
-
-        // Belly
-        ctx.fillStyle = '#88BBFF';
-        ctx.beginPath();
-        ctx.ellipse(14, 14, 9, 5, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Dorsal fin
-        ctx.fillStyle = '#2255CC';
-        ctx.beginPath();
-        ctx.moveTo(10, 5);
-        ctx.bezierCurveTo(14, 0, 20, 2, 22, 6);
-        ctx.closePath();
-        ctx.fill();
-
-        // Scales suggestion
-        ctx.strokeStyle = '#2255AA';
-        ctx.lineWidth = 0.8;
-        ctx.beginPath(); ctx.arc(14, 12, 5, -Math.PI*0.7, Math.PI*0.3); ctx.stroke();
-        ctx.beginPath(); ctx.arc(20, 12, 5, -Math.PI*0.7, Math.PI*0.3); ctx.stroke();
-
-        // Eye
-        ctx.fillStyle = '#fff';
-        ctx.beginPath(); ctx.arc(7, 10, 3.5, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#111';
-        ctx.beginPath(); ctx.arc(7, 10, 2, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#fff';
-        ctx.beginPath(); ctx.arc(7.8, 9.2, 0.8, 0, Math.PI * 2); ctx.fill();
-
+        
         return canvas;
     }
 
     createPeanutSprite() {
         const canvas = document.createElement('canvas');
-        canvas.width = 30;
-        canvas.height = 20;
+        canvas.width = 25;
+        canvas.height = 15;
         const ctx = canvas.getContext('2d');
-
-        ctx.fillStyle = '#D4A96A';
+        
+        // Draw peanut
+        ctx.fillStyle = '#DEB887';
         ctx.beginPath();
-        ctx.ellipse(8, 10, 7, 8, 0, 0, Math.PI * 2);
+        ctx.ellipse(12, 7, 10, 5, 0, 0, Math.PI * 2);
         ctx.fill();
-        ctx.beginPath();
-        ctx.ellipse(22, 10, 7, 8, 0, 0, Math.PI * 2);
-        ctx.fill();
-        // Middle pinch
-        ctx.fillStyle = '#C09050';
-        ctx.beginPath();
-        ctx.ellipse(15, 10, 4, 6, 0, 0, Math.PI * 2);
-        ctx.fill();
-        // Texture
-        ctx.strokeStyle = '#A06830';
+        
+        // Draw peanut texture
+        ctx.strokeStyle = '#8B4513';
         ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.arc(8, 10, 5, 0.3, Math.PI - 0.3); ctx.stroke();
-        ctx.beginPath(); ctx.arc(22, 10, 5, 0.3, Math.PI - 0.3); ctx.stroke();
-
+        ctx.beginPath();
+        ctx.arc(12, 7, 8, 0, Math.PI * 2);
+        ctx.stroke();
+        
         return canvas;
     }
 
     createBananaSprite() {
         const canvas = document.createElement('canvas');
-        canvas.width = 36;
-        canvas.height = 24;
+        canvas.width = 30;
+        canvas.height = 20;
         const ctx = canvas.getContext('2d');
-
-        ctx.strokeStyle = '#F5D400';
-        ctx.lineWidth = 9;
-        ctx.lineCap = 'round';
+        
+        // Draw banana
+        ctx.fillStyle = '#FFFF00';
         ctx.beginPath();
-        ctx.moveTo(4, 20);
-        ctx.bezierCurveTo(8, 6, 24, 2, 32, 10);
-        ctx.stroke();
-        // Highlight
-        ctx.strokeStyle = '#FFEC60';
-        ctx.lineWidth = 4;
+        ctx.ellipse(15, 10, 12, 6, 0.3, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Draw banana tip
+        ctx.fillStyle = '#8B4513';
         ctx.beginPath();
-        ctx.moveTo(6, 18);
-        ctx.bezierCurveTo(10, 8, 22, 4, 28, 10);
-        ctx.stroke();
-        // Tips
-        ctx.fillStyle = '#8B6010';
-        ctx.beginPath(); ctx.arc(4, 20, 3, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(32, 10, 3, 0, Math.PI * 2); ctx.fill();
-
+        ctx.arc(25, 8, 2, 0, Math.PI * 2);
+        ctx.fill();
+        
         return canvas;
     }
 
@@ -1291,7 +935,7 @@ class GameEngine {
             y: y,
             width: 60,
             height: 60,
-            image: this.assets[type],
+            image: this.assets[type] || this.createFallbackSprite(type),
             visible: true,
             animationFrame: 0,
             animationSpeed: 0.1,
@@ -1326,6 +970,26 @@ class GameEngine {
         };
         
         return sprite;
+    }
+
+    createFallbackSprite(type) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 64;
+        canvas.height = 64;
+        const ctx = canvas.getContext('2d');
+
+        ctx.fillStyle = '#9eb4c8';
+        ctx.beginPath();
+        ctx.arc(32, 32, 26, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#1f354a';
+        ctx.font = 'bold 14px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText((type || '?').slice(0, 2).toUpperCase(), 32, 34);
+
+        return canvas;
     }
 
     createParticle(x, y, color = '#FFD700') {
