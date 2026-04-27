@@ -77,7 +77,7 @@ class BearForest {
         ];
 
         bearFamily.forEach((member, index) => {
-            const bear = this.gameEngine.createSprite('penguin', member.x, member.y); // Using penguin sprite as bear
+            const bear = this.gameEngine.createSprite('bear', member.x, member.y);
             bear.name = member.name;
             bear.type = member.type;
             bear.activity = member.activity;

@@ -80,7 +80,7 @@ class GiraffePlains {
         ];
 
         giraffeHerd.forEach((member, index) => {
-            const giraffe = this.gameEngine.createSprite('penguin', member.x, member.y); // Using penguin sprite as giraffe
+            const giraffe = this.gameEngine.createSprite('giraffe', member.x, member.y);
             giraffe.name = member.name;
             giraffe.height = member.height; // meters
             giraffe.age = member.age;

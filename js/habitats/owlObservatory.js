@@ -83,7 +83,7 @@ class OwlObservatory {
         ];
 
         owlFamily.forEach((member, index) => {
-            const owl = this.gameEngine.createSprite('penguin', member.x, member.y); // Using penguin sprite as owl
+            const owl = this.gameEngine.createSprite('owl', member.x, member.y);
             owl.name = member.name;
             owl.type = member.type;
             owl.specialty = member.specialty;

@@ -79,7 +79,7 @@ class DolphinCove {
         ];
 
         podMembers.forEach((member, index) => {
-            const dolphin = this.gameEngine.createSprite('penguin', member.x, member.y); // Using penguin sprite as dolphin
+            const dolphin = this.gameEngine.createSprite('dolphin', member.x, member.y);
             dolphin.name = member.name;
             dolphin.type = member.type;
             dolphin.specialty = member.specialty;

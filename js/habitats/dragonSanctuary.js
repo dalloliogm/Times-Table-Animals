@@ -86,7 +86,7 @@ class DragonSanctuary {
         ];
 
         dragonFamilies.forEach((member, index) => {
-            const dragon = this.gameEngine.createSprite('penguin', member.x, member.y); // Using penguin sprite as dragon
+            const dragon = this.gameEngine.createSprite('dragon', member.x, member.y);
             dragon.name = member.name;
             dragon.element = member.element;
             dragon.specialty = member.specialty;
