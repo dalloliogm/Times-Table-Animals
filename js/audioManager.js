@@ -7,6 +7,7 @@ class AudioManager {
         this.audioContext = null;
         this.backgroundMusic = null;
         this.currentTrack = null;
+        this.useHTML5Audio = false;
         this.sfxSounds = {};
         this.voiceSounds = {};
         this.masterGain = null;
@@ -67,6 +68,10 @@ class AudioManager {
             'giraffePlains': this.createAudioTrack('giraffe-plains-music', true),
             'owlObservatory': this.createAudioTrack('owl-observatory-music', true),
             'dragonSanctuary': this.createAudioTrack('dragon-sanctuary-music', true),
+            'earthwormSoil': this.createAudioTrack('earthworm-soil-music', true),
+            'caterpillarNursery': this.createAudioTrack('caterpillar-nursery-music', true),
+            'butterflyVivarium': this.createAudioTrack('butterfly-vivarium-music', true),
+            'frogPond': this.createAudioTrack('frog-pond-music', true),
             'rainbowReserve': this.createAudioTrack('rainbow-reserve-music', true)
         };
 
@@ -156,25 +161,44 @@ class AudioManager {
     }
 
     createAudioTrack(filename, isMusic = false) {
-        // For now, we'll use placeholder audio or synthesized sounds
-        // In a real implementation, these would load from actual audio files
         const audio = new Audio();
-        
-        // Generate placeholder audio data or use existing browser sounds
-        if (this.useHTML5Audio) {
-            audio.preload = 'auto';
-            audio.volume = 0.5;
-            if (isMusic) {
-                audio.loop = true;
-            }
+        const sourceExtensions = ['mp3', 'ogg', 'wav'];
+        const sourceCandidates = sourceExtensions.map((extension) => `assets/audio/${isMusic ? 'music' : 'sfx'}/${filename}.${extension}`);
+        let sourceIndex = 0;
+
+        audio.preload = 'auto';
+        audio.volume = 0.5;
+        audio.loop = Boolean(isMusic);
+
+        if (sourceCandidates.length > 0) {
+            audio.src = sourceCandidates[sourceIndex];
         }
-        
-        return {
+
+        audio.addEventListener('canplaythrough', () => {
+            track.loaded = true;
+        }, { once: true });
+
+        audio.addEventListener('error', () => {
+            sourceIndex += 1;
+            if (sourceIndex < sourceCandidates.length) {
+                audio.src = sourceCandidates[sourceIndex];
+                audio.load();
+                return;
+            }
+
+            track.loaded = false;
+        });
+
+        const track = {
             audio: audio,
             isMusic: isMusic,
             loaded: false,
-            playing: false
+            playing: false,
+            hasExternalSource: sourceCandidates.length > 0,
+            sourceCandidates: sourceCandidates
         };
+        
+        return track;
     }
 
     updateVolumes() {
@@ -233,9 +257,10 @@ class AudioManager {
         } else {
             this.playWebAudio(track, this.musicGain);
         }
-        
-        // Generate synthesized background music for demo
-        this.generateBackgroundMusic(trackName);
+
+        if (!track.hasExternalSource) {
+            this.generateBackgroundMusic(trackName);
+        }
     }
 
     stopBackgroundMusic() {
@@ -339,7 +364,11 @@ class AudioManager {
             track.audio.play().catch(error => {
                 console.warn('Audio play failed:', error);
             });
+            track.playing = true;
+            return;
         }
+
+        track.audio.load();
     }
 
     playWebAudio(track, gainNode) {
