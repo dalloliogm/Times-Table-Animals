@@ -69,6 +69,7 @@ class LanguageManager {
                     'habitat.butterflyVivarium': 'Butterfly Vivarium',
                     'habitat.frogPond': 'Frog Pond',
                     'habitat.rainbowReserve': 'Rainbow Reserve',
+                    'habitat.chickIncubator': 'Chick Incubator',
                     
                     // Habitat Descriptions
                     'habitat.desc.addition_subtraction': 'Addition & Subtraction',
@@ -83,6 +84,7 @@ class LanguageManager {
                     'habitat.desc.advanced_multiplication': 'Advanced Multiplication',
                     'habitat.desc.exponentials_advanced': 'Exponentials & Advanced',
                     'habitat.desc.ultimate_challenge': 'Ultimate Challenge',
+                    'habitat.desc.powers_of_ten': 'Powers of Ten',
                     
                     // Problem Titles
                     'problem.help_bunnies': 'Help the Bunnies!',
@@ -206,6 +208,7 @@ class LanguageManager {
                     'habitat.butterflyVivarium': 'Vivarium de Mariposas',
                     'habitat.frogPond': 'Estanque de Ranas',
                     'habitat.rainbowReserve': 'Reserva del Arcoíris',
+                    'habitat.chickIncubator': 'Incubadora de Pollitos',
                     
                     // Habitat Descriptions
                     'habitat.desc.addition_subtraction': 'Suma y Resta',
@@ -220,6 +223,7 @@ class LanguageManager {
                     'habitat.desc.advanced_multiplication': 'Multiplicación Avanzada',
                     'habitat.desc.exponentials_advanced': 'Exponenciales y Avanzado',
                     'habitat.desc.ultimate_challenge': 'Desafío Definitivo',
+                    'habitat.desc.powers_of_ten': 'Potencias de Diez',
                     
                     // Problem Titles
                     'problem.help_bunnies': '¡Ayuda a los Conejos!',
@@ -343,6 +347,7 @@ class LanguageManager {
                     'habitat.butterflyVivarium': 'Vivarium delle Farfalle',
                     'habitat.frogPond': 'Stagno delle Rane',
                     'habitat.rainbowReserve': 'Riserva dell\'Arcobaleno',
+                    'habitat.chickIncubator': 'Incubatrice dei Pulcini',
                     
                     // Habitat Descriptions
                     'habitat.desc.addition_subtraction': 'Addizione e Sottrazione',
@@ -357,6 +362,7 @@ class LanguageManager {
                     'habitat.desc.advanced_multiplication': 'Moltiplicazione Avanzata',
                     'habitat.desc.exponentials_advanced': 'Esponenziali e Avanzato',
                     'habitat.desc.ultimate_challenge': 'Sfida Definitiva',
+                    'habitat.desc.powers_of_ten': 'Potenze di Dieci',
                     
                     // Problem Titles
                     'problem.help_bunnies': 'Aiuta i Conigli!',

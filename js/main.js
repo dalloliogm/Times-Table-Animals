@@ -32,7 +32,8 @@ class GameController {
                 caterpillarNursery: { completed: 0, total: 20, unlocked: false },
                 butterflyVivarium: { completed: 0, total: 20, unlocked: false },
                 frogPond: { completed: 0, total: 20, unlocked: false },
-                rainbowReserve: { completed: 0, total: 25, unlocked: false }
+                rainbowReserve: { completed: 0, total: 25, unlocked: false },
+                chickIncubator: { completed: 0, total: 20, unlocked: false }
             },
             settings: {
                 musicEnabled: true,
@@ -741,7 +742,8 @@ class GameController {
             'caterpillarNursery': CaterpillarNursery,
             'butterflyVivarium': ButterflyVivarium,
             'frogPond': FrogPond,
-            'rainbowReserve': RainbowReserve
+            'rainbowReserve': RainbowReserve,
+            'chickIncubator': ChickIncubator
         };
         
         return habitatClasses[habitatName];
@@ -764,7 +766,8 @@ class GameController {
             caterpillarNursery: 'Caterpillar Nursery',
             butterflyVivarium: 'Butterfly Vivarium',
             frogPond: 'Frog Pond',
-            rainbowReserve: 'Rainbow Reserve'
+            rainbowReserve: 'Rainbow Reserve',
+            chickIncubator: 'Chick Incubator'
         };
         
         return habitatNames[habitatName] || 'Unknown Habitat';
@@ -787,7 +790,8 @@ class GameController {
             caterpillarNursery: 'Square Roots',
             butterflyVivarium: 'Squaring',
             frogPond: 'Cubing',
-            rainbowReserve: 'Ultimate Challenge'
+            rainbowReserve: 'Ultimate Challenge',
+            chickIncubator: 'Powers of Ten'
         };
 
         return subtitles[habitatName] || 'Habitat Progress';
@@ -810,7 +814,8 @@ class GameController {
             caterpillarNursery: '🐛',
             butterflyVivarium: '🦋',
             frogPond: '🐸',
-            rainbowReserve: '🌈'
+            rainbowReserve: '🌈',
+            chickIncubator: '🐥'
         };
 
         return icons[habitatName] || '⭐';
@@ -953,7 +958,8 @@ class GameController {
             caterpillarNursery: 'Caterpillar Nursery',
             butterflyVivarium: 'Butterfly Vivarium',
             frogPond: 'Frog Pond',
-            rainbowReserve: 'Rainbow Reserve'
+            rainbowReserve: 'Rainbow Reserve',
+            chickIncubator: 'Chick Incubator'
         };
         
         document.getElementById('currentHabitat').textContent = 
@@ -1289,7 +1295,7 @@ class GameController {
         const habitatOrder = [
             'bunnyMeadow', 'penguinPairsArctic', 'penguinArctic', 'elephantSavanna', 'monkeyJungle',
             'lionPride', 'dolphinCove', 'bearForest', 'giraffePlains',
-            'owlObservatory', 'dragonSanctuary', 'earthwormSoil', 'caterpillarNursery', 'butterflyVivarium', 'frogPond', 'rainbowReserve'
+            'owlObservatory', 'dragonSanctuary', 'earthwormSoil', 'caterpillarNursery', 'butterflyVivarium', 'frogPond', 'rainbowReserve', 'chickIncubator'
         ];
         
         const currentIndex = habitatOrder.indexOf(currentHabitat);
@@ -1330,7 +1336,8 @@ class GameController {
             caterpillarNursery: 'Caterpillar Nursery',
             butterflyVivarium: 'Butterfly Vivarium',
             frogPond: 'Frog Pond',
-            rainbowReserve: 'Rainbow Reserve'
+            rainbowReserve: 'Rainbow Reserve',
+            chickIncubator: 'Chick Incubator'
         };
         
         const habitatName = habitatNames[habitat] || 'Unknown Habitat';
@@ -1482,7 +1489,7 @@ class GameController {
         const habitatOrder = [
             'bunnyMeadow', 'penguinPairsArctic', 'penguinArctic', 'elephantSavanna', 'monkeyJungle',
             'lionPride', 'dolphinCove', 'bearForest', 'giraffePlains',
-            'owlObservatory', 'dragonSanctuary', 'earthwormSoil', 'caterpillarNursery', 'butterflyVivarium', 'frogPond', 'rainbowReserve'
+            'owlObservatory', 'dragonSanctuary', 'earthwormSoil', 'caterpillarNursery', 'butterflyVivarium', 'frogPond', 'rainbowReserve', 'chickIncubator'
         ];
         
         const currentIndex = habitatOrder.indexOf(currentHabitat);

@@ -28,7 +28,8 @@ class MathEngine {
             caterpillarNursery: ['square_roots'],
             butterflyVivarium: ['squaring'],
             frogPond: ['cubing'],
-            rainbowReserve: ['all_concepts', 'challenge_problems']
+            rainbowReserve: ['all_concepts', 'challenge_problems'],
+            chickIncubator: ['powers_of_ten']
         };
         
         // Load the multilingual question templates
@@ -191,7 +192,8 @@ class MathEngine {
             caterpillarNursery: 13,
             butterflyVivarium: 14,
             frogPond: 15,
-            rainbowReserve: 16
+            rainbowReserve: 16,
+            chickIncubator: 17
         };
         return difficultyMap[habitat] || 1;
     }
@@ -266,6 +268,9 @@ class MathEngine {
                     break;
                 case 'cubing':
                     problem = this.generateCubingProblem();
+                    break;
+                case 'powers_of_ten':
+                    problem = this.generatePowersOfTenProblem();
                     break;
                 case 'mixed_operations':
                     problem = this.generateMixedOperationProblem();
@@ -352,6 +357,7 @@ class MathEngine {
             case 'square_roots':
             case 'squaring':
             case 'cubing':
+            case 'powers_of_ten':
                 distractors = this.generateExponentialDistractors(problem, correctAnswer);
                 break;
             case 'measurement':
@@ -1081,6 +1087,31 @@ class MathEngine {
         };
     }
 
+    generatePowersOfTenProblem() {
+        const exponents = [1, 2, 3, 4, 5, 6];
+        const exponent = exponents[Math.floor(Math.random() * exponents.length)];
+        const answer = Math.pow(10, exponent);
+        const questionTemplates = this.getQuestionTemplates();
+        const templates = questionTemplates.powers_of_ten || [
+            'What is 10^{exp}?',
+            'Calculate 10 multiplied by itself {exp} times.',
+            'How much is 10 to the power of {exp}?'
+        ];
+        const template = this.selectedQuestionTemplate || templates[Math.floor(Math.random() * templates.length)];
+        const text = template.replace(/{exp}/g, exponent);
+        return {
+            type: 'powers_of_ten',
+            title: this.translate('problem.challenge'),
+            text: text,
+            answer: answer,
+            visual: ['🐥', '🥚', '10^n'],
+            operation: `10^${exponent} = ?`,
+            explanation: `10^${exponent} = ${answer.toLocaleString('en-US')}`,
+            habitat: this.currentHabitat,
+            difficulty: this.difficultyLevel
+        };
+    }
+
     generateMixedOperationProblem() {
         // Generate a problem that combines multiple operations
         const a = Math.floor(Math.random() * 10) + 1;
@@ -1432,6 +1463,7 @@ class MathEngine {
             square_roots: 'hint.exponentials',
             squaring: 'hint.exponentials',
             cubing: 'hint.exponentials',
+            powers_of_ten: 'hint.exponentials',
             mixed_operations: 'hint.mixed_operations',
             word_problems: 'hint.word_problems'
         };

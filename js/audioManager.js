@@ -72,7 +72,8 @@ class AudioManager {
             'caterpillarNursery': this.createAudioTrack('caterpillar-nursery-music', true),
             'butterflyVivarium': this.createAudioTrack('butterfly-vivarium-music', true),
             'frogPond': this.createAudioTrack('frog-pond-music', true),
-            'rainbowReserve': this.createAudioTrack('rainbow-reserve-music', true)
+            'rainbowReserve': this.createAudioTrack('rainbow-reserve-music', true),
+            'chickIncubator': this.createAudioTrack('chick-incubator-music', true)
         };
 
         // Sound effects
