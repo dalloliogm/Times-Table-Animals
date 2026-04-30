@@ -1,5 +1,5 @@
 // Chick Incubator Habitat for Times Table Animals
-// Powers of Ten: e.g. 10^4 = 10,000
+// Powers of numbers: e.g. 7^3 = 343
 
 class ChickIncubator {
     constructor(gameEngine, mathEngine, gameController = null) {
@@ -82,7 +82,7 @@ class ChickIncubator {
                 // Title
                 ctx.fillStyle = '#8A5A00';
                 ctx.font = 'bold 34px "Comic Sans MS", cursive';
-                ctx.fillText('10^n Chick Incubator', 600, 250);
+                ctx.fillText('a^n Chick Incubator', 600, 250);
             }
         };
 
@@ -194,11 +194,11 @@ class ChickIncubator {
                 ctx.fillStyle = '#FFE8A3';
                 ctx.font = 'bold 22px "Comic Sans MS", cursive';
                 ctx.textAlign = 'center';
-                ctx.fillText('Powers of Ten', this.x, this.y - 10);
+                ctx.fillText('Powers of Numbers', this.x, this.y - 10);
 
                 ctx.fillStyle = '#FFFFFF';
                 ctx.font = '15px "Comic Sans MS", cursive';
-                ctx.fillText('10^3 = 10 × 10 × 10 = 1,000', this.x, this.y + 25);
+                ctx.fillText('7^3 = 7 × 7 × 7 = 343', this.x, this.y + 25);
                 ctx.restore();
             }
         };
@@ -344,7 +344,7 @@ class ChickIncubator {
 
                 ctx.fillStyle = '#FFFFFF';
                 ctx.font = '18px "Comic Sans MS", cursive';
-                ctx.fillText('You mastered Powers of Ten! The chicks are cheering!', this.x, this.y + 45);
+                ctx.fillText('You mastered Powers! The chicks are cheering!', this.x, this.y + 45);
                 ctx.font = '48px serif';
                 ctx.fillText('🐥🥚🐥', this.x, this.y + 110);
                 ctx.restore();

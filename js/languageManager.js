@@ -84,7 +84,7 @@ class LanguageManager {
                     'habitat.desc.advanced_multiplication': 'Advanced Multiplication',
                     'habitat.desc.exponentials_advanced': 'Exponentials & Advanced',
                     'habitat.desc.ultimate_challenge': 'Ultimate Challenge',
-                    'habitat.desc.powers_of_ten': 'Powers of Ten',
+                    'habitat.desc.powers_of_ten': 'Powers',
                     
                     // Problem Titles
                     'problem.help_bunnies': 'Help the Bunnies!',
@@ -223,7 +223,7 @@ class LanguageManager {
                     'habitat.desc.advanced_multiplication': 'Multiplicación Avanzada',
                     'habitat.desc.exponentials_advanced': 'Exponenciales y Avanzado',
                     'habitat.desc.ultimate_challenge': 'Desafío Definitivo',
-                    'habitat.desc.powers_of_ten': 'Potencias de Diez',
+                    'habitat.desc.powers_of_ten': 'Potencias',
                     
                     // Problem Titles
                     'problem.help_bunnies': '¡Ayuda a los Conejos!',
@@ -362,7 +362,7 @@ class LanguageManager {
                     'habitat.desc.advanced_multiplication': 'Moltiplicazione Avanzata',
                     'habitat.desc.exponentials_advanced': 'Esponenziali e Avanzato',
                     'habitat.desc.ultimate_challenge': 'Sfida Definitiva',
-                    'habitat.desc.powers_of_ten': 'Potenze di Dieci',
+                    'habitat.desc.powers_of_ten': 'Potenze',
                     
                     // Problem Titles
                     'problem.help_bunnies': 'Aiuta i Conigli!',

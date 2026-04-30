@@ -807,7 +807,7 @@ class GameController {
             butterflyVivarium: 'Squaring',
             frogPond: 'Cubing',
             rainbowReserve: 'Ultimate Challenge',
-            chickIncubator: 'Powers of Ten'
+            chickIncubator: 'Powers'
         };
 
         return subtitles[habitatName] || 'Habitat Progress';

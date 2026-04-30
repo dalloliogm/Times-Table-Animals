@@ -1088,25 +1088,25 @@ class MathEngine {
     }
 
     generatePowersOfTenProblem() {
-        const exponents = [1, 2, 3, 4, 5, 6];
-        const exponent = exponents[Math.floor(Math.random() * exponents.length)];
-        const answer = Math.pow(10, exponent);
+        const base = Math.floor(Math.random() * 11) + 2; // 2..12
+        const exponent = Math.floor(Math.random() * 3) + 2; // 2..4
+        const answer = Math.pow(base, exponent);
         const questionTemplates = this.getQuestionTemplates();
         const templates = questionTemplates.powers_of_ten || [
-            'What is 10^{exp}?',
-            'Calculate 10 multiplied by itself {exp} times.',
-            'How much is 10 to the power of {exp}?'
+            'What is {base}^{exp}?',
+            'Calculate {base} multiplied by itself {exp} times.',
+            'How much is {base} to the power of {exp}?'
         ];
         const template = this.selectedQuestionTemplate || templates[Math.floor(Math.random() * templates.length)];
-        const text = template.replace(/{exp}/g, exponent);
+        const text = template.replace(/{base}/g, base).replace(/{exp}/g, exponent);
         return {
             type: 'powers_of_ten',
             title: this.translate('problem.challenge'),
             text: text,
             answer: answer,
-            visual: ['🐥', '🥚', '10^n'],
-            operation: `10^${exponent} = ?`,
-            explanation: `10^${exponent} = ${answer.toLocaleString('en-US')}`,
+            visual: ['🐥', '🥚', 'a^n'],
+            operation: `${base}^${exponent} = ?`,
+            explanation: `${base}^${exponent} = ${answer.toLocaleString('en-US')}`,
             habitat: this.currentHabitat,
             difficulty: this.difficultyLevel
         };
