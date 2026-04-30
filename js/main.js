@@ -383,6 +383,7 @@ class GameController {
                 localStorage.setItem('tta_chick_incubator_comment', commentText);
 
                 if (habitatCommentsSavedMsg) {
+                    habitatCommentsSavedMsg.textContent = this.translate('habitat.comments.saved', 'Comment saved on this computer.');
                     habitatCommentsSavedMsg.classList.remove('hidden');
                     setTimeout(() => {
                         habitatCommentsSavedMsg.classList.add('hidden');
@@ -1452,6 +1453,15 @@ class GameController {
         const nextHabitatName = nextHabitat ? habitatNames[nextHabitat] : null;
         const habitatKey = String(habitat || '').toLowerCase();
         const isChickIncubator = habitatKey === 'chickincubator';
+        const missionCompleteText = this.translate('completion.mission_complete', 'Mission Complete!');
+        const badgeEarnedText = this.translate('completion.badge_earned_total', 'Badge Earned! Total');
+        const unlockedText = this.translate('completion.unlocked', 'Unlocked');
+        const continueToHabitatsText = this.translate('completion.continue_to_habitats', 'Continue to Habitats');
+        const clickToContinueText = this.translate('completion.click_to_continue', 'Click anywhere to continue');
+        const chickCommentsTitleText = this.translate('completion.chick_comments_title', 'Comments (Chick Incubator)');
+        const chickCommentPlaceholderText = this.translate('completion.comment_placeholder', 'Write your comment about Chick Incubator...');
+        const chickSaveCommentText = this.translate('completion.save_comment', 'Save Comment');
+        const chickCommentSavedText = this.translate('completion.comment_saved', 'Comment saved.');
         const chickCommentBlock = isChickIncubator ? `
             <div style="
                 margin: 18px 0;
@@ -1465,9 +1475,9 @@ class GameController {
                 margin-right: auto;
             ">
                 <div style="font-size: 16px; font-weight: bold; color: #FFE8A3; margin-bottom: 8px;">
-                    Comments (Chick Incubator)
+                    ${chickCommentsTitleText}
                 </div>
-                <textarea id="chickIncubatorComment" maxlength="280" placeholder="Write your comment about Chick Incubator..." style="
+                <textarea id="chickIncubatorComment" maxlength="280" placeholder="${chickCommentPlaceholderText}" style="
                     width: 100%;
                     min-height: 86px;
                     border-radius: 8px;
@@ -1487,24 +1497,24 @@ class GameController {
                         border-radius: 8px;
                         font-weight: bold;
                         cursor: pointer;
-                    ">Save Comment</button>
+                    ">${chickSaveCommentText}</button>
                 </div>
                 <div id="chickIncubatorCommentSaved" style="display:none; color:#90EE90; font-size:13px; margin-top:6px;">
-                    Comment saved.
+                    ${chickCommentSavedText}
                 </div>
             </div>
         ` : '';
         const clickHintText = isChickIncubator
-            ? 'Use the comments section, then Continue to Habitats.'
-            : 'Click anywhere to continue';
+            ? this.translate('completion.chick_comment_hint', 'Use the comments section, then Continue to Habitats.')
+            : clickToContinueText;
         
         completionContent.innerHTML = `
             <div style="font-size: 48px; margin-bottom: 20px; color: #FFD700;">🎉</div>
-            <h1 style="font-size: 36px; margin-bottom: 10px; color: #FFD700;">Mission Complete!</h1>
+            <h1 style="font-size: 36px; margin-bottom: 10px; color: #FFD700;">${missionCompleteText}</h1>
             <h2 style="font-size: 24px; margin-bottom: 20px; color: #4ECDC4;">${habitatName}</h2>
             <div style="font-size: 20px; margin-bottom: 30px;">
-                <div style="margin-bottom: 10px;">🏆 Badge Earned! Total: ${this.gameState.badgeCount}</div>
-                ${nextHabitatName ? `<div style="color: #90EE90;">🔓 ${nextHabitatName} Unlocked!</div>` : ''}
+                <div style="margin-bottom: 10px;">🏆 ${badgeEarnedText}: ${this.gameState.badgeCount}</div>
+                ${nextHabitatName ? `<div style="color: #90EE90;">🔓 ${nextHabitatName} ${unlockedText}!</div>` : ''}
             </div>
             ${chickCommentBlock}
             <button id="continueToHabitats" style="
@@ -1519,7 +1529,7 @@ class GameController {
                 font-family: inherit;
                 box-shadow: 0 4px 12px rgba(0,0,0,0.3);
                 border: 2px solid transparent;
-            ">Continue to Habitats</button>
+            ">${continueToHabitatsText}</button>
             <div style="margin-top: 15px; font-size: 14px; opacity: 0.7;">
                 ${clickHintText}
             </div>

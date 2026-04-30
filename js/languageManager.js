@@ -141,7 +141,26 @@ class LanguageManager {
                     'credits.thanks_title': 'Special Thanks',
                     'credits.thanks_text': 'Thank you to all the young mathematicians who will embark on this animal adventure!',
                     'credits.mission': 'Our mission: Making math fun, one animal habitat at a time! 🐰🐧🐘',
-                    'credits.back': 'Back to Menu'
+                    'credits.back': 'Back to Menu',
+
+                    // Habitat Comments
+                    'habitat.comments.title': 'Chick Incubator Comments',
+                    'habitat.comments.help': 'This comment is saved on this computer.',
+                    'habitat.comments.placeholder': 'Write or edit your Chick Incubator comment...',
+                    'habitat.comments.save': 'Save Comment',
+                    'habitat.comments.saved': 'Comment saved on this computer.',
+
+                    // Completion Overlay
+                    'completion.mission_complete': 'Mission Complete!',
+                    'completion.badge_earned_total': 'Badge Earned! Total',
+                    'completion.unlocked': 'Unlocked',
+                    'completion.continue_to_habitats': 'Continue to Habitats',
+                    'completion.click_to_continue': 'Click anywhere to continue',
+                    'completion.chick_comment_hint': 'Use the comments section, then Continue to Habitats.',
+                    'completion.chick_comments_title': 'Comments (Chick Incubator)',
+                    'completion.comment_placeholder': 'Write your comment about Chick Incubator...',
+                    'completion.save_comment': 'Save Comment',
+                    'completion.comment_saved': 'Comment saved.'
                 }
             },
             'es': {
@@ -280,7 +299,26 @@ class LanguageManager {
                     'credits.thanks_title': 'Agradecimientos Especiales',
                     'credits.thanks_text': '¡Gracias a todos los jóvenes matemáticos que se embarcarán en esta aventura animal!',
                     'credits.mission': '¡Nuestra misión: hacer que las matemáticas sean divertidas, un hábitat animal a la vez! 🐰🐧🐘',
-                    'credits.back': 'Volver al Menú'
+                    'credits.back': 'Volver al Menú',
+
+                    // Habitat Comments
+                    'habitat.comments.title': 'Comentarios de la Incubadora de Pollitos',
+                    'habitat.comments.help': 'Este comentario se guarda en esta computadora.',
+                    'habitat.comments.placeholder': 'Escribe o edita tu comentario de la Incubadora de Pollitos...',
+                    'habitat.comments.save': 'Guardar Comentario',
+                    'habitat.comments.saved': 'Comentario guardado en esta computadora.',
+
+                    // Completion Overlay
+                    'completion.mission_complete': '¡Misión Completada!',
+                    'completion.badge_earned_total': 'Insignia Ganada! Total',
+                    'completion.unlocked': 'Desbloqueado',
+                    'completion.continue_to_habitats': 'Continuar a Hábitats',
+                    'completion.click_to_continue': 'Haz clic en cualquier parte para continuar',
+                    'completion.chick_comment_hint': 'Usa la sección de comentarios y luego Continuar a Hábitats.',
+                    'completion.chick_comments_title': 'Comentarios (Incubadora de Pollitos)',
+                    'completion.comment_placeholder': 'Escribe tu comentario sobre la Incubadora de Pollitos...',
+                    'completion.save_comment': 'Guardar Comentario',
+                    'completion.comment_saved': 'Comentario guardado.'
                 }
             },
             'it': {
@@ -419,7 +457,26 @@ class LanguageManager {
                     'credits.thanks_title': 'Ringraziamenti Speciali',
                     'credits.thanks_text': 'Grazie a tutti i giovani matematici che intraprenderanno questa avventura animale!',
                     'credits.mission': 'La nostra missione: rendere la matematica divertente, un habitat animale alla volta! 🐰🐧🐘',
-                    'credits.back': 'Torna al Menu'
+                    'credits.back': 'Torna al Menu',
+
+                    // Habitat Comments
+                    'habitat.comments.title': 'Commenti dell\'Incubatrice dei Pulcini',
+                    'habitat.comments.help': 'Questo commento viene salvato su questo computer.',
+                    'habitat.comments.placeholder': 'Scrivi o modifica il tuo commento sull\'Incubatrice dei Pulcini...',
+                    'habitat.comments.save': 'Salva Commento',
+                    'habitat.comments.saved': 'Commento salvato su questo computer.',
+
+                    // Completion Overlay
+                    'completion.mission_complete': 'Missione Completata!',
+                    'completion.badge_earned_total': 'Distintivo Ottenuto! Totale',
+                    'completion.unlocked': 'Sbloccato',
+                    'completion.continue_to_habitats': 'Continua agli Habitat',
+                    'completion.click_to_continue': 'Fai clic ovunque per continuare',
+                    'completion.chick_comment_hint': 'Usa la sezione commenti, poi Continua agli Habitat.',
+                    'completion.chick_comments_title': 'Commenti (Incubatrice dei Pulcini)',
+                    'completion.comment_placeholder': 'Scrivi il tuo commento sull\'Incubatrice dei Pulcini...',
+                    'completion.save_comment': 'Salva Commento',
+                    'completion.comment_saved': 'Commento salvato.'
                 }
             }
         };
@@ -509,6 +566,8 @@ class LanguageManager {
             elements.forEach(element => {
                 if (element.tagName === 'INPUT' && element.type === 'button') {
                     element.value = translation;
+                } else if (element.tagName === 'TEXTAREA') {
+                    element.placeholder = translation;
                 } else if (element.tagName === 'INPUT') {
                     element.placeholder = translation;
                 } else {
