@@ -706,6 +706,14 @@ input[type="range"]::-webkit-slider-thumb {
     color: white;
     padding: 1rem;
     pointer-events: all;
+    position: relative;
+    z-index: 40;
+}
+
+.timer-container {
+    position: relative;
+    z-index: 45;
+    flex: 0 0 auto;
 }
 
 #playerInfo {
