@@ -363,7 +363,7 @@ class GameController {
 
         // Habitat Selection Events
         document.getElementById('backToHabitats').addEventListener('click', () => {
-            this.showHabitatSelection();
+            this.showMainMenu();
         });
 
         // Home Button Event
