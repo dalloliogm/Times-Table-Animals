@@ -1393,6 +1393,52 @@ class GameController {
         // Check if next habitat was unlocked
         const nextHabitat = this.getNextHabitat(habitat);
         const nextHabitatName = nextHabitat ? habitatNames[nextHabitat] : null;
+        const isChickIncubator = habitat === 'chickIncubator';
+        const chickCommentBlock = isChickIncubator ? `
+            <div style="
+                margin: 18px 0;
+                text-align: left;
+                background: rgba(255,255,255,0.08);
+                border: 1px solid rgba(255,255,255,0.25);
+                border-radius: 12px;
+                padding: 12px;
+                max-width: 560px;
+                margin-left: auto;
+                margin-right: auto;
+            ">
+                <div style="font-size: 16px; font-weight: bold; color: #FFE8A3; margin-bottom: 8px;">
+                    Comments (Chick Incubator)
+                </div>
+                <textarea id="chickIncubatorComment" maxlength="280" placeholder="Write your comment about Chick Incubator..." style="
+                    width: 100%;
+                    min-height: 86px;
+                    border-radius: 8px;
+                    border: 1px solid #9FD9D1;
+                    padding: 10px;
+                    font-size: 14px;
+                    resize: vertical;
+                    box-sizing: border-box;
+                "></textarea>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; gap: 8px;">
+                    <span id="chickIncubatorCommentCount" style="font-size: 12px; opacity: 0.85;">0 / 280</span>
+                    <button id="saveChickIncubatorComment" style="
+                        background: #FFD166;
+                        color: #2C3E50;
+                        border: none;
+                        padding: 8px 12px;
+                        border-radius: 8px;
+                        font-weight: bold;
+                        cursor: pointer;
+                    ">Save Comment</button>
+                </div>
+                <div id="chickIncubatorCommentSaved" style="display:none; color:#90EE90; font-size:13px; margin-top:6px;">
+                    Comment saved.
+                </div>
+            </div>
+        ` : '';
+        const clickHintText = isChickIncubator
+            ? 'Use the comments section, then Continue to Habitats.'
+            : 'Click anywhere to continue';
         
         completionContent.innerHTML = `
             <div style="font-size: 48px; margin-bottom: 20px; color: #FFD700;">🎉</div>
@@ -1402,6 +1448,7 @@ class GameController {
                 <div style="margin-bottom: 10px;">🏆 Badge Earned! Total: ${this.gameState.badgeCount}</div>
                 ${nextHabitatName ? `<div style="color: #90EE90;">🔓 ${nextHabitatName} Unlocked!</div>` : ''}
             </div>
+            ${chickCommentBlock}
             <button id="continueToHabitats" style="
                 background: #4ECDC4;
                 color: white;
@@ -1416,7 +1463,7 @@ class GameController {
                 border: 2px solid transparent;
             ">Continue to Habitats</button>
             <div style="margin-top: 15px; font-size: 14px; opacity: 0.7;">
-                Click anywhere to continue
+                ${clickHintText}
             </div>
         `;
         
@@ -1475,6 +1522,41 @@ class GameController {
             continueBtn.tabIndex = 0;
             continueBtn.focus();
         }
+
+        if (isChickIncubator) {
+            const commentInput = document.getElementById('chickIncubatorComment');
+            const commentCount = document.getElementById('chickIncubatorCommentCount');
+            const saveCommentBtn = document.getElementById('saveChickIncubatorComment');
+            const savedLabel = document.getElementById('chickIncubatorCommentSaved');
+
+            if (commentInput && commentCount) {
+                const updateCount = () => {
+                    commentCount.textContent = `${commentInput.value.length} / 280`;
+                };
+                commentInput.addEventListener('input', updateCount);
+                updateCount();
+
+                const existingComment = localStorage.getItem('tta_chick_incubator_comment');
+                if (existingComment) {
+                    commentInput.value = existingComment;
+                    updateCount();
+                }
+            }
+
+            if (saveCommentBtn && commentInput) {
+                saveCommentBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const comment = commentInput.value.trim();
+                    localStorage.setItem('tta_chick_incubator_comment', comment);
+                    if (savedLabel) {
+                        savedLabel.style.display = 'block';
+                        setTimeout(() => {
+                            if (savedLabel) savedLabel.style.display = 'none';
+                        }, 1600);
+                    }
+                });
+            }
+        }
         
         // 3. Keyboard support (any key)
         const keyHandler = (e) => {
@@ -1487,10 +1569,11 @@ class GameController {
         };
         document.addEventListener('keydown', keyHandler);
         
-        // 4. Auto-continue after 3 seconds (reduced from 5)
+        // 4. Auto-continue after 3 seconds for regular habitats.
+        // Chick Incubator keeps the overlay open so comments can be added.
         const autoCompleteTimer = setTimeout(() => {
             const overlay = document.getElementById('completionOverlay');
-            if (overlay && overlay.parentNode) {
+            if (!isChickIncubator && overlay && overlay.parentNode) {
                 console.log('Auto-completing after 3 seconds');
                 document.removeEventListener('keydown', keyHandler);
                 handleCompletion('auto-timeout');
