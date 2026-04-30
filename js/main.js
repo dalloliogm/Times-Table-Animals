@@ -366,6 +366,35 @@ class GameController {
             this.showMainMenu();
         });
 
+        const habitatCommentsInput = document.getElementById('habitatCommentsInput');
+        const habitatCommentsSaveBtn = document.getElementById('habitatCommentsSaveBtn');
+        const habitatCommentsCount = document.getElementById('habitatCommentsCount');
+        const habitatCommentsSavedMsg = document.getElementById('habitatCommentsSavedMsg');
+
+        if (habitatCommentsInput && habitatCommentsCount) {
+            habitatCommentsInput.addEventListener('input', () => {
+                habitatCommentsCount.textContent = `${habitatCommentsInput.value.length} / 280`;
+            });
+        }
+
+        if (habitatCommentsSaveBtn && habitatCommentsInput) {
+            habitatCommentsSaveBtn.addEventListener('click', () => {
+                const commentText = habitatCommentsInput.value.trim();
+                localStorage.setItem('tta_chick_incubator_comment', commentText);
+
+                if (habitatCommentsSavedMsg) {
+                    habitatCommentsSavedMsg.classList.remove('hidden');
+                    setTimeout(() => {
+                        habitatCommentsSavedMsg.classList.add('hidden');
+                    }, 1600);
+                }
+
+                if (habitatCommentsCount) {
+                    habitatCommentsCount.textContent = `${habitatCommentsInput.value.length} / 280`;
+                }
+            });
+        }
+
         // Home Button Event
         const goBackBtn = document.getElementById('goBackBtn');
         if (goBackBtn) {
@@ -620,6 +649,7 @@ class GameController {
 
         try {
             this.updateHabitatCards();
+            this.updateHabitatCommentsSection();
         } catch (error) {
             console.error('Failed to update habitat cards:', error);
         }
@@ -674,6 +704,27 @@ class GameController {
                 }
             }
         });
+    }
+
+    updateHabitatCommentsSection() {
+        const habitatCommentsInput = document.getElementById('habitatCommentsInput');
+        const habitatCommentsCount = document.getElementById('habitatCommentsCount');
+        const habitatCommentsSavedMsg = document.getElementById('habitatCommentsSavedMsg');
+
+        if (!habitatCommentsInput) {
+            return;
+        }
+
+        const savedComment = localStorage.getItem('tta_chick_incubator_comment') || '';
+        habitatCommentsInput.value = savedComment;
+
+        if (habitatCommentsCount) {
+            habitatCommentsCount.textContent = `${savedComment.length} / 280`;
+        }
+
+        if (habitatCommentsSavedMsg) {
+            habitatCommentsSavedMsg.classList.add('hidden');
+        }
     }
 
     enterHabitat(habitatName) {
