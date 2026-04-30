@@ -1377,6 +1377,8 @@ class GameController {
             opacity: 0;
             transition: opacity 0.5s ease;
             cursor: pointer;
+            overflow-y: auto;
+            padding: 16px;
         `;
         
         // Create completion content
@@ -1388,12 +1390,17 @@ class GameController {
             transform: scale(0.8);
             transition: transform 0.5s ease;
             cursor: default;
+            width: min(92vw, 760px);
+            max-height: calc(100vh - 32px);
+            overflow-y: auto;
+            padding: 8px;
         `;
         
         // Check if next habitat was unlocked
         const nextHabitat = this.getNextHabitat(habitat);
         const nextHabitatName = nextHabitat ? habitatNames[nextHabitat] : null;
-        const isChickIncubator = habitat === 'chickIncubator';
+        const habitatKey = String(habitat || '').toLowerCase();
+        const isChickIncubator = habitatKey === 'chickincubator';
         const chickCommentBlock = isChickIncubator ? `
             <div style="
                 margin: 18px 0;

@@ -29,7 +29,7 @@ class MathEngine {
             butterflyVivarium: ['squaring'],
             frogPond: ['cubing'],
             rainbowReserve: ['all_concepts', 'challenge_problems'],
-            chickIncubator: ['powers_of_ten']
+            chickIncubator: ['powers']
         };
         
         // Load the multilingual question templates
@@ -269,8 +269,11 @@ class MathEngine {
                 case 'cubing':
                     problem = this.generateCubingProblem();
                     break;
+                case 'powers':
+                    problem = this.generatePowersProblem();
+                    break;
                 case 'powers_of_ten':
-                    problem = this.generatePowersOfTenProblem();
+                    problem = this.generatePowersProblem();
                     break;
                 case 'mixed_operations':
                     problem = this.generateMixedOperationProblem();
@@ -357,6 +360,7 @@ class MathEngine {
             case 'square_roots':
             case 'squaring':
             case 'cubing':
+            case 'powers':
             case 'powers_of_ten':
                 distractors = this.generateExponentialDistractors(problem, correctAnswer);
                 break;
@@ -1087,12 +1091,12 @@ class MathEngine {
         };
     }
 
-    generatePowersOfTenProblem() {
+    generatePowersProblem() {
         const base = Math.floor(Math.random() * 11) + 2; // 2..12
         const exponent = Math.floor(Math.random() * 3) + 2; // 2..4
         const answer = Math.pow(base, exponent);
         const questionTemplates = this.getQuestionTemplates();
-        const templates = questionTemplates.powers_of_ten || [
+        const templates = questionTemplates.powers || questionTemplates.powers_of_ten || [
             'What is {base}^{exp}?',
             'Calculate {base} multiplied by itself {exp} times.',
             'How much is {base} to the power of {exp}?'
@@ -1100,7 +1104,7 @@ class MathEngine {
         const template = this.selectedQuestionTemplate || templates[Math.floor(Math.random() * templates.length)];
         const text = template.replace(/{base}/g, base).replace(/{exp}/g, exponent);
         return {
-            type: 'powers_of_ten',
+            type: 'powers',
             title: this.translate('problem.challenge'),
             text: text,
             answer: answer,
@@ -1110,6 +1114,11 @@ class MathEngine {
             habitat: this.currentHabitat,
             difficulty: this.difficultyLevel
         };
+    }
+
+    // Backward compatibility if any older save/state still references this method name.
+    generatePowersOfTenProblem() {
+        return this.generatePowersProblem();
     }
 
     generateMixedOperationProblem() {
@@ -1463,6 +1472,7 @@ class MathEngine {
             square_roots: 'hint.exponentials',
             squaring: 'hint.exponentials',
             cubing: 'hint.exponentials',
+            powers: 'hint.exponentials',
             powers_of_ten: 'hint.exponentials',
             mixed_operations: 'hint.mixed_operations',
             word_problems: 'hint.word_problems'
