@@ -1619,6 +1619,18 @@ class GameController {
         // 3. Keyboard support (any key)
         const keyHandler = (e) => {
             console.log('Key pressed in completion overlay:', e.key);
+            const activeElement = document.activeElement;
+            const isTypingField = activeElement && (
+                activeElement.tagName === 'INPUT' ||
+                activeElement.tagName === 'TEXTAREA' ||
+                activeElement.isContentEditable
+            );
+
+            // Do not use overlay shortcuts while user is typing in comments.
+            if (isTypingField) {
+                return;
+            }
+
             if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
                 e.preventDefault();
                 document.removeEventListener('keydown', keyHandler);
