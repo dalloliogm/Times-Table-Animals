@@ -479,6 +479,22 @@ class GameController {
         document.body.classList.add('credits-mode');
         
         this.switchScreen('creditsScreen');
+
+        // Always start credits at the top so the first team member is visible.
+        const creditsScreen = document.getElementById('creditsScreen');
+        if (creditsScreen) {
+            creditsScreen.scrollTop = 0;
+        }
+        if (typeof window !== 'undefined') {
+            window.scrollTo(0, 0);
+        }
+        if (document.documentElement) {
+            document.documentElement.scrollTop = 0;
+        }
+        if (document.body) {
+            document.body.scrollTop = 0;
+        }
+
         if (this.audioManager) {
             try {
                 this.audioManager.playBackgroundMusic('menu');
