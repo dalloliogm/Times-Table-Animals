@@ -128,8 +128,9 @@ class LanguageManager {
                     'hint.default': 'Think carefully about the problem!',
                     
                     // Credits
-                    'credits.title': 'Credits',
+                    'credits.title': 'Credits — Albert & Giovanni',
                     'credits.team_title': 'Development Team',
+                    'credits.albert_name': 'Albert',
                     'credits.albert_role': 'Leader, CEO, Director & Designer',
                     'credits.albert_desc': 'Visionary behind Times Table Animals and creative director',
                     'credits.giovanni_role': 'Computer Expert',
@@ -286,8 +287,9 @@ class LanguageManager {
                     'hint.default': '¡Piensa con cuidado en el problema!',
                     
                     // Credits
-                    'credits.title': 'Créditos',
+                    'credits.title': 'Créditos — Albert y Giovanni',
                     'credits.team_title': 'Equipo de Desarrollo',
+                    'credits.albert_name': 'Albert',
                     'credits.albert_role': 'Líder, CEO, Director y Diseñador',
                     'credits.albert_desc': 'Visionario detrás de Animales de Tablas y director creativo',
                     'credits.giovanni_role': 'Experto en Computación',
@@ -444,8 +446,9 @@ class LanguageManager {
                     'hint.default': 'Pensa attentamente al problema!',
                     
                     // Credits
-                    'credits.title': 'Crediti',
+                    'credits.title': 'Crediti — Albert e Giovanni',
                     'credits.team_title': 'Team di Sviluppo',
+                    'credits.albert_name': 'Albert',
                     'credits.albert_role': 'Leader, CEO, Direttore e Designer',
                     'credits.albert_desc': 'Visionario dietro Animali delle Tabelline e direttore creativo',
                     'credits.giovanni_role': 'Esperto di Computer',

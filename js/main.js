@@ -2258,6 +2258,14 @@ class GameController {
         if (mathProblem) {
             mathProblem.classList.add('hidden');
         }
+
+        // Problem visuals share one DOM container across every habitat. Clear it
+        // when leaving a habitat so habitat-specific drawings (for example the
+        // lion and meat used in Lion Pride Lands) cannot leak into the next one.
+        const problemVisual = document.getElementById('problemVisual');
+        if (problemVisual) {
+            problemVisual.replaceChildren();
+        }
         
         // Hide feedback
         const feedback = document.getElementById('feedback');
