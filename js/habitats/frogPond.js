@@ -96,13 +96,6 @@ class FrogPond {
                 this.jumpTime += (deltaTime / 1000) * this.jumpSpeed;
                 this.y = this.originalY + Math.abs(Math.sin(this.jumpTime)) * -12;
             };
-            frog.render = function(ctx) {
-                ctx.save();
-                ctx.font = '34px serif';
-                ctx.textAlign = 'center';
-                ctx.fillText('🐸', this.x, this.y);
-                ctx.restore();
-            };
             this.frogs.push(frog);
             this.gameEngine.addSprite(frog);
         });

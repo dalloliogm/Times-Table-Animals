@@ -63,13 +63,6 @@ class EarthwormSoil {
                 this.wiggleTime += (deltaTime / 1000) * this.wiggleSpeed;
                 this.y = this.originalY + Math.sin(this.wiggleTime) * 8;
             };
-            worm.render = function(ctx) {
-                ctx.save();
-                ctx.font = '32px serif';
-                ctx.textAlign = 'center';
-                ctx.fillText('🪱', this.x, this.y);
-                ctx.restore();
-            };
             this.earthworms.push(worm);
             this.gameEngine.addSprite(worm);
         });

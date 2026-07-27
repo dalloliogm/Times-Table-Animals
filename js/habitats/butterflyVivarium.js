@@ -113,7 +113,6 @@ class ButterflyVivarium {
             { x: 120, y: 350 }, { x: 280, y: 300 }, { x: 460, y: 380 },
             { x: 650, y: 310 }, { x: 840, y: 360 }, { x: 1020, y: 320 }
         ];
-        const emojis = ['🦋', '🦋', '🦋', '🦋', '🦋', '🦋'];
         positions.forEach((pos, index) => {
             const b = this.gameEngine.createSprite('butterfly', pos.x, pos.y);
             b.id = `butterfly_${index}`;
@@ -121,18 +120,10 @@ class ButterflyVivarium {
             b.originalY = pos.y;
             b.floatTime = Math.random() * Math.PI * 2;
             b.floatSpeed = 0.6 + Math.random() * 0.8;
-            b.emoji = emojis[index];
             b.update = function(deltaTime) {
                 this.floatTime += (deltaTime / 1000) * this.floatSpeed;
                 this.x = this.originalX + Math.cos(this.floatTime) * 25;
                 this.y = this.originalY + Math.sin(this.floatTime * 0.7) * 18;
-            };
-            b.render = function(ctx) {
-                ctx.save();
-                ctx.font = '36px serif';
-                ctx.textAlign = 'center';
-                ctx.fillText(this.emoji, this.x, this.y);
-                ctx.restore();
             };
             this.butterflies.push(b);
             this.gameEngine.addSprite(b);

@@ -118,13 +118,6 @@ class CaterpillarNursery {
                 this.crawlTime += (deltaTime / 1000) * this.crawlSpeed;
                 this.x = this.originalX + Math.cos(this.crawlTime) * 18;
             };
-            cat.render = function(ctx) {
-                ctx.save();
-                ctx.font = '34px serif';
-                ctx.textAlign = 'center';
-                ctx.fillText('🐛', this.x, this.y);
-                ctx.restore();
-            };
             this.caterpillars.push(cat);
             this.gameEngine.addSprite(cat);
         });

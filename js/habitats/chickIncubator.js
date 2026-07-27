@@ -96,7 +96,7 @@ class ChickIncubator {
         ];
 
         positions.forEach((pos, index) => {
-            const chick = this.gameEngine.createSprite('butterfly', pos.x, pos.y);
+            const chick = this.gameEngine.createSprite('chick', pos.x, pos.y);
             chick.id = `chick_${index}`;
             chick.originalX = pos.x;
             chick.originalY = pos.y;
@@ -106,14 +106,6 @@ class ChickIncubator {
                 this.bobTime += (deltaTime / 1000) * this.bobSpeed;
                 this.y = this.originalY + Math.sin(this.bobTime) * 10;
             };
-            chick.render = function(ctx) {
-                ctx.save();
-                ctx.font = '34px serif';
-                ctx.textAlign = 'center';
-                ctx.fillText('🐥', this.x, this.y);
-                ctx.restore();
-            };
-
             this.chicks.push(chick);
             this.gameEngine.addSprite(chick);
         });

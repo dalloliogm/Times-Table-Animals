@@ -132,6 +132,7 @@ class GameEngine {
             caterpillar: this.createCaterpillarSprite(),
             butterfly: this.createButterflySprite(),
             frog: this.createFrogSprite(),
+            chick: this.createChickSprite(),
             carrot: this.createCarrotSprite(),
             fish: this.createFishSprite(),
             peanut: this.createPeanutSprite(),
@@ -1381,6 +1382,77 @@ class GameEngine {
             ctx.arc(x, 50, 2, 0, Math.PI * 2);
             ctx.fill();
         });
+
+        return canvas;
+    }
+
+    createChickSprite() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 64;
+        canvas.height = 64;
+        const ctx = canvas.getContext('2d');
+
+        // Feet
+        ctx.strokeStyle = '#d98b1f';
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(25, 51);
+        ctx.lineTo(22, 57);
+        ctx.moveTo(25, 55);
+        ctx.lineTo(18, 57);
+        ctx.moveTo(39, 51);
+        ctx.lineTo(42, 57);
+        ctx.moveTo(39, 55);
+        ctx.lineTo(46, 57);
+        ctx.stroke();
+
+        // Body and wings
+        ctx.fillStyle = '#f6cf3f';
+        ctx.beginPath();
+        ctx.ellipse(32, 39, 18, 16, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#eebd28';
+        ctx.beginPath();
+        ctx.ellipse(18, 40, 7, 11, -0.45, 0, Math.PI * 2);
+        ctx.ellipse(46, 40, 7, 11, 0.45, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Head and small feather tuft
+        ctx.fillStyle = '#f8d94e';
+        ctx.beginPath();
+        ctx.arc(32, 22, 14, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#e8b62b';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(29, 9);
+        ctx.quadraticCurveTo(27, 4, 31, 3);
+        ctx.moveTo(33, 9);
+        ctx.quadraticCurveTo(35, 4, 39, 5);
+        ctx.stroke();
+
+        // Eyes
+        ctx.fillStyle = '#222';
+        ctx.beginPath();
+        ctx.arc(27, 20, 2, 0, Math.PI * 2);
+        ctx.arc(37, 20, 2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.arc(27.6, 19.4, 0.7, 0, Math.PI * 2);
+        ctx.arc(37.6, 19.4, 0.7, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Beak
+        ctx.fillStyle = '#e88a24';
+        ctx.beginPath();
+        ctx.moveTo(32, 24);
+        ctx.lineTo(25, 28);
+        ctx.lineTo(32, 30);
+        ctx.lineTo(39, 28);
+        ctx.closePath();
+        ctx.fill();
 
         return canvas;
     }
