@@ -1488,6 +1488,11 @@ class DolphinCove {
 
     cleanup() {
         // Clean up habitat resources
+        if (this.nextProblemTimer) {
+            clearTimeout(this.nextProblemTimer);
+            this.nextProblemTimer = null;
+        }
+
         this.dolphins = [];
         this.seaTurtles = [];
         this.coral = [];

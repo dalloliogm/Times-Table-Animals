@@ -60,11 +60,28 @@ class GameEngine {
     }
 
     setupEventListeners() {
+        const getCanvasPoint = (event) => {
+            const rect = this.canvas.getBoundingClientRect();
+            const scale = Math.max(
+                rect.width / this.canvas.width,
+                rect.height / this.canvas.height
+            );
+            const renderedWidth = this.canvas.width * scale;
+            const renderedHeight = this.canvas.height * scale;
+            const cropX = (renderedWidth - rect.width) / 2;
+            const cropY = (renderedHeight - rect.height) / 2;
+
+            return {
+                x: ((event.clientX - rect.left) + cropX) / scale,
+                y: ((event.clientY - rect.top) + cropY) / scale
+            };
+        };
+
         // Mouse events
         this.canvas.addEventListener('mousedown', (e) => {
-            const rect = this.canvas.getBoundingClientRect();
-            this.mouse.x = e.clientX - rect.left;
-            this.mouse.y = e.clientY - rect.top;
+            const point = getCanvasPoint(e);
+            this.mouse.x = point.x;
+            this.mouse.y = point.y;
             this.mouse.pressed = true;
             this.onMouseDown(this.mouse.x, this.mouse.y);
         });
@@ -75,9 +92,9 @@ class GameEngine {
         });
 
         this.canvas.addEventListener('mousemove', (e) => {
-            const rect = this.canvas.getBoundingClientRect();
-            this.mouse.x = e.clientX - rect.left;
-            this.mouse.y = e.clientY - rect.top;
+            const point = getCanvasPoint(e);
+            this.mouse.x = point.x;
+            this.mouse.y = point.y;
             this.onMouseMove(this.mouse.x, this.mouse.y);
         });
 
@@ -1629,8 +1646,10 @@ class GameEngine {
                     // Apply color tinting if specified
                     if (this.tintColor) {
                         ctx.globalCompositeOperation = 'source-atop';
+                        ctx.globalAlpha = 0.28;
                         ctx.fillStyle = this.tintColor;
                         ctx.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
+                        ctx.globalAlpha = 1;
                         ctx.globalCompositeOperation = 'source-over'; // Reset to default
                     }
                     

@@ -634,10 +634,15 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 #gameCanvas {
-    border: 3px solid #228B22;
-    border-radius: 10px;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border: none;
+    border-radius: 0;
     background: white;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    box-shadow: none;
 }
 
 /* Game UI Overlay */

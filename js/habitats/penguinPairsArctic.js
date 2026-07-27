@@ -1095,6 +1095,11 @@ class PenguinPairsArctic {
 
     cleanup() {
         // Clean up habitat resources
+        if (this.nextProblemTimer) {
+            clearTimeout(this.nextProblemTimer);
+            this.nextProblemTimer = null;
+        }
+
         this.penguinPairs = [];
         this.iceBlocks = [];
         this.fish = [];

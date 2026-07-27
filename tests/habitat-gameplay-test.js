@@ -307,6 +307,57 @@ async function testPenguinDoublesTemplateMatchesAnswer() {
     assert(problem.answer === problem.baseNumber * 2, 'Penguin doubles answer no longer matches the generated base number');
 }
 
+async function testDolphinEntryReplacesPenguinSceneAndShowsProblem() {
+    const window = createGameWindow();
+    const gameController = window.gameController;
+
+    gameController.enterHabitat('penguinPairsArctic');
+    assert(
+        gameController.gameEngine.sprites.some((sprite) => sprite.label === 'Pairs Counter'),
+        'Penguin Pairs scene did not create its counter'
+    );
+
+    gameController.enterHabitat('dolphinCove');
+    await wait(window, 50);
+
+    assert(
+        gameController.currentHabitat?.constructor?.name === 'DolphinCove',
+        'Dolphin Cove did not become the active habitat'
+    );
+    assert(gameController.getActiveProblem(), 'Dolphin Cove did not create its opening problem');
+    assert(
+        !window.document.getElementById('mathProblem').classList.contains('hidden'),
+        'Dolphin Cove opening problem is hidden'
+    );
+    assert(
+        !gameController.gameEngine.sprites.some((sprite) =>
+            sprite.label === 'Pairs Counter' ||
+            sprite.label === 'Doubles Station' ||
+            /^Pair \d+$/.test(sprite.text || '')
+        ),
+        'Penguin Pairs sprites leaked into Dolphin Cove'
+    );
+    assert(
+        gameController.gameEngine.sprites.some((sprite) => /^dolphin_\d+$/.test(sprite.id || '')),
+        'Dolphin Cove scene did not create dolphins'
+    );
+}
+
+async function testDolphinDecimalProblemGeneration() {
+    const window = createGameWindow();
+    const mathEngine = window.gameController.mathEngine;
+
+    mathEngine.setHabitat('dolphinCove');
+    mathEngine.selectedQuestionType = 'decimals';
+    mathEngine.selectedQuestionTemplate = mathEngine.questionTemplatesData.en.decimals[0];
+
+    const problem = mathEngine.generateProblem('decimals');
+
+    assert(problem.type === 'decimals', 'Dolphin decimal problem has the wrong type');
+    assert(Number.isFinite(problem.answer), 'Dolphin decimal problem has no numeric answer');
+    assert(problem.options.includes(problem.answer), 'Dolphin decimal answer is missing from its options');
+}
+
 async function run() {
     await testBunnyMeadowAnswerRegistration();
     console.log('Bunny Meadow answer registration passed.');
@@ -322,6 +373,12 @@ async function run() {
 
     await testPenguinDoublesTemplateMatchesAnswer();
     console.log('Penguin doubles template consistency passed.');
+
+    await testDolphinEntryReplacesPenguinSceneAndShowsProblem();
+    console.log('Dolphin Cove entry transition passed.');
+
+    await testDolphinDecimalProblemGeneration();
+    console.log('Dolphin Cove decimal generation passed.');
 
     console.log('Habitat gameplay test suite passed.');
     process.exit(0);

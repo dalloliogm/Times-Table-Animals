@@ -762,6 +762,13 @@ class GameController {
             if (!this.mathEngine) {
                 throw new Error('MathEngine not available');
             }
+
+            // Habitat entry owns the entire canvas scene. Clear it again at the
+            // initialization boundary so a late or partial previous habitat
+            // cannot leave its sprites visible under the new habitat heading.
+            this.gameEngine.clearSprites();
+            this.gameEngine.clearParticles();
+            this.gameEngine.clearAnimations();
             
             // Initialize habitat with error handling
             let habitatClass = this.getHabitatClass(habitatName);
@@ -935,6 +942,31 @@ class GameController {
             if (this.gameEngine) {
                 this.gameEngine.startGame();
             }
+
+            // Some browsers can finish the screen/canvas transition after the
+            // habitat constructor has already revealed its first question.
+            // Reassert the active problem once the new scene is fully started.
+            const enteredHabitat = this.currentHabitat;
+            requestAnimationFrame(() => {
+                if (
+                    this.currentHabitat !== enteredHabitat ||
+                    this.gameState.currentHabitat !== habitatName
+                ) {
+                    return;
+                }
+
+                if (!enteredHabitat.currentProblem && enteredHabitat.startNextProblem) {
+                    enteredHabitat.startNextProblem();
+                } else if (enteredHabitat.updateProblemDisplay) {
+                    enteredHabitat.updateProblemDisplay();
+                } else {
+                    this.updateProblemUI();
+                    const mathProblem = document.getElementById('mathProblem');
+                    if (mathProblem && this.getActiveProblem()) {
+                        mathProblem.classList.remove('hidden');
+                    }
+                }
+            });
             
             console.log(`GameController: Habitat ${habitatName} loaded successfully`);
             

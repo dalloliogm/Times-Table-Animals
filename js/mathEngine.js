@@ -1202,6 +1202,33 @@ class MathEngine {
         };
     }
 
+    generateDecimalProblem() {
+        const questionTemplates = this.getQuestionTemplates();
+        const templates = questionTemplates.decimals || ['Calculate: {a} + {b}'];
+        const template = this.selectedQuestionTemplate || templates[Math.floor(Math.random() * templates.length)];
+        const templateIndex = Math.max(0, templates.indexOf(template));
+
+        // Keep both values to one decimal place so the problem genuinely
+        // practises decimals without exposing floating-point artefacts.
+        const a = Number((Math.random() * 8 + 1).toFixed(1));
+        const b = Number((Math.random() * 4 + 1).toFixed(1));
+        const isAdditionProblem = templateIndex === 1;
+        const answer = Number((isAdditionProblem ? a + b : a * b).toFixed(2));
+        const operator = isAdditionProblem ? '+' : '×';
+
+        return {
+            type: 'decimals',
+            title: this.translate('problem.help_dolphins'),
+            text: template.replace('{a}', a).replace('{b}', b),
+            answer: answer,
+            visual: ['🐬', '🌊', '🔢'],
+            operation: `${a} ${operator} ${b} = ?`,
+            explanation: `${a} ${operator} ${b} = ${answer}`,
+            habitat: this.currentHabitat,
+            difficulty: this.difficultyLevel
+        };
+    }
+
     generateGeometryProblem() {
         // Use the selected template for the level
         const questionTemplates = this.getQuestionTemplates();
